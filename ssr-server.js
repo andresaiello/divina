@@ -16,7 +16,8 @@ app.prepare()
     
   server.listen(PORT, (err) => {
     if (err) throw err
-    console.log(`> Ready on http://localhost:${process.env.NODE_ENV}`)
+    console.log(`Running in ${process.env.NODE_ENV} mode`);
+    console.log(`> Ready on http://localhost:${process.env.PORT}`)
   })
 })
 .catch((ex) => {
