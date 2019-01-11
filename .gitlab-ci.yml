@@ -1,0 +1,13 @@
+# .gitlab-ci.yml
+before_script:
+  - echo "This runs before the build jobs."
+
+build_job_1:
+  script:
+    - echo "This is the first build job."
+
+build_job_2:
+  script:
+    - echo "This is the second build job."
+    - git remote add heroku https://heroku:45e19a87-c9e8-43fd-96d5-f03b41bedd43@git.heroku.com/divinaapp.git
+    - git push -f heroku master
