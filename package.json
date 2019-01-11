@@ -2,12 +2,10 @@
   "scripts": {
     "dev": "node ssr-server.js",
     "build": "next build",
-    "start": "cross-env NODE_ENV=production node ssr-server.js",
+    "start": "node ssr-server.js",
     "precommit": "lint-staged",
     "eject": "react-scripts eject",
-    "heroku-postbuild": "cross-env NODE_ENV=production webpack"
-
-
+    "heroku-postbuild": "next build"
   },
   "dependencies": {
     "express": "^4.16.4",
