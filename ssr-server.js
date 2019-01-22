@@ -3,7 +3,7 @@ const next = require('next')
 
 const NODE_ENV = process.env.NODE_ENV || 'dev'
 const dev = NODE_ENV !== 'production'
-const PORT = process.env.PORT || 80;
+const PORT = process.env.PORT || 3004;
 const app = next({ dev })
 const handle = app.getRequestHandler()
     
