@@ -16,6 +16,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Image from '../../../../shared/components/Image';
 
 const styles = theme => ({
   card: {
@@ -44,12 +45,6 @@ const styles = theme => ({
 });
 
 const StyledCard = styled(Card)`
-  .cardPic {
-    height: 350px;
-    background-repeat: no-repeat;
-    background-size: contain;
-  }
-
   .actions {
     justify-content: flex-end;
   }
@@ -72,10 +67,12 @@ function PostCard ({ classes }) {
         title="chica123"
         subheader="Hace 10 minutos"
       />
-      <CardMedia
+      <Image
         className="cardPic"
-        image="/static/profilePic.jpg"
-        title="Paella dish"
+        height="250px"
+        src="/static/feedPic.jpeg"
+        withLoader
+        alt="Foto"
       />
       <CardContent>
         <Typography component="p">

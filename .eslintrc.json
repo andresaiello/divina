@@ -12,7 +12,8 @@
     "max-len": ["error", { "code": 130 }],
     "react/no-array-index-key": "false",
     "no-nested-ternary": 0,
-    "space-before-function-paren": ["error", "always"]
+    "space-before-function-paren": ["error", "always"],
+    "jsx-a11y/anchor-is-valid": false
   },
   "settings": {
     "import/resolver": {

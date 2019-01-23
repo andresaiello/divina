@@ -19,6 +19,10 @@ const StyledAppBar = styled(AppBar)`
     .toolbar {
       justify-content: space-between;
     }
+
+    a {
+      color: white;
+    }
   }
 `;
 
@@ -27,10 +31,12 @@ function BottomAppBar (props) {
     <Fragment>
       <StyledAppBar position="fixed" {...props}>
         <Toolbar className="toolbar">
-          <Link route="feed">
-            <IconButton color="inherit" aria-label="Open drawer">
-              <HomeIcon />
-            </IconButton>
+          <Link route="feed" prefetch>
+            <a>
+              <IconButton color="inherit" aria-label="Open drawer">
+                <HomeIcon />
+              </IconButton>
+            </a>
           </Link>
           <IconButton color="inherit">
             <SearchIcon />
@@ -38,10 +44,12 @@ function BottomAppBar (props) {
           <IconButton color="inherit">
             <CameraIcon />
           </IconButton>
-          <Link route="profile">
-            <IconButton color="inherit">
-              <ProfileIcon />
-            </IconButton>
+          <Link route="profile" prefetch>
+            <a>
+              <IconButton color="inherit">
+                <ProfileIcon />
+              </IconButton>
+            </a>
           </Link>
         </Toolbar>
       </StyledAppBar>

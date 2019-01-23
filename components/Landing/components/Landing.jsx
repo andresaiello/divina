@@ -35,13 +35,15 @@ export default function Landing () {
       <video autoPlay muted loop>
         <source src="/static/background.mp4" type="video/mp4" />
       </video>
-      <Link route="feed">
-        <div className="content">
-          <Button className="button" variant="contained" color="primary">
+      <Link route="feed" prefetch>
+        <a>
+          <div className="content">
+            <Button className="button" variant="contained" color="primary">
           Crear Cuenta
-          </Button>
-          <p>¿Ya tienes una cuenta? Conectarse</p>
-        </div>
+            </Button>
+            <p>¿Ya tienes una cuenta? Conectarse</p>
+          </div>
+        </a>
       </Link>
     </StyledLanding>
   );

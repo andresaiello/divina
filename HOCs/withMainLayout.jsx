@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-import { BottomAppBar } from '../components/shared';
+import { HeadAppBar, BottomAppBar } from '../components/shared';
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -12,6 +12,7 @@ const GlobalStyle = createGlobalStyle`
 export default BaseComponent => props => (
   <Fragment>
     <GlobalStyle />
+    <HeadAppBar />
     <BaseComponent {...props} />
     <BottomAppBar />
   </Fragment>
