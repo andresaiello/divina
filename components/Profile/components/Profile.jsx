@@ -1,7 +1,11 @@
 import React from 'react';
 
-export default function Profile () {
+import withMainLayout from '~/HOCs/withMainLayout';
+
+function Profile () {
   return (
     <div>Mi foto</div>
   );
 }
+
+export default withMainLayout(Profile);

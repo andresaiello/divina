@@ -1,18 +1,24 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
-
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import CameraIcon from '@material-ui/icons/CameraAlt';
 import SearchIcon from '@material-ui/icons/Search';
-import MoreIcon from '@material-ui/icons/MoreVert';
+import HomeIcon from '@material-ui/icons/HomeOutlined';
+import ProfileIcon from '@material-ui/icons/Person';
+
+import { Link } from '~/routes';
 
 const StyledAppBar = styled(AppBar)`
   && {
     top: auto;
     bottom: 0;
+
+    .toolbar {
+      justify-content: space-between;
+    }
   }
 `;
 
@@ -20,18 +26,23 @@ function BottomAppBar (props) {
   return (
     <Fragment>
       <StyledAppBar position="fixed" {...props}>
-        <Toolbar>
-          <IconButton color="inherit" aria-label="Open drawer">
-            <MenuIcon />
+        <Toolbar className="toolbar">
+          <Link route="feed">
+            <IconButton color="inherit" aria-label="Open drawer">
+              <HomeIcon />
+            </IconButton>
+          </Link>
+          <IconButton color="inherit">
+            <SearchIcon />
           </IconButton>
-          <div>
+          <IconButton color="inherit">
+            <CameraIcon />
+          </IconButton>
+          <Link route="profile">
             <IconButton color="inherit">
-              <SearchIcon />
+              <ProfileIcon />
             </IconButton>
-            <IconButton color="inherit">
-              <MoreIcon />
-            </IconButton>
-          </div>
+          </Link>
         </Toolbar>
       </StyledAppBar>
     </Fragment>

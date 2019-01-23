@@ -1,9 +1,16 @@
-import React from 'react';
-import withMainLayout from '../../../HOCs/withMainLayout';
+import React, { Fragment } from 'react';
+
+import withMainLayout from '~/HOCs/withMainLayout';
+
+import { PostCard } from './PostCard';
 
 function Feed () {
   return (
-    <div>Fotos de gente</div>
+    <Fragment>
+      <PostCard />
+      <PostCard />
+      <PostCard />
+    </Fragment>
   );
 }
 
