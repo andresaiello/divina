@@ -44,7 +44,7 @@ function BottomAppBar (props) {
           <IconButton color="inherit">
             <CameraIcon />
           </IconButton>
-          <Link route="profile" prefetch>
+          <Link route="myProfile" prefetch>
             <a>
               <IconButton color="inherit">
                 <ProfileIcon />

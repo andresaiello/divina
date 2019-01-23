@@ -6,6 +6,6 @@ routes
   .add('landing', '/')
   .add('feed', '/inicio')
   .add('discover', '/descubrir')
-  .add('profile', '/perfil');
+  .add('myProfile', '/miperfil');
 
 module.exports = routes;
