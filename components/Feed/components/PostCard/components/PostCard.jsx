@@ -47,6 +47,8 @@ const styles = theme => ({
 });
 
 const StyledCard = styled(Card)`
+  margin: 5px auto;
+
   .actions {
     justify-content: flex-end;
   }
