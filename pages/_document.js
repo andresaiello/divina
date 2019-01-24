@@ -3,8 +3,15 @@ import React, { Fragment } from 'react';
 import propTypes from 'prop-types';
 import Document, { Head, Main, NextScript } from 'next/document';
 import flush from 'styled-jsx/server';
-import { ServerStyleSheet } from 'styled-components';
+import { createGlobalStyle, ServerStyleSheet } from 'styled-components';
 
+const GlobalStyle = createGlobalStyle`
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+`;
 
 export default class MyDocument extends Document {
   static async getInitialProps (ctx) {
@@ -61,6 +68,7 @@ export default class MyDocument extends Document {
           {styleTags}
         </Head>
         <body>
+          <GlobalStyle />
           <Main />
           <NextScript />
         </body>
