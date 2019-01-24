@@ -5,7 +5,6 @@ import { Button } from '@material-ui/core';
 import { mediaQuery } from '~/constants';
 import { Link } from '~/routes';
 
-
 const StyledLanding = styled.article`
   height: 100vh;
   width: 100%;

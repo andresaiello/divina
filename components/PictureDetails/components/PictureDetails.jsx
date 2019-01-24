@@ -4,7 +4,10 @@ import styled from 'styled-components';
 import withMainLayout from '~/HOCs/withMainLayout';
 import { Image } from '~/components/shared';
 
-const StyledProfile = styled.article`
+import Head from './Head';
+import SubBar from './SubBar';
+
+const StyledPictureDetails = styled.article`
   height: 100vh;
 
   .image {
@@ -16,9 +19,10 @@ const ProfileActions = styled.aside`
 
 `;
 
-function MyProfile () {
+function PictureDetails () {
   return (
-    <StyledProfile>
+    <StyledPictureDetails>
+      <Head />
       <Image
         className="image"
         withLoader
@@ -26,11 +30,9 @@ function MyProfile () {
         height="55vh"
         alt="Foto de perfil"
       />
-      <ProfileActions>
-        <div>Hola</div>
-      </ProfileActions>
-    </StyledProfile>
+      <SubBar />
+    </StyledPictureDetails>
   );
 }
 
-export default withMainLayout(MyProfile);
+export default PictureDetails;

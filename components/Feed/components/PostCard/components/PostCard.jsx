@@ -9,14 +9,16 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
 import Avatar from '@material-ui/core/Avatar';
-import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 import red from '@material-ui/core/colors/red';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Image from '../../../../shared/components/Image';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import IconButton from '@material-ui/core/IconButton';
+
+import { Link } from '~/routes';
 
 const styles = theme => ({
   card: {
@@ -45,6 +47,8 @@ const styles = theme => ({
 });
 
 const StyledCard = styled(Card)`
+  margin: 5px auto;
+
   .actions {
     justify-content: flex-end;
   }
@@ -55,16 +59,22 @@ function PostCard ({ classes }) {
     <StyledCard className={classes.card}>
       <CardHeader
         avatar={(
-          <Avatar aria-label="Recipe" className={classes.avatar}>
-            R
-          </Avatar>
-)}
+          <Link route="profile" prefetch>
+            <Avatar aria-label="Recipe" className={classes.avatar}>
+              R
+            </Avatar>
+          </Link>
+        )}
         action={(
           <IconButton>
             <MoreVertIcon />
           </IconButton>
-)}
-        title="chica123"
+        )}
+        title={(
+          <Link route="profile" prefetch>
+            <div>chica123</div>
+          </Link>
+        )}
         subheader="Hace 10 minutos"
       />
       <Image

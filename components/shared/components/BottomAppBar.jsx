@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
+import { Fab } from '@material-ui/core';
+import { Add, Chat } from '@material-ui/icons';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -38,11 +40,18 @@ function BottomAppBar (props) {
               </IconButton>
             </a>
           </Link>
-          <IconButton color="inherit">
-            <SearchIcon />
-          </IconButton>
-          <IconButton color="inherit">
+          <Link route="discover" prefetch>
+            <a>
+              <IconButton color="inherit">
+                <SearchIcon />
+              </IconButton>
+            </a>
+          </Link>
+          <Fab className="fab" aria-label="Add">
             <CameraIcon />
+          </Fab>
+          <IconButton color="inherit">
+            <Chat />
           </IconButton>
           <Link route="myProfile" prefetch>
             <a>
