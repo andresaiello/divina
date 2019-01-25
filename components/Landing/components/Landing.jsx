@@ -34,7 +34,7 @@ export default function Landing () {
       <video autoPlay muted loop>
         <source src="/static/background.mp4" type="video/mp4" />
       </video>
-      <Link route="feed" prefetch>
+      <Link route="/login" prefetch>
         <a>
           <div className="content">
             <Button className="button" variant="contained" color="primary">
