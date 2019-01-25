@@ -3,7 +3,8 @@ import propTypes from 'prop-types';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-const formatSize = size => (typeof size === 'number' ? `${size}px` : size);
+// check if it's a number
+const formatSize = size => (/^\d+$/.test(size) ? `${size}px` : size);
 
 // divides an integer that has an unit (like 30px to 15px)
 const half = (size = '0px') => {
@@ -22,6 +23,14 @@ const StyledLoader = styled.span`
   width: ${({ width }) => (width ? formatSize(width) : '100%')};
   height: ${({ height }) => (height ? formatSize(height) : '100%')};
 
+  .container {
+    display: flex;
+    height: inherit;
+    width: inherit;
+    justify-content: center;
+    align-items: center;
+  }
+
   .progress {
     color: #0000003b;
     margin-top: ${({ height, size }) => (height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`)};
@@ -32,7 +41,9 @@ const StyledLoader = styled.span`
 export default function Loader ({ size, ...rest }) {
   return (
     <StyledLoader {...{ size, ...rest }}>
-      <CircularProgress className="progress" {...{ size }} />
+      <div className="container">
+        <CircularProgress className="progress" {...{ size }} />
+      </div>
     </StyledLoader>
   );
 }

@@ -16,7 +16,7 @@ const Image = ({
 Image.defaultProps = {
   resize: 1,
   withLoader: false,
-  height: '100%',
+  height: 'auto',
   width: '100%',
 };
 
