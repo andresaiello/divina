@@ -9,8 +9,8 @@
     "precommit": "lint-staged",
     "eject": "react-scripts eject",
     "heroku-postbuild": "next build",
-    "docker:build": "docker login --username=divinadocker --password=4TL97uAztkP6wST; VERSION=$(cat package.json | grep version | head -1 | awk -F= \"{ print $2 }\" | sed 's/[version:,\",]//g'| tr -d '[[:space:]]'); TAG=$(git describe --tags --always); docker build -t aaiello/divina:${VERSION}-${TAG} .",
-    "docker:push": "docker login --username=divinadocker --password=4TL97uAztkP6wST; VERSION=$(cat package.json | grep version | head -1 | awk -F= \"{ print $2 }\" | sed 's/[version:,\",]//g'| tr -d '[[:space:]]'); TAG=$(git describe --tags --always); docker push aaiello/divina:${VERSION}-${TAG}"
+    "docker:build": "docker login --username=divinadocker --password=4TL97uAztkP6wST; VERSION=$(cat package.json | grep version | head -1 | awk -F= \"{ print $2 }\" | sed 's/[version:,\",]//g'| tr -d '[[:space:]]'); TAG=$(git describe --tags --always); docker build -t aaiello/divina:${VERSION}-${TAG} .; docker build -t aaiello/divina:latest .",
+    "docker:push": "docker login --username=divinadocker --password=4TL97uAztkP6wST; VERSION=$(cat package.json | grep version | head -1 | awk -F= \"{ print $2 }\" | sed 's/[version:,\",]//g'| tr -d '[[:space:]]'); TAG=$(git describe --tags --always); docker push aaiello/divina:${VERSION}-${TAG}; docker push aaiello/divina:latest"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.0",
