@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 
 import withMainLayout from '~/HOCs/withMainLayout';
-import { Link } from '~/routes';
+import { Link } from '~/server/routes';
 
 import ProfileInfo from './ProfileInfo';
 import PhotoGrid from './PhotoGrid';

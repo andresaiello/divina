@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 
 import { mediaQuery } from '~/constants';
-import { Link } from '~/routes';
+import { Link } from '~/server/routes';
 
 const StyledLanding = styled.article`
   height: 100vh;

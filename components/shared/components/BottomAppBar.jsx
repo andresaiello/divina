@@ -11,7 +11,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import HomeIcon from '@material-ui/icons/HomeOutlined';
 import ProfileIcon from '@material-ui/icons/Person';
 
-import { Link } from '~/routes';
+import { Link } from '~/server/routes';
 
 const StyledAppBar = styled(AppBar)`
   && {

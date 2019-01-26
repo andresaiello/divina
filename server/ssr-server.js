@@ -1,13 +1,16 @@
 const express = require('express');
 const next = require('next');
+const { ApolloServer } = require('apollo-server-express');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 const flash = require('connect-flash');
+
 const routes = require('./routes');
 const authRouter = require('./routes/auth');
 const apiRouter = require('./routes/api');
+const { typeDefs, resolvers } = require('./graphql');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const dev = NODE_ENV !== 'production';
@@ -50,7 +53,9 @@ const sess = {
 
 app.prepare()
   .then(() => {
+    const apolloServer = new ApolloServer({ typeDefs, resolvers });
     const server = express();
+    apolloServer.applyMiddleware({ app: server });
     server.use(cookieParser());
     server.use(session(sess));
 
@@ -61,16 +66,15 @@ app.prepare()
     server.use('/', authRouter);
     server.use('/api/', apiRouter);
 
-
     server.use('/', handler);
-
 
     server.get('*', (req, res) => handle(req, res));
 
     server.listen(PORT, (err) => {
       if (err) throw err;
       console.log(`Running in ${NODE_ENV} mode`);
-      console.log(`> Ready on http://localhost:${PORT}`);
+      console.log(`> Server ready on http://localhost:${PORT}`);
+      console.log(`> GraphQL server: http://localhost:${PORT}${apolloServer.graphqlPath}`);
     });
   })
   .catch((ex) => {

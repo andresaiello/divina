@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { Image } from '~/components/shared';
-import { Link } from '~/routes';
+import { Link } from '~/server/routes';
 
 const StyledPhotoGrid = styled.div`
   display: grid;

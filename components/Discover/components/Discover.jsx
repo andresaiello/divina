@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import styled from 'styled-components';
 
 import { Image, SearchBar } from '~/components/shared';
-import { Link } from '~/routes';
+import { Link } from '~/server/routes';
 
 import withMainLayout from '~/HOCs/withMainLayout';
 

@@ -5,7 +5,7 @@ import {
 } from '@material-ui/core';
 import { ChevronLeft, MoreHoriz } from '@material-ui/icons';
 
-import { Link } from '~/routes';
+import { Link } from '~/server/routes';
 
 const StyledAppBar = styled(AppBar)`
   && {
