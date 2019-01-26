@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 
 import withMainLayout from '~/HOCs/withMainLayout';
+import { Link } from '~/routes';
+
 import ProfileInfo from './ProfileInfo';
 import PhotoGrid from './PhotoGrid';
 
@@ -11,9 +13,15 @@ const StyledProfile = styled.article`
 `;
 
 function MyProfile () {
+  const editProfile = (
+    <Link route="editProfile" prefetch>
+      <Button>Editar</Button>
+    </Link>
+  );
+
   return (
     <StyledProfile>
-      <ProfileInfo action={<Button>Configuración</Button>} />
+      <ProfileInfo action={editProfile} />
       <PhotoGrid />
     </StyledProfile>
   );

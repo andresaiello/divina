@@ -3,6 +3,8 @@ import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Avatar } from '@material-ui/core';
 
+import withRouteProgress from '~/HOCs/withRouteProgress';
+
 const StyledProfileInfo = styled.div`
   display: grid;
   grid-template-columns: 20% 80%;
@@ -14,10 +16,10 @@ const StyledProfileInfo = styled.div`
   }
   
   .follow {
-    text-align: center;
+    text-align: left;
 
     h2 {
-      margin: 5px 0px;
+      margin: 5px 9px;
       font-size: 1rem;
       font-weight: normal;
     }
@@ -31,7 +33,7 @@ const StyledProfileInfo = styled.div`
   }
 `;
 
-export default function ProfileInfo ({ action, ...rest }) {
+function ProfileInfo ({ action, ...rest }) {
   return (
     <StyledProfileInfo {...rest}>
       <div className="follow">
@@ -53,3 +55,5 @@ export default function ProfileInfo ({ action, ...rest }) {
 ProfileInfo.propTypes = {
   action: propTypes.element.isRequired,
 };
+
+export default ProfileInfo;

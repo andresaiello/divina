@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import withMainLayout from '~/HOCs/withMainLayout';
+import withRouteProgress from '~/HOCs/withRouteProgress';
 import { Image } from '~/components/shared';
 
 import Head from './Head';
@@ -35,4 +35,4 @@ function PictureDetails () {
   );
 }
 
-export default PictureDetails;
+export default withRouteProgress(PictureDetails);
