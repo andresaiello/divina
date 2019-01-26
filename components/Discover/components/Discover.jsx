@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 
-import { Image } from '~/components/shared';
+import { Image, SearchBar } from '~/components/shared';
 import { Link } from '~/routes';
 
 import withMainLayout from '~/HOCs/withMainLayout';
@@ -26,7 +26,7 @@ const DiscoverGrid = styled.div`
 function Discover () {
   return (
     <Fragment>
-      <div>Fotos de desconocidos</div>
+      <SearchBar />
       <DiscoverGrid>
         {[...Array(10).keys()].map((k, i) => (
           <Link route="pictureDetails" prefetch key={k}>

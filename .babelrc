@@ -3,7 +3,7 @@
     "next/babel"
   ],
   "plugins": [
-    ["babel-plugin-root-import"],
+    ["babel-plugin-root-import", { "rootPathPrefix": "~", "rootPathSuffix": "./" }],
     ["styled-components", { "ssr": true } ],
   ],
   "env": {

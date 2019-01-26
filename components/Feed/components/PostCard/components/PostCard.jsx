@@ -49,6 +49,10 @@ const styles = theme => ({
 const StyledCard = styled(Card)`
   margin: 5px auto;
 
+  .profileName {
+    display: inline-block;
+  }
+
   .actions {
     justify-content: flex-end;
   }
@@ -72,7 +76,7 @@ function PostCard ({ classes }) {
         )}
         title={(
           <Link route="profile" prefetch>
-            <div>chica123</div>
+            <div className="profileName">chica123</div>
           </Link>
         )}
         subheader="Hace 10 minutos"
