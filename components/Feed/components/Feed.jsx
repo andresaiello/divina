@@ -1,46 +1,51 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
-import InfiniteScroll from 'react-infinite-scroller';
-import { ArrowDropDown } from '@material-ui/icons';
 
-import { GET_POSTS } from '~/lib/queries';
+import { isFetchingMore, isRefreshing } from '~/util';
+import { FEED_GET_POSTS } from '~/lib/queries';
 import withMainLayout from '~/HOCs/withMainLayout';
 
-import { PostCard } from './PostCard';
-import Loader from '../../shared/components/Loader';
+import { Loader } from '../../shared';
+import Posts from './Posts';
 
 const StyledFeed = styled.div`
 
 `;
 
 class Feed extends Component {
-  state = {
-    shouldFetchMore: false,
-  }
-
   render () {
     return (
-      <Query query={GET_POSTS}>
-        {({ data, error, loading }) => {
+      <Query
+        query={FEED_GET_POSTS}
+        notifyOnNetworkStatusChange
+        variables={{ amount: 2 }}
+      >
+        {({
+          data, error, loading, refetch, networkStatus, fetchMore,
+        }) => {
           let loader = null;
           let errorMessage = null;
-          if (loading) loader = <Loader />;
+          const { posts } = data || { posts: null };
+          const { nodes, pageInfo } = posts || { nodes: [], pageInfo: {} };
+          if (loading) loader = <Loader height="150" />;
+          // @todo set a good error message
           if (error) errorMessage = <div>Error!</div>;
 
-          const { posts } = data || { posts: [] };
+          // @todo set refetch when pulling down
+          if (isRefreshing(networkStatus)) return 'Refetching!';
 
           return (
             <StyledFeed>
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={() => console.log('load more!')}
-                hasMore
-                useWindow={false}
-                {...{ loader }}
-              >
-                {posts.map(({ id, picUrl }) => <PostCard key={id} {...{ picUrl }} />)}
-              </InfiniteScroll>
+              <Posts
+                fetchingMore={isFetchingMore(networkStatus)}
+                posts={nodes}
+                lastCursor={pageInfo.lastCursor}
+                hasNextPage={pageInfo.hasNextPage}
+                {...{
+                  fetchMore, refetch, pageInfo,
+                }}
+              />
               {loader}
               {errorMessage}
             </StyledFeed>

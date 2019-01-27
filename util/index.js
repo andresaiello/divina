@@ -13,3 +13,7 @@ export const fetchWrapper = async (url, options) => fetch(url, options)
   });
 
 export const promiseTimeout = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+export const isFetchingMore = networkStatus => networkStatus === 3;
+
+export const isRefreshing = networkStatus => networkStatus === 4;

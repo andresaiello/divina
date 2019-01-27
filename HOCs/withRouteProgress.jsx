@@ -9,15 +9,19 @@ export default BaseComponent => class extends Component {
   }
 
   componentDidMount () {
-    Router.onRouteChangeStart = () => this.setState({ showBar: true });
-    Router.onRouteChangeComplete = () => this.setState({ showBar: false });
-    Router.onRouteChangeError = () => this.setState({ showBar: false });
+    if (process.browser) {
+      Router.onRouteChangeStart = () => this.setState({ showBar: true });
+      Router.onRouteChangeComplete = () => this.setState({ showBar: false });
+      Router.onRouteChangeError = () => this.setState({ showBar: false });
+    }
   }
 
   componentWillUnmount () {
-    Router.onRouteChangeStart = null;
-    Router.onRouteChangeComplete = null;
-    Router.onRouteChangeError = null;
+    if (process.browser) {
+      Router.onRouteChangeStart = null;
+      Router.onRouteChangeComplete = null;
+      Router.onRouteChangeError = null;
+    }
   }
 
   render () {
