@@ -11,11 +11,11 @@ const StyledProfile = styled.article`
 
 `;
 
-function Profile () {
+function Profile ({ username, ...rest }) {
   return (
-    <StyledProfile>
+    <StyledProfile {...rest}>
       <ProfileInfo action={<Button color="primary">Seguir</Button>} />
-      <PhotoGrid />
+      <PhotoGrid username={username} />
     </StyledProfile>
   );
 }

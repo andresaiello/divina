@@ -20,7 +20,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    posts (startingDate: String, amount: Int): Posts
+    posts (startingDate: String, amount: Int, username: String): Posts
   }
 `;
 
@@ -31,41 +31,48 @@ const resolvers = {
       const posts = [
         {
           id: 6,
-          picUrl: 'https://source.unsplash.com/random',
+          username: '125',
+          picUrl: 'https://pbs.twimg.com/profile_images/735023119644102656/QvUKtCA7_400x400.jpg',
           timestamp: '1548551238847',
         },
         {
           id: 5,
-          picUrl: 'https://source.unsplash.com/random',
+          username: '125',
+          picUrl: 'https://pbs.twimg.com/profile_images/735733367451222019/6hiGw85q_400x400.jpg',
           timestamp: '1548551238846',
         },
         {
           id: 4,
-          picUrl: 'https://source.unsplash.com/random',
+          username: '125',
+          picUrl: 'https://pbs.twimg.com/media/C0wHXtbXUAAyZZN.jpg',
           timestamp: '1548551238845',
         },
         {
           id: 3,
-          picUrl: 'https://source.unsplash.com/random',
+          username: '126',
+          picUrl: 'https://pbs.twimg.com/media/C0rn8IAWIAAtKdO.jpg',
           timestamp: '1548551238844',
         },
         {
           id: 2,
-          picUrl: 'https://source.unsplash.com/random',
+          username: '126',
+          picUrl: 'https://pbs.twimg.com/media/C0uIwPdWgAAs8r1.jpg',
           timestamp: '1548551238843',
         },
         {
           id: 1,
-          picUrl: 'https://source.unsplash.com/random',
+          username: '126',
+          picUrl: 'https://pbs.twimg.com/media/C0uRzE_XAAACyGi.jpg',
           timestamp: '1548551238842',
         },
       ];
 
-      const { startingDate = Date.now(), amount = 0 } = args || {};
+      const { startingDate = Date.now(), amount, username } = args || {};
 
       const nodes = posts
         .filter(post => parseInt(post.timestamp, 10) < parseInt(startingDate, 10))
-        .slice(0, amount === 0 ? posts.length : amount);
+        .filter(post => (username ? username === post.username : true))
+        .slice(0, amount || posts.length);
 
       return {
         nodes,

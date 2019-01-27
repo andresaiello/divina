@@ -30,7 +30,7 @@ function Head (props) {
     <StyledAppBar position="static" color="primary" {...props}>
       <Toolbar className="toolbar">
         <div className="leftContent">
-          <Link route="profile" prefetch>
+          <Link route="profile" params={{ username: '126' }} prefetch>
             <ChevronLeft />
           </Link>
           <Avatar className="avatar" src="/static/girl.jpeg" alt="Foto de perfil" />

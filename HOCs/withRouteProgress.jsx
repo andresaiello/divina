@@ -1,7 +1,7 @@
 import React, { Fragment, Component } from 'react';
-
-import Router from 'next/router';
 import LinearProgress from '@material-ui/core/LinearProgress';
+
+import { Router } from '../server/routes';
 
 export default BaseComponent => class extends Component {
   state = {

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 
@@ -31,6 +31,8 @@ function Feed () {
         if (loading && !isRefreshing(networkStatus)) loader = <Loader height="150" />;
         // @todo set a good error message
         if (error) errorMessage = <div>Error!</div>;
+
+        // @todo add timeout and no connection error message to refetch and fetch more
 
         return (
           <StyledFeed>

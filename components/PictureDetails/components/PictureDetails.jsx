@@ -11,7 +11,7 @@ const StyledPictureDetails = styled.article`
   height: 100vh;
 
   .image {
-    height: 55vh;
+    height: 75vh;
   }
 `;
 
@@ -19,15 +19,14 @@ const ProfileActions = styled.aside`
 
 `;
 
-function PictureDetails () {
+function PictureDetails ({ imageUrl, ...rest }) {
   return (
-    <StyledPictureDetails>
+    <StyledPictureDetails {...rest}>
       <Head />
       <Image
         className="image"
         withLoader
-        src="/static/girl.jpeg"
-        height="55vh"
+        src={imageUrl}
         alt="Foto de perfil"
       />
       <SubBar />

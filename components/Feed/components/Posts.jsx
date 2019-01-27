@@ -6,12 +6,6 @@ import InfiniteScroll from './InfiniteScroll';
 import PullToRefresh from './PullToRefresh';
 
 const PostsContainer = styled.div`
-  .noMorePosts {
-    height: 5vh;
-    text-align: center;
-    color: red;
-    font-weight: bold;
-  }
 `;
 
 export default class Posts extends PureComponent {
@@ -58,14 +52,13 @@ export default class Posts extends PureComponent {
   })
 
   render () {
-    const { posts, hasNextPage } = this.props;
+    const { posts } = this.props;
 
     return (
       <PullToRefresh onRefresh={this.refetch}>
         <InfiniteScroll onScrollBottom={this.fetchMore}>
           <PostsContainer>
             {posts.map(({ id, picUrl }) => <PostCard key={id} {...{ picUrl }} />)}
-            {hasNextPage ? null : <div className="noMorePosts">The end...</div>}
           </PostsContainer>
         </InfiniteScroll>
       </PullToRefresh>

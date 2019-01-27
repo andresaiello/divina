@@ -29,7 +29,7 @@ function Discover () {
       <SearchBar />
       <DiscoverGrid>
         {[...Array(10).keys()].map((k, i) => (
-          <Link route="pictureDetails" prefetch key={k}>
+          <Link route="pictureDetails" params={{ postId: 1 }} prefetch key={k}>
             <Image
               height={i === 3 ? '165px' : '80px'}
               className={i === 3 ? 'third' : ''}

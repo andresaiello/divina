@@ -63,7 +63,7 @@ function PostCard ({ classes, picUrl }) {
     <StyledCard className={classes.card}>
       <CardHeader
         avatar={(
-          <Link route="profile" prefetch>
+          <Link route="profile" params={{ username: '126' }} prefetch>
             <Avatar aria-label="Recipe" className={classes.avatar}>
               R
             </Avatar>
@@ -75,7 +75,7 @@ function PostCard ({ classes, picUrl }) {
           </IconButton>
         )}
         title={(
-          <Link route="profile" prefetch>
+          <Link route="profile" params={{ username: '126' }} prefetch>
             <div className="profileName">chica123</div>
           </Link>
         )}
@@ -83,7 +83,7 @@ function PostCard ({ classes, picUrl }) {
       />
       <Image
         className="cardPic"
-        height="250px"
+        height="350"
         src={picUrl}
         withLoader
         alt="Foto"

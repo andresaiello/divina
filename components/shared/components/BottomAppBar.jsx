@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, Component } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import { Fab } from '@material-ui/core';
@@ -25,45 +25,54 @@ const StyledAppBar = styled(AppBar)`
     a {
       color: white;
     }
+
+    #upload {
+      display: none;
+    }
   }
 `;
 
-function BottomAppBar (props) {
-  return (
-    <Fragment>
-      <StyledAppBar position="fixed" {...props}>
-        <Toolbar className="toolbar">
-          <Link route="feed" prefetch>
-            <a>
-              <IconButton color="inherit" aria-label="Open drawer">
-                <HomeIcon />
-              </IconButton>
-            </a>
-          </Link>
-          <Link route="discover" prefetch>
-            <a>
-              <IconButton color="inherit">
-                <SearchIcon />
-              </IconButton>
-            </a>
-          </Link>
-          <Fab className="fab" aria-label="Add">
-            <CameraIcon />
-          </Fab>
-          <IconButton color="inherit">
-            <Chat />
-          </IconButton>
-          <Link route="myProfile" prefetch>
-            <a>
-              <IconButton color="inherit">
-                <ProfileIcon />
-              </IconButton>
-            </a>
-          </Link>
-        </Toolbar>
-      </StyledAppBar>
-    </Fragment>
-  );
+class BottomAppBar extends Component {
+  uploadRef = {}
+
+  render () {
+    return (
+      <Fragment>
+        <StyledAppBar position="fixed" {...this.props}>
+          <Toolbar className="toolbar">
+            <Link route="feed" prefetch>
+              <a>
+                <IconButton color="inherit" aria-label="Open drawer">
+                  <HomeIcon />
+                </IconButton>
+              </a>
+            </Link>
+            <Link route="discover" prefetch>
+              <a>
+                <IconButton color="inherit">
+                  <SearchIcon />
+                </IconButton>
+              </a>
+            </Link>
+            <Fab className="fab upload" aria-label="Add">
+              <input type="file" id="upload" ref={(ref) => { this.uploadRef = ref; }} />
+              <CameraIcon onClick={() => this.uploadRef.click()} />
+            </Fab>
+            <IconButton color="inherit">
+              <Chat />
+            </IconButton>
+            <Link route="myProfile" prefetch>
+              <a>
+                <IconButton color="inherit">
+                  <ProfileIcon />
+                </IconButton>
+              </a>
+            </Link>
+          </Toolbar>
+        </StyledAppBar>
+      </Fragment>
+    );
+  }
 }
 
 export default BottomAppBar;
