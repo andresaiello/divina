@@ -2,6 +2,8 @@ import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
 import { PostCard } from './PostCard';
+import InfiniteScroll from './InfiniteScroll';
+import PullToRefresh from './PullToRefresh';
 
 const PostsContainer = styled.div`
   .noMorePosts {
@@ -14,56 +16,59 @@ const PostsContainer = styled.div`
 
 export default class Posts extends PureComponent {
   state = {
-    hasMore: true,
+    isRefetching: false,
   }
 
-  componentDidMount () {
-    window.addEventListener('scroll', this.handleOnScroll);
-  }
+  fetchMore = () => {
+    const {
+      fetchingMore, fetchMore, lastCursor, hasNextPage,
+    } = this.props;
 
-  componentWillUnmount () {
-    window.removeEventListener('scroll', this.handleOnScroll);
-  }
+    const { isRefetching } = this.state;
 
-  handleOnScroll = () => {
-    const scrollTop = (document.documentElement && document.documentElement.scrollTop)
-      || document.body.scrollTop;
-    const scrollHeight = (document.documentElement && document.documentElement.scrollHeight)
-      || document.body.scrollHeight;
-    const clientHeight = document.documentElement.clientHeight || window.innerHeight;
-    const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+    // prevent query if the user scrolls more than 1 time or there are no more items to show
+    if (!fetchingMore && hasNextPage && !isRefetching) {
+      fetchMore({
+        variables: { startingDate: lastCursor, amount: 2 },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) {
+            return prev;
+          }
 
-    if (scrolledToBottom) {
-      const {
-        fetchingMore, fetchMore, lastCursor, hasNextPage,
-      } = this.props;
-
-      // prevent query if the user scrolls more than 1 time or there are no more items to show
-      if (!fetchingMore && hasNextPage) {
-        fetchMore({
-          variables: { startingDate: lastCursor, amount: 2 },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-
-            return Object.assign({}, fetchMoreResult, {
-              posts: { ...fetchMoreResult.posts, nodes: [...prev.posts.nodes, ...fetchMoreResult.posts.nodes] },
-            });
-          },
-        });
-      }
+          return Object.assign({}, fetchMoreResult, {
+            posts: { ...fetchMoreResult.posts, nodes: [...prev.posts.nodes, ...fetchMoreResult.posts.nodes] },
+          });
+        },
+      });
     }
   };
+
+  refetch = async () => new Promise((resolve, reject) => {
+    const { refetch } = this.props;
+
+    this.setState({ isRefetching: true }, async () => {
+      try {
+        await refetch();
+        this.setState({ isRefetching: false });
+        resolve();
+      } catch (e) {
+        reject();
+      }
+    });
+  })
 
   render () {
     const { posts, hasNextPage } = this.props;
 
     return (
-      <PostsContainer>
-        {posts.map(({ id, picUrl }) => <PostCard key={id} {...{ picUrl }} />)}
-        {hasNextPage ? null : <div className="noMorePosts">The end...</div>}
-      </PostsContainer>
+      <PullToRefresh onRefresh={this.refetch}>
+        <InfiniteScroll onScrollBottom={this.fetchMore}>
+          <PostsContainer>
+            {posts.map(({ id, picUrl }) => <PostCard key={id} {...{ picUrl }} />)}
+            {hasNextPage ? null : <div className="noMorePosts">The end...</div>}
+          </PostsContainer>
+        </InfiniteScroll>
+      </PullToRefresh>
     );
   }
 }
