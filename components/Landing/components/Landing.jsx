@@ -4,6 +4,7 @@ import { Button } from '@material-ui/core';
 
 import { mediaQuery } from '~/constants';
 import { Link } from '~/server/routes';
+import { SecContext, isAuthenticated } from '../../../lib/secContext';
 
 const StyledLanding = styled.article`
   height: 100vh;
@@ -34,16 +35,35 @@ export default function Landing () {
       <video autoPlay muted loop>
         <source src="/static/background.mp4" type="video/mp4" />
       </video>
-      <Link route="/login" prefetch>
-        <a>
-          <div className="content">
-            <Button className="button" variant="contained" color="primary">
-          Crear Cuenta
-            </Button>
-            <p>¿Ya tienes una cuenta? Conectarse</p>
-          </div>
-        </a>
-      </Link>
+      <SecContext.Consumer>
+        {context => (console.log(context) || (!isAuthenticated(context.user))
+          ? (
+            <Link route="/login" prefetch>
+              <a>
+                <div className="content">
+                  <Button className="button" variant="contained" color="primary">
+                Crear Cuenta
+                  </Button>
+                  <p>¿Ya tienes una cuenta? Conectarse</p>
+                </div>
+              </a>
+            </Link>
+          ) : (
+            <Link route="/feed" prefetch>
+              <a>
+                <div className="content">
+                  <p>
+Bienvenido
+                    {context.user.name.givenName}
+                  </p>
+                </div>
+              </a>
+            </Link>
+          ))
+          }
+      </SecContext.Consumer>
+
+
     </StyledLanding>
   );
 }

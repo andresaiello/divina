@@ -10,10 +10,29 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import withApolloClient from '../HOCs/withApolloClient';
 import getPageContext from '../lib/getPageContext';
 
+import { SecContext, isAllowed } from '../lib/secContext';
+
 class MyApp extends App {
   constructor () {
     super();
     this.pageContext = getPageContext();
+    this.state = {
+      secContext: {
+        user: {},
+        getUserState: this.getUserState,
+      },
+    };
+  }
+
+  updateUserState = () => {
+    fetch('/api/user')
+      .then(response => response.json())
+      .then((response) => {
+        this.setState({ secContext: { user: response } });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   componentDidMount () {
@@ -22,34 +41,38 @@ class MyApp extends App {
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles);
     }
+
+    this.updateUserState();
   }
 
   render () {
     const { Component, pageProps, apolloClient } = this.props;
 
     return (
-      <Container>
-        <Head>
-          <title>DivinApp</title>
-        </Head>
-        {/* Wrap every page in Jss and Theme providers */}
-        <JssProvider
-          registry={this.pageContext.sheetsRegistry}
-          generateClassName={this.pageContext.generateClassName}
-        >
-          {/* MuiThemeProvider makes the theme available down the React
+      <SecContext.Provider value={this.state.secContext}>
+        <Container>
+          <Head>
+            <title>DivinApp</title>
+          </Head>
+          {/* Wrap every page in Jss and Theme providers */}
+          <JssProvider
+            registry={this.pageContext.sheetsRegistry}
+            generateClassName={this.pageContext.generateClassName}
+          >
+            {/* MuiThemeProvider makes the theme available down the React
               tree thanks to React context. */}
-          <MuiThemeProvider theme={this.pageContext.theme} sheetsManager={this.pageContext.sheetsManager}>
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-            <CssBaseline />
-            {/* Pass pageContext to the _document though the renderPage enhancer
+            <MuiThemeProvider theme={this.pageContext.theme} sheetsManager={this.pageContext.sheetsManager}>
+              {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+              <CssBaseline />
+              {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server-side. */}
-            <ApolloProvider client={apolloClient}>
-              <Component pageContext={this.pageContext} {...pageProps} />
-            </ApolloProvider>
-          </MuiThemeProvider>
-        </JssProvider>
-      </Container>
+              <ApolloProvider client={apolloClient}>
+                <Component pageContext={this.pageContext} {...pageProps} />
+              </ApolloProvider>
+            </MuiThemeProvider>
+          </JssProvider>
+        </Container>
+      </SecContext.Provider>
     );
   }
 }

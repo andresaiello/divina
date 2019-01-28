@@ -10,6 +10,7 @@ const flash = require('connect-flash');
 const routes = require('./routes');
 const authRouter = require('./routes/auth');
 const apiRouter = require('./routes/api');
+const userRouter = require('./routes/user');
 const { typeDefs, resolvers } = require('./graphql');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -65,6 +66,8 @@ app.prepare()
 
     server.use('/', authRouter);
     server.use('/api/', apiRouter);
+    server.use('/api/', userRouter);
+
 
     server.use('/', handler);
 
