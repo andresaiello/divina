@@ -1,4 +1,21 @@
 const { gql } = require('apollo-server-express');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb://divinaapp:k6gbTKbThhKrD5b1@ds059692.mlab.com:59692/divina-app');
+
+// TODO: mover a otro archivo
+const Schema = mongoose.Schema;
+
+const PostSchema = new Schema({
+  // _id: Schema.Types.ObjectId,
+  id: Number,
+  username: String,
+  picUrl: String,
+  // timestamp: 'timestamp',
+});
+
+const Post = mongoose.model('Post', PostSchema);
+
 
 const promiseTimeout = ms => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -28,6 +45,18 @@ const resolvers = {
   Query: {
     posts: async (_, args) => {
       await promiseTimeout(3000);
+      console.log('prueba post');
+      Post
+        .find({}, (err, post) => {
+          // if (err)
+          //     res.send(err);
+
+          // res.json(ebooks);
+
+          console.log(post);
+          console.log(err);
+        });
+
       const posts = [
         {
           id: 6,
