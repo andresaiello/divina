@@ -1,10 +1,11 @@
 const { gql } = require('apollo-server-express');
+const Post = require('../models/Post');
 
 const promiseTimeout = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const typeDefs = gql`
   type Post {
-    id: Int
+    id: String
     picUrl: String
     timestamp: String
   }
@@ -24,6 +25,7 @@ const typeDefs = gql`
   }
 `;
 
+/*
 const resolvers = {
   Query: {
     posts: async (_, args) => {
@@ -83,6 +85,16 @@ const resolvers = {
           hasNextPage: nodes.length > 0 ? nodes[nodes.length - 1].timestamp !== '1548551238842' : false,
         },
       };
+    },
+  },
+};
+*/
+
+const resolvers = {
+  Query: {
+    posts: async (_, args) => {
+      const post = await Post.find({});
+      return { nodes: post, pageInfo: { lastCursor: true, hasNextPage: false } };
     },
   },
 };
