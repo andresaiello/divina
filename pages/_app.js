@@ -10,7 +10,7 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import withApolloClient from '../HOCs/withApolloClient';
 import getPageContext from '../lib/getPageContext';
 
-import { SecContext, isAllowed } from '../lib/secContext';
+import { SecContext } from '../lib/secContext';
 import { fetchWrapper } from '~/util';
 
 class MyApp extends App {
