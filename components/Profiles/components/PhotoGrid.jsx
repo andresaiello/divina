@@ -27,7 +27,7 @@ export default function PhotoGrid ({ username }) {
       {({ data, loading, error }) => {
         // @todo set a good error message
         if (error) return <div>Hubo un error</div>;
-        if (loading) return <Loader height={imageHeight * 3} />;
+        if (loading) return <Loader height={imageHeight * 2} />;
 
         const { posts } = data;
         const { nodes } = posts || { nodes: [] };

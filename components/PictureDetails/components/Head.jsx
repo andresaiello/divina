@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import {
-  AppBar, Toolbar, Avatar, IconButton, Button,
+  AppBar, Toolbar, Avatar, IconButton,
 } from '@material-ui/core';
 import { ChevronLeft, MoreHoriz } from '@material-ui/icons';
 
 import { Link } from '~/server/routes';
+import { FollowButton } from '~/components/shared';
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -37,7 +38,7 @@ function Head (props) {
           <h5>Chica del avatar</h5>
         </div>
         <div>
-          <Button>Siguiendo</Button>
+          <FollowButton isFollowing={Math.random() < 0.5} />
           <IconButton>
             <MoreHoriz />
           </IconButton>

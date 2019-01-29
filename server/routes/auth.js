@@ -13,11 +13,11 @@ router.get('/login', passport.authenticate('auth0', {
 // Perform the final stage of authentication and redirect to previously requested URL or '/user'
 router.get('/callback', (req, res, next) => {
   passport.authenticate('auth0', (err, user, info) => {
-    if (err) { return next(err); }
-    if (!user) { return res.redirect('/login'); }
+    if (err) { next(err); return; }
+    if (!user) { res.redirect('/login'); return; }
     req.logIn(user, (err) => {
-      if (err) { return next(err); }
-      const returnTo = req.session.returnTo;
+      if (err) { next(err); return; }
+      const { returnTo } = req.session;
       delete req.session.returnTo;
       res.redirect(returnTo || '/feed');
     });

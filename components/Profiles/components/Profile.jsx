@@ -14,7 +14,11 @@ const StyledProfile = styled.article`
 function Profile ({ username, ...rest }) {
   return (
     <StyledProfile {...rest}>
-      <ProfileInfo action={<Button color="primary">Seguir</Button>} />
+      <ProfileInfo
+        action={<Button color="primary">Seguir</Button>}
+        followers={1}
+        following={1}
+      />
       <PhotoGrid username={username} />
     </StyledProfile>
   );

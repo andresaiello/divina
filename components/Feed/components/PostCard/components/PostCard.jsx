@@ -1,112 +1,116 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import TimeAgo from 'javascript-time-ago';
+import es from 'javascript-time-ago/locale/es';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import red from '@material-ui/core/colors/red';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton,
+} from '@material-ui/core';
+import {
+  Comment, Favorite, Share, MoreVert,
+} from '@material-ui/icons';
 
 import { Link } from '~/server/routes';
-import { Image } from '~/components/shared';
+import { Image, FollowButton } from '~/components/shared';
 
-const styles = theme => ({
-  card: {
-    maxWidth: 400,
-  },
-  media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
-  },
-  actions: {
-    display: 'flex',
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-  avatar: {
-    backgroundColor: red[500],
-  },
-});
+import CommentModal from './CommentModal';
+
+TimeAgo.addLocale(es);
+const timeAgo = new TimeAgo('es');
 
 const StyledCard = styled(Card)`
   margin: 5px auto;
+  max-width: 400px;
 
   .profileName {
     display: inline-block;
   }
 
   .actions {
-    justify-content: flex-end;
+    justify-content: space-between;
+
+    .liked {
+      color: red;
+    }
   }
 `;
 
-function PostCard ({ classes, picUrl }) {
-  return (
-    <StyledCard className={classes.card}>
-      <CardHeader
-        avatar={(
-          <Link route="profile" params={{ username: '126' }} prefetch>
-            <Avatar aria-label="Recipe" className={classes.avatar}>
+class PostCard extends Component {
+  state = {
+    isCommentsModalOpen: false,
+  }
+
+  openCommentsModal = () => {
+    this.setState({ isCommentsModalOpen: true });
+  };
+
+  closeCommentsModal = () => {
+    this.setState({ isCommentsModalOpen: false });
+  };
+
+  render () {
+    const { picUrl, timestamp } = this.props;
+    const { isCommentsModalOpen } = this.state;
+
+    return (
+      <StyledCard>
+        <CardHeader
+          avatar={(
+            <Link route="profile" params={{ username: '126' }} prefetch>
+              <Avatar aria-label="Recipe">
               R
-            </Avatar>
-          </Link>
-        )}
-        action={(
-          <IconButton>
-            <MoreVertIcon />
+              </Avatar>
+            </Link>
+          )}
+          action={(
+            <Fragment>
+              <FollowButton isFollowing={Math.random() < 0.5} />
+              <IconButton>
+                <MoreVert />
+              </IconButton>
+            </Fragment>
+          )}
+          title={(
+            <Link route="profile" params={{ username: '126' }} prefetch>
+              <div className="profileName">chica123</div>
+            </Link>
+          )}
+          subheader={timeAgo.format(parseInt(timestamp, 10))}
+        />
+        <Image
+          className="cardPic"
+          height="350"
+          src={picUrl}
+          withLoader
+          alt="Foto"
+        />
+        <CardContent>
+          <Typography component="p">
+            Hola!
+          </Typography>
+        </CardContent>
+        <CardActions className="actions" disableActionSpacing>
+          <div>
+            <IconButton aria-label="Like">
+              <Favorite className={Math.random() < 0.5 ? 'liked' : ''} />
+            </IconButton>
+            <IconButton onClick={this.openCommentsModal} aria-label="Comment">
+              <Comment />
+            </IconButton>
+          </div>
+          <IconButton aria-label="Share">
+            <Share />
           </IconButton>
-        )}
-        title={(
-          <Link route="profile" params={{ username: '126' }} prefetch>
-            <div className="profileName">chica123</div>
-          </Link>
-        )}
-        subheader="Hace 10 minutos"
-      />
-      <Image
-        className="cardPic"
-        height="350"
-        src={picUrl}
-        withLoader
-        alt="Foto"
-      />
-      <CardContent>
-        <Typography component="p">
-          Hola!
-        </Typography>
-      </CardContent>
-      <CardActions className="actions" disableActionSpacing>
-        <IconButton aria-label="Add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="Share">
-          <ShareIcon />
-        </IconButton>
-      </CardActions>
-    </StyledCard>
-  );
+        </CardActions>
+        <CommentModal isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
+      </StyledCard>
+    );
+  }
 }
 
 PostCard.propTypes = {
   picUrl: propTypes.string.isRequired,
+  timestamp: propTypes.string.isRequired,
 };
 
-export default withStyles(styles)(PostCard);
+export default PostCard;

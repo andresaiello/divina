@@ -21,7 +21,11 @@ function MyProfile () {
 
   return (
     <StyledProfile>
-      <ProfileInfo action={editProfile} />
+      <ProfileInfo
+        action={editProfile}
+        followers={1}
+        following={1}
+      />
       <PhotoGrid />
     </StyledProfile>
   );

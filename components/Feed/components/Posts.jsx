@@ -58,7 +58,7 @@ export default class Posts extends PureComponent {
       <PullToRefresh onRefresh={this.refetch}>
         <InfiniteScroll onScrollBottom={this.fetchMore}>
           <PostsContainer>
-            {posts.map(({ id, picUrl }) => <PostCard key={id} {...{ picUrl }} />)}
+            {posts.map(({ id, picUrl, timestamp }) => <PostCard key={id} {...{ picUrl, timestamp }} />)}
           </PostsContainer>
         </InfiniteScroll>
       </PullToRefresh>

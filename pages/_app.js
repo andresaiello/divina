@@ -11,6 +11,7 @@ import withApolloClient from '../HOCs/withApolloClient';
 import getPageContext from '../lib/getPageContext';
 
 import { SecContext, isAllowed } from '../lib/secContext';
+import { fetchWrapper } from '~/util';
 
 class MyApp extends App {
   constructor () {
@@ -25,10 +26,9 @@ class MyApp extends App {
   }
 
   updateUserState = () => {
-    fetch('/api/user')
-      .then(response => response.json())
-      .then((response) => {
-        this.setState({ secContext: { user: response } });
+    fetchWrapper('/api/user')
+      .then(({ user }) => {
+        this.setState({ secContext: { user } });
       })
       .catch((error) => {
         console.log(error);

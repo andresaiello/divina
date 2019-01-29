@@ -36,13 +36,13 @@ export default function Landing () {
         <source src="/static/background.mp4" type="video/mp4" />
       </video>
       <SecContext.Consumer>
-        {context => (console.log(context) || (!isAuthenticated(context.user))
+        {({ user }) => (!isAuthenticated(user)
           ? (
             <Link route="/login" prefetch>
               <a>
                 <div className="content">
                   <Button className="button" variant="contained" color="primary">
-                Crear Cuenta
+                    Crear Cuenta
                   </Button>
                   <p>¿Ya tienes una cuenta? Conectarse</p>
                 </div>
@@ -53,14 +53,14 @@ export default function Landing () {
               <a>
                 <div className="content">
                   <p>
-Bienvenido
-                    {context.user.name.givenName}
+                    Bienvenido
+                    {user.name && user.name.givenName}
                   </p>
                 </div>
               </a>
             </Link>
           ))
-          }
+        }
       </SecContext.Consumer>
 
 

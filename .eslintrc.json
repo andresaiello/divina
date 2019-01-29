@@ -13,7 +13,8 @@
     "react/no-array-index-key": "false",
     "no-nested-ternary": 0,
     "space-before-function-paren": ["error", "always"],
-    "jsx-a11y/anchor-is-valid": false
+    "jsx-a11y/anchor-is-valid": false,
+    "jsx-a11y/click-events-have-key-events": false
   },
   "settings": {
     "import/resolver": {

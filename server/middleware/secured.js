@@ -7,7 +7,7 @@
  */
 module.exports = function () {
   return function secured (req, res, next) {
-    if (req.user) { return next(); }
+    if (req.user) { next(); return; }
     req.session.returnTo = req.originalUrl;
     res.redirect('/login');
   };
