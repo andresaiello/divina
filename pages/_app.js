@@ -19,7 +19,7 @@ class MyApp extends App {
     this.pageContext = getPageContext();
     this.state = {
       secContext: {
-        user: {},
+        user: null,
         getUserState: this.getUserState,
       },
     };
