@@ -49,14 +49,16 @@ class PostCard extends Component {
   };
 
   render () {
-    const { picUrl, comments, createdAt } = this.props;
+    const {
+      username, picUrl, comments, createdAt,
+    } = this.props;
     const { isCommentsModalOpen } = this.state;
 
     return (
       <StyledCard>
         <CardHeader
           avatar={(
-            <Link route="profile" params={{ username: '126' }} prefetch>
+            <Link route="profile" params={{ username }} prefetch>
               <Avatar aria-label="Recipe">
                 R
               </Avatar>
@@ -71,8 +73,8 @@ class PostCard extends Component {
             </Fragment>
           )}
           title={(
-            <Link route="profile" params={{ username: '126' }} prefetch>
-              <div className="profileName">chica123</div>
+            <Link route="profile" params={{ username }} prefetch>
+              <div className="profileName">{username}</div>
             </Link>
           )}
           subheader={timeAgo.format(parseInt(createdAt, 10))}
@@ -113,6 +115,7 @@ PostCard.defaultProps = {
 };
 
 PostCard.propTypes = {
+  username: propTypes.string.isRequired,
   picUrl: propTypes.string.isRequired,
   createdAt: propTypes.string.isRequired,
   comments: propTypes.shape({

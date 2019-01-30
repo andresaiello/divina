@@ -20,6 +20,8 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 const handler = routes.getRequestHandler(app);
 
+require('./db').connect();
+
 // Configure Passport to use Auth0
 const strategy = new Auth0Strategy(
   {

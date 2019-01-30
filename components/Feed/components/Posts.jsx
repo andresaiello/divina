@@ -46,6 +46,7 @@ export default class Posts extends PureComponent {
         this.setState({ isRefetching: false });
         resolve();
       } catch (e) {
+        console.log(e);
         reject();
       }
     });
@@ -59,8 +60,15 @@ export default class Posts extends PureComponent {
         <InfiniteScroll onScrollBottom={this.fetchMore}>
           <PostsContainer>
             {posts.map(({
-              _id, picUrl, createdAt, comments,
-            }) => <PostCard key={_id} {...{ picUrl, comments, createdAt }} />)}
+              _id, author: { username }, picUrl, createdAt, comments,
+            }) => (
+              <PostCard
+                key={_id}
+                {...{
+                  username, picUrl, comments, createdAt,
+                }}
+              />
+            ))}
           </PostsContainer>
         </InfiniteScroll>
       </PullToRefresh>

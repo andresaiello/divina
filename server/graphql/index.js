@@ -2,8 +2,6 @@ const { gql } = require('apollo-server-express');
 const Post = require('../models/Post');
 const PostComment = require('../models/PostComment');
 
-const promiseTimeout = ms => new Promise(resolve => setTimeout(resolve, ms));
-
 const typeDefs = gql`
   type Comment {
     _id: String
@@ -19,6 +17,7 @@ const typeDefs = gql`
 
   type Post {
     _id: String
+    author: User
     picUrl: String
     comments: Comments
     createdAt: String
@@ -27,6 +26,11 @@ const typeDefs = gql`
   type Posts {
     nodes: [Post]
     pageInfo: PageInfo
+  }
+
+  type User {
+    _id: String
+    username: String
   }
 
   type PageInfo {

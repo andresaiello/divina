@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const postCommentSchema = new Schema({
-  author: { type: Schema.Types.ObjectId, ref: 'User' },
+  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   content: { type: String, required: true },
-  post: { type: Schema.Types.ObjectId, ref: 'Post' },
+  post: { type: Schema.Types.ObjectId, ref: 'Post', required: true },
 }, { timestamps: true });
 
 postCommentSchema.statics.findByPost = async function findByPost ({ postId }) {

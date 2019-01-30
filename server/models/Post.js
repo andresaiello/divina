@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
-
-// TODO: mover a otro archivo
-mongoose.connect('mongodb://divinaapp:k6gbTKbThhKrD5b1@ds059692.mlab.com:59692/divina-app');
+const User = require('./User');
 
 const { Schema } = mongoose;
 
 const postSchema = new Schema({
-  username: { type: String, required: true },
+  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   picUrl: { type: String, required: true },
 }, { timestamps: true });
 
@@ -17,6 +15,7 @@ postSchema.statics.getFeedPosts = async function getFeedPosts ({ startingDate = 
 
   const documents = await this
     .find({ createdAt: { $lt: startingDate } })
+    .populate({ path: 'author', model: User })
     .lean()
     .sort({ createdAt: 'desc' }) // (from startingDate + 1 to X)
     .limit(checkNextPage);
