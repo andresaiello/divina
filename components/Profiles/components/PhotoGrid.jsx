@@ -1,11 +1,11 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 
-import { Image } from '~/components/shared';
+import { Image, Loader } from '~/components/shared';
 import { Link } from '~/server/routes';
 import { PROFILE_GET_POSTS } from '~/lib/queries';
-import Loader from '~/components/shared/components/Loader';
 
 const imageHeight = 155;
 
@@ -49,3 +49,7 @@ export default function PhotoGrid ({ username }) {
     </Query>
   );
 }
+
+PhotoGrid.propTypes = {
+  username: propTypes.string.isRequired,
+};
