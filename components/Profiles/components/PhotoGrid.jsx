@@ -35,7 +35,7 @@ export default function PhotoGrid ({ username }) {
         return (
           <StyledPhotoGrid>
             {nodes.map(post => (
-              <Link route="pictureDetails" params={{ postId: post.picUrl }} key={post.id} prefetch>
+              <Link route="pictureDetails" params={{ postId: post.picUrl }} key={post._id} prefetch>
                 <Image
                   height={imageHeight}
                   src={post.picUrl}

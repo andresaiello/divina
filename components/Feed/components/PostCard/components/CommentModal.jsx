@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import styled from 'styled-components';
 import propTypes from 'prop-types';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItem from '@material-ui/core/ListItem';
@@ -9,46 +10,41 @@ import { ListItemAvatar, Avatar } from '@material-ui/core';
 import { FullscreenModal } from '~/components/shared/';
 import CommentInput from './CommentInput';
 
-function CommentsModal ({ isOpen, close }) {
+const StyledList = styled(List)`
+  overflow-y: scroll;
+`;
+
+function CommentsModal ({ isOpen, close, comments }) {
+  const commentsList = comments.nodes.length
+    ? (
+      <StyledList>
+        {comments.nodes.map(({ _id, content, author }) => (
+          <ListItem key={_id} alignItems="flex-start">
+            <ListItemAvatar>
+              <Avatar alt="avatar" src="/static/girl.jpeg" />
+            </ListItemAvatar>
+            <ListItemText
+              primary={(
+                <Fragment>
+                  <Typography component="span" color="textPrimary">
+                    {content}
+                  </Typography>
+                  {`- ${author}`}
+                </Fragment>
+              )}
+            />
+          </ListItem>
+        ))}
+      </StyledList>
+    )
+    : null;
+
   return (
     <FullscreenModal
       title="Comentarios"
       {...{ isOpen, close }}
     >
-      <List>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="avatar" src="/static/girl.jpeg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Brunch this weekend?"
-            secondary={(
-              <Fragment>
-                <Typography component="span" color="textPrimary">
-                  Ali Connors
-                </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </Fragment>
-            )}
-          />
-        </ListItem>
-        <ListItem alignItems="flex-start">
-          <ListItemAvatar>
-            <Avatar alt="avatar" src="/static/girl.jpeg" />
-          </ListItemAvatar>
-          <ListItemText
-            primary="Brunch this weekend?"
-            secondary={(
-              <Fragment>
-                <Typography component="span" color="textPrimary">
-                  Ali Connors
-                </Typography>
-                {" — I'll be in your neighborhood doing errands this…"}
-              </Fragment>
-            )}
-          />
-        </ListItem>
-      </List>
+      {commentsList}
       <CommentInput />
     </FullscreenModal>
   );

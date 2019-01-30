@@ -49,7 +49,7 @@ class PostCard extends Component {
   };
 
   render () {
-    const { picUrl, timestamp } = this.props;
+    const { picUrl, comments, createdAt } = this.props;
     const { isCommentsModalOpen } = this.state;
 
     return (
@@ -58,7 +58,7 @@ class PostCard extends Component {
           avatar={(
             <Link route="profile" params={{ username: '126' }} prefetch>
               <Avatar aria-label="Recipe">
-              R
+                R
               </Avatar>
             </Link>
           )}
@@ -75,7 +75,7 @@ class PostCard extends Component {
               <div className="profileName">chica123</div>
             </Link>
           )}
-          subheader={timeAgo.format(parseInt(timestamp, 10))}
+          subheader={timeAgo.format(parseInt(createdAt, 10))}
         />
         <Image
           className="cardPic"
@@ -102,15 +102,27 @@ class PostCard extends Component {
             <Share />
           </IconButton>
         </CardActions>
-        <CommentModal isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
+        <CommentModal comments={comments} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
       </StyledCard>
     );
   }
 }
 
+PostCard.defaultProps = {
+  comments: [],
+};
+
 PostCard.propTypes = {
   picUrl: propTypes.string.isRequired,
-  timestamp: propTypes.string.isRequired,
+  createdAt: propTypes.string.isRequired,
+  comments: propTypes.shape({
+    nodes: propTypes.arrayOf(propTypes.shape({
+      _id: propTypes.string,
+      author: propTypes.string,
+      content: propTypes.string,
+      createdAt: propTypes.string,
+    })),
+  }),
 };
 
 export default PostCard;
