@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./User');
 
 const { Schema } = mongoose;
 
@@ -11,6 +12,7 @@ const postCommentSchema = new Schema({
 postCommentSchema.statics.findByPost = async function findByPost ({ postId }) {
   return this
     .find({ post: postId })
+    .populate({ path: 'author', model: User })
     .sort({ createdAt: 'asc' })
     .lean();
 };

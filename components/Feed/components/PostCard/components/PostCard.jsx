@@ -13,7 +13,7 @@ import {
 import { Link } from '~/server/routes';
 import { Image, FollowButton } from '~/components/shared';
 
-import CommentModal from './CommentModal';
+import CommentsModal from './CommentsModal';
 
 TimeAgo.addLocale(es);
 const timeAgo = new TimeAgo('es');
@@ -104,7 +104,7 @@ class PostCard extends Component {
             <Share />
           </IconButton>
         </CardActions>
-        <CommentModal comments={comments} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
+        <CommentsModal comments={comments} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
       </StyledCard>
     );
   }
@@ -121,7 +121,9 @@ PostCard.propTypes = {
   comments: propTypes.shape({
     nodes: propTypes.arrayOf(propTypes.shape({
       _id: propTypes.string,
-      author: propTypes.string,
+      author: propTypes.shape({
+        username: propTypes.string.isRequired,
+      }),
       content: propTypes.string,
       createdAt: propTypes.string,
     })),

@@ -49,7 +49,7 @@ passport.deserializeUser((user, done) => {
 // config express-session
 const sess = {
   secret: 'CHANGE THIS SECRET',
-  cookie: {},
+  cookie: { secure: process.env.NODE_ENV === 'production' },
   resave: false,
   saveUninitialized: true,
 };

@@ -18,7 +18,7 @@ function CommentsModal ({ isOpen, close, comments }) {
   const commentsList = comments.nodes.length
     ? (
       <StyledList>
-        {comments.nodes.map(({ _id, content, author }) => (
+        {comments.nodes.map(({ _id, content, author: { username } }) => (
           <ListItem key={_id} alignItems="flex-start">
             <ListItemAvatar>
               <Avatar alt="avatar" src="/static/girl.jpeg" />
@@ -29,7 +29,7 @@ function CommentsModal ({ isOpen, close, comments }) {
                   <Typography component="span" color="textPrimary">
                     {content}
                   </Typography>
-                  {`- ${author}`}
+                  {`- ${username}`}
                 </Fragment>
               )}
             />

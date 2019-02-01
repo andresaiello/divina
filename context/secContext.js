@@ -2,7 +2,7 @@ import React from 'react';
 
 export const isAuthenticated = user => !!user;
 
-export const SecContext = React.createContext({
+export default React.createContext({
   user: null,
   updateUserState: () => { },
 });

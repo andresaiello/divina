@@ -2,9 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 
-import { mediaQuery } from '~/constants';
 import { Link } from '~/server/routes';
-import { SecContext, isAuthenticated } from '../../../lib/secContext';
+import SecContext, { isAuthenticated } from '~/context/secContext';
 
 const StyledLanding = styled.article`
   height: 100vh;

@@ -7,10 +7,9 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import JssProvider from 'react-jss/lib/JssProvider';
 
-import withApolloClient from '../HOCs/withApolloClient';
-import getPageContext from '../lib/getPageContext';
-
-import { SecContext } from '../lib/secContext';
+import withApolloClient from '~/HOCs/withApolloClient';
+import SecContext from '~/context/secContext';
+import getPageContext from '~/lib/getPageContext';
 import { fetchWrapper } from '~/util';
 
 class MyApp extends App {
@@ -28,6 +27,7 @@ class MyApp extends App {
   updateUserState = () => {
     fetchWrapper('/api/user')
       .then(({ user }) => {
+        console.log(user);
         this.setState({ secContext: { user } });
       })
       .catch((error) => {

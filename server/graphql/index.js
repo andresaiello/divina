@@ -5,7 +5,7 @@ const PostComment = require('../models/PostComment');
 const typeDefs = gql`
   type Comment {
     _id: String
-    author: String
+    author: User
     content: String
     post: String
     createdAt: String
