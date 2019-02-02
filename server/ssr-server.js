@@ -48,7 +48,7 @@ passport.deserializeUser((user, done) => {
 
 // config express-session
 const sess = {
-  secret: 'CHANGE THIS SECRET',
+  secret: '@todo CHANGE THIS SECRET',
   cookie: { secure: process.env.NODE_ENV === 'production' },
   resave: false,
   saveUninitialized: true,
@@ -69,7 +69,6 @@ app.prepare()
     server.use('/', authRouter);
     server.use('/api/', apiRouter);
     server.use('/api/', userRouter);
-
 
     server.use('/', handler);
 

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
+import styled from 'styled-components';
 import App, { Container } from 'next/app';
 import Head from 'next/head';
 import { ApolloProvider } from 'react-apollo';
@@ -11,6 +12,17 @@ import withApolloClient from '~/HOCs/withApolloClient';
 import SecContext from '~/context/secContext';
 import getPageContext from '~/lib/getPageContext';
 import { fetchWrapper } from '~/util';
+import Fonts from '~/lib/Fonts';
+import { Loader } from '~/components/shared';
+
+const FontsLoader = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  color: white;
+  background: white;
+  z-index: 100000;
+`;
 
 class MyApp extends App {
   constructor () {
@@ -21,6 +33,7 @@ class MyApp extends App {
         user: null,
         getUserState: this.getUserState,
       },
+      displayLoader: true,
     };
   }
 
@@ -35,18 +48,21 @@ class MyApp extends App {
       });
   }
 
-  componentDidMount () {
+  async componentDidMount () {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles && jssStyles.parentNode) {
       jssStyles.parentNode.removeChild(jssStyles);
     }
 
+    await Fonts();
+    this.setState({ displayLoader: false });
     this.updateUserState();
   }
 
   render () {
     const { Component, pageProps, apolloClient } = this.props;
+    const { displayLoader } = this.state;
 
     return (
       <SecContext.Provider value={this.state.secContext}>
@@ -67,6 +83,7 @@ class MyApp extends App {
               {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server-side. */}
               <ApolloProvider client={apolloClient}>
+                {displayLoader ? <FontsLoader><Loader /></FontsLoader> : null}
                 <Component pageContext={this.pageContext} {...pageProps} />
               </ApolloProvider>
             </MuiThemeProvider>

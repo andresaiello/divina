@@ -17,13 +17,15 @@ const StyledAppBar = styled(AppBar)`
   && {
     top: auto;
     bottom: 0;
+    background-color: white;
+    color: black;
 
     .toolbar {
       justify-content: space-between;
     }
 
     a {
-      color: white;
+      color: black;
     }
 
     #upload {
@@ -56,7 +58,7 @@ class BottomAppBar extends Component {
             </Link>
             <Fab className="fab upload" aria-label="Add">
               <input type="file" id="upload" ref={(ref) => { this.uploadRef = ref; }} />
-              <CameraIcon onClick={() => this.uploadRef.click()} />
+              <CameraIcon color="primary" onClick={() => this.uploadRef.click()} />
             </Fab>
             <IconButton color="inherit">
               <Chat />
