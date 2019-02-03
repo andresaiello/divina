@@ -9,7 +9,7 @@ import { FullscreenModal } from '~/components/shared/';
 
 const StyledProfileInfo = styled.div`
   display: grid;
-  grid-template-columns: 20% 80%;
+  grid-template-columns: 30% 70%;
   margin: 10px;
 
   .avatar {
@@ -18,7 +18,11 @@ const StyledProfileInfo = styled.div`
   }
   
   .follow {
-    text-align: left;
+    text-align: center;
+
+    .avatar {
+      margin: 0px auto;
+    }
 
     h2 {
       margin: 5px 9px;
@@ -50,6 +54,8 @@ const StyledProfileInfo = styled.div`
 class ProfileInfo extends Component {
   static propTypes = {
     action: propTypes.element.isRequired,
+    username: propTypes.string.isRequired,
+    profilePic: propTypes.string.isRequired,
     followers: propTypes.number.isRequired,
     following: propTypes.number.isRequired,
   };
@@ -69,7 +75,7 @@ class ProfileInfo extends Component {
 
   render () {
     const {
-      action, followers, following, ...rest
+      action, username, profilePic, followers, following, ...rest
     } = this.props;
 
     const { followersModalOpen, followingModalOpen } = this.state;
@@ -93,8 +99,8 @@ class ProfileInfo extends Component {
           <div>Seguido 2</div>
         </FullscreenModal>
         <div className="follow">
-          <Avatar className="avatar" src="/static/girl.jpeg" alt="Foto de perfil" />
-          <h2>chica123</h2>
+          <Avatar className="avatar" src={profilePic} alt="Foto de perfil" />
+          <h2>{username}</h2>
           {action}
         </div>
         <div className="icons">

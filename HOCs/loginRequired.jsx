@@ -1,6 +1,7 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 
 import SecContext from '~/context/secContext';
+import { LoadingScreen } from '~/components/shared';
 
 export default BaseComponent => class extends Component {
   static contextType = SecContext;
@@ -10,9 +11,13 @@ export default BaseComponent => class extends Component {
   }
 
   render () {
-    console.log(this.context);
-    return (
-      <BaseComponent {...this.props} />
+    const { loading, user } = this.context;
+
+    return (loading
+      ? <LoadingScreen />
+      : user
+        ? <BaseComponent {...this.props} />
+        : null
     );
   }
 };

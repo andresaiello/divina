@@ -31,6 +31,7 @@ const typeDefs = gql`
   type User {
     _id: String
     username: String
+    profilePic: String
   }
 
   type PageInfo {

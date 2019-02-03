@@ -53,7 +53,7 @@ export default function Landing () {
                 <div className="content">
                   <p>
                     Bienvenido
-                    {user.name && user.name.givenName}
+                    {` ${user.name}`}
                   </p>
                 </div>
               </a>

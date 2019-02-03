@@ -5,7 +5,6 @@ import { Query } from 'react-apollo';
 import { isFetchingMore, isRefreshing } from '~/util';
 import { FEED_GET_POSTS } from '~/lib/queries';
 import withMainLayout from '~/HOCs/withMainLayout';
-import loginRequired from '~/HOCs/loginRequired';
 
 import { Loader } from '../../shared';
 import Posts from './Posts';
@@ -55,4 +54,4 @@ function Feed () {
   );
 }
 
-export default loginRequired(withMainLayout(Feed));
+export default withMainLayout(Feed);

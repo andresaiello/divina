@@ -50,7 +50,7 @@ class PostCard extends Component {
 
   render () {
     const {
-      username, picUrl, comments, createdAt,
+      author: { username, profilePic }, picUrl, comments, createdAt,
     } = this.props;
     const { isCommentsModalOpen } = this.state;
 
@@ -59,9 +59,7 @@ class PostCard extends Component {
         <CardHeader
           avatar={(
             <Link route="profile" params={{ username }} prefetch>
-              <Avatar aria-label="Recipe">
-                R
-              </Avatar>
+              <Avatar alt="avatar" src={profilePic} />
             </Link>
           )}
           action={(
@@ -115,7 +113,10 @@ PostCard.defaultProps = {
 };
 
 PostCard.propTypes = {
-  username: propTypes.string.isRequired,
+  author: propTypes.shape({
+    username: propTypes.string.isRequired,
+    profilePic: propTypes.string.isRequired,
+  }).isRequired,
   picUrl: propTypes.string.isRequired,
   createdAt: propTypes.string.isRequired,
   comments: propTypes.shape({
@@ -123,6 +124,7 @@ PostCard.propTypes = {
       _id: propTypes.string,
       author: propTypes.shape({
         username: propTypes.string.isRequired,
+        profilePic: propTypes.string.isRequired,
       }),
       content: propTypes.string,
       createdAt: propTypes.string,

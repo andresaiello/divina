@@ -13,16 +13,7 @@ import SecContext from '~/context/secContext';
 import getPageContext from '~/lib/getPageContext';
 import { fetchWrapper } from '~/util';
 import Fonts from '~/lib/Fonts';
-import { Loader } from '~/components/shared';
-
-const FontsLoader = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  color: white;
-  background: white;
-  z-index: 100000;
-`;
+import { Loader, LoadingScreen } from '~/components/shared';
 
 class MyApp extends App {
   constructor () {
@@ -31,22 +22,21 @@ class MyApp extends App {
     this.state = {
       secContext: {
         user: null,
-        getUserState: this.getUserState,
+        loading: false,
+        updateUserState: this.updateUserState,
       },
       displayLoader: true,
     };
   }
 
-  updateUserState = () => {
-    fetchWrapper('/api/user')
-      .then(({ user }) => {
-        console.log(user);
-        this.setState({ secContext: { user } });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
+  updateUserState = async () => fetchWrapper('/api/user')
+    .then((user) => {
+      this.setState(({ secContext }) => ({ secContext: { ...secContext, user, loading: false } }));
+    })
+    .catch((error) => {
+      this.setState(({ secContext }) => ({ secContext: { ...secContext, loading: false } }));
+      console.log(error);
+    })
 
   async componentDidMount () {
     // Remove the server-side injected CSS.
@@ -55,9 +45,8 @@ class MyApp extends App {
       jssStyles.parentNode.removeChild(jssStyles);
     }
 
-    await Fonts();
+    await Promise.all([Fonts(), this.updateUserState()]);
     this.setState({ displayLoader: false });
-    this.updateUserState();
   }
 
   render () {
@@ -83,7 +72,7 @@ class MyApp extends App {
               {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server-side. */}
               <ApolloProvider client={apolloClient}>
-                {displayLoader ? <FontsLoader><Loader /></FontsLoader> : null}
+                {displayLoader ? <LoadingScreen /> : null}
                 <Component pageContext={this.pageContext} {...pageProps} />
               </ApolloProvider>
             </MuiThemeProvider>

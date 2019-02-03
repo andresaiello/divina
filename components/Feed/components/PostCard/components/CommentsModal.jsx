@@ -18,10 +18,10 @@ function CommentsModal ({ isOpen, close, comments }) {
   const commentsList = comments.nodes.length
     ? (
       <StyledList>
-        {comments.nodes.map(({ _id, content, author: { username } }) => (
+        {comments.nodes.map(({ _id, content, author: { username, profilePic } }) => (
           <ListItem key={_id} alignItems="flex-start">
             <ListItemAvatar>
-              <Avatar alt="avatar" src="/static/girl.jpeg" />
+              <Avatar alt="avatar" src={profilePic} />
             </ListItemAvatar>
             <ListItemText
               primary={(
