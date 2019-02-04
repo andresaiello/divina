@@ -11,17 +11,25 @@ const StyledProfile = styled.article`
 
 `;
 
-function Profile ({ username, ...rest }) {
+function Profile ({ profile = {} }) {
+  if (!profile.user) return <div>El perfil no existe!</div>; // @todo set better error
+
   return (
-    <StyledProfile {...rest}>
+    <StyledProfile>
       <ProfileInfo
         action={<Button color="primary">Seguir</Button>}
         followers={1}
         following={1}
+        postsCount={profile.postsCount}
+        {...{ ...profile.user }}
       />
-      <PhotoGrid username={username} />
+      <PhotoGrid username={profile.user.username} />
     </StyledProfile>
   );
 }
+
+Profile.propTypes = {
+
+};
 
 export default withMainLayout(Profile);

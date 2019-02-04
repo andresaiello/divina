@@ -17,25 +17,33 @@ const StyledPhotoGrid = styled.div`
   justify-content: space-between;
 `;
 
-export default function PhotoGrid ({ username }) {
+export default function PhotoGrid ({ userId, username }) {
   // @todo case: user has no posts
   return (
     <Query
       query={PROFILE_GET_POSTS}
-      variables={{ username }}
+      variables={{ _id: userId }}
     >
       {({ data, loading, error }) => {
         // @todo set a good error message
         if (error) return <div>Hubo un error</div>;
         if (loading) return <Loader height={imageHeight * 2} />;
 
-        const { posts } = data;
-        const { nodes } = posts || { nodes: [] };
+        const { profilePosts } = data;
+
+        // @todo: better empty message
+        if (!profilePosts || profilePosts.length === 0) {
+          return (
+            <div style={{ textAlign: 'center' }}>
+              Este usuario todavía no subió ninguna foto!
+            </div>
+          );
+        }
 
         return (
           <StyledPhotoGrid>
-            {nodes.map(post => (
-              <Link route="pictureDetails" params={{ postId: post.picUrl }} key={post._id} prefetch>
+            {profilePosts.map(post => (
+              <Link route="pictureDetails" params={{ username, postId: post._id }} key={post._id} prefetch>
                 <Image
                   height={imageHeight}
                   src={post.picUrl}
@@ -51,5 +59,6 @@ export default function PhotoGrid ({ username }) {
 }
 
 PhotoGrid.propTypes = {
+  userId: propTypes.string.isRequired,
   username: propTypes.string.isRequired,
 };

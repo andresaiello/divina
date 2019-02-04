@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import propTypes from 'prop-types';
 
 import withRouteProgress from '~/HOCs/withRouteProgress';
 import { Image } from '~/components/shared';
@@ -19,19 +20,29 @@ const ProfileActions = styled.aside`
 
 `;
 
-function PictureDetails ({ imageUrl, ...rest }) {
+function PictureDetails ({
+  author, comments, picUrl, ...rest
+}) {
   return (
     <StyledPictureDetails {...rest}>
-      <Head />
+      <Head {...{ ...author }} />
       <Image
         className="image"
         withLoader
-        src={imageUrl}
-        alt="Foto de perfil"
+        src={picUrl}
+        alt="Post"
       />
       <SubBar />
     </StyledPictureDetails>
   );
 }
+
+PictureDetails.propTypes = {
+  author: propTypes.shape({
+    profilePic: propTypes.string.isRequired,
+    username: propTypes.string.isRequired,
+  }).isRequired,
+  picUrl: propTypes.string.isRequired,
+};
 
 export default withRouteProgress(PictureDetails);

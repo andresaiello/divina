@@ -1,4 +1,5 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import styled from 'styled-components';
 import {
   AppBar, Toolbar, Avatar, IconButton,
@@ -26,16 +27,16 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
-function Head (props) {
+function Head ({ username, profilePic, ...rest }) {
   return (
-    <StyledAppBar position="static" color="primary" {...props}>
+    <StyledAppBar position="static" color="primary" {...rest}>
       <Toolbar className="toolbar">
         <div className="leftContent">
-          <Link route="profile" params={{ username: '126' }} prefetch>
+          <Link route="profile" params={{ username }} prefetch>
             <ChevronLeft />
           </Link>
-          <Avatar className="avatar" src="/static/girl.jpeg" alt="Foto de perfil" />
-          <h5>Chica del avatar</h5>
+          <Avatar className="avatar" src={profilePic} alt="Foto de perfil" />
+          <h5>{username}</h5>
         </div>
         <div>
           <FollowButton isFollowing={Math.random() < 0.5} />
@@ -47,5 +48,10 @@ function Head (props) {
     </StyledAppBar>
   );
 }
+
+Head.propTypes = {
+  username: propTypes.string.isRequired,
+  profilePic: propTypes.string.isRequired,
+};
 
 export default Head;

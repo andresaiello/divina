@@ -26,6 +26,23 @@ postSchema.statics.getFeedPosts = async function getFeedPosts ({ startingDate = 
   return { nodes, lastCursor, hasNextPage: documents.length === checkNextPage };
 };
 
+postSchema.statics.getById = async function getById (_id) {
+  const [post] = await this
+    .find({ _id })
+    .populate({ path: 'author', model: User })
+    .lean();
+  return post;
+};
+
+postSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
+  const nodes = await this
+    .find({ author })
+    .lean()
+    .sort({ createdAt: 'desc' });
+
+  return { nodes };
+};
+
 let Post;
 
 try {

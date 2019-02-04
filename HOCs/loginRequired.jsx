@@ -14,7 +14,7 @@ export default BaseComponent => class extends Component {
     const { loading, user } = this.context;
 
     return (loading
-      ? <LoadingScreen />
+      ? <LoadingScreen withLayout />
       : user
         ? <BaseComponent {...this.props} />
         : null

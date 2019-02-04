@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
+import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 
 import withMainLayout from '~/HOCs/withMainLayout';
 import loginRequired from '~/HOCs/loginRequired';
-import SecContext from '~/context/secContext';
 import { Link } from '~/server/routes';
 
 import ProfileInfo from './ProfileInfo';
@@ -14,30 +14,37 @@ const StyledProfile = styled.article`
 
 `;
 
-class MyProfile extends Component {
-  static contextType = SecContext;
+function MyProfile (props) {
+  const { profile: { postsCount, user: { _id, username, profilePic } } } = props;
 
-  render () {
-    const { user: { username, profilePic } } = this.context;
+  const editProfile = (
+    <Link route="editProfile" prefetch>
+      <Button>Editar</Button>
+    </Link>
+  );
 
-    const editProfile = (
-      <Link route="editProfile" prefetch>
-        <Button>Editar</Button>
-      </Link>
-    );
-
-    return (
-      <StyledProfile>
-        <ProfileInfo
-          action={editProfile}
-          {...{ username, profilePic }}
-          followers={1}
-          following={1}
-        />
-        <PhotoGrid />
-      </StyledProfile>
-    );
-  }
+  return (
+    <StyledProfile>
+      <ProfileInfo
+        action={editProfile}
+        {...{ username, profilePic, postsCount }}
+        followers={1}
+        following={1}
+      />
+      <PhotoGrid userId={_id} username={username} />
+    </StyledProfile>
+  );
 }
+
+MyProfile.propTypes = {
+  profile: propTypes.shape({
+    postsCount: propTypes.number.isRequired,
+    user: propTypes.shape({
+      _id: propTypes.string.isRequired,
+      username: propTypes.string.isRequired,
+      profilePic: propTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
 
 export default loginRequired(withMainLayout(MyProfile));

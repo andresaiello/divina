@@ -48,6 +48,18 @@ userSchema.statics.findByEmail = async function findByEmail (email) {
   }
 };
 
+userSchema.statics.findByUsername = async function findByUsername (username) {
+  try {
+    const [existingUser] = await this
+      .find({ username })
+      .lean();
+    return existingUser;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
 let User;
 
 try {

@@ -6,10 +6,6 @@ import { Link } from '~/server/routes';
 
 import withMainLayout from '~/HOCs/withMainLayout';
 
-const StyledDiscover = styled.div`
-
-`;
-
 const DiscoverGrid = styled.div`
   display: grid;
   width: 100%;
@@ -29,14 +25,15 @@ function Discover () {
       <SearchBar />
       <DiscoverGrid>
         {[...Array(10).keys()].map((k, i) => (
-          <Link route="pictureDetails" params={{ postId: 1 }} prefetch key={k}>
-            <Image
-              height={i === 3 ? '165px' : '80px'}
-              className={i === 3 ? 'third' : ''}
-              src="/static/girl.jpeg"
-              alt="Foto de perfil"
-            />
-          </Link>
+          // <Link route="pictureDetails" params={{ postId: 1 }} prefetch key={k}>
+          <Image
+            key={i}
+            height={i === 3 ? '165px' : '80px'}
+            className={i === 3 ? 'third' : ''}
+            src="/static/girl.jpeg"
+            alt="Foto de perfil"
+          />
+          // </Link>
         ))}
       </DiscoverGrid>
     </Fragment>

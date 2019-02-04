@@ -8,7 +8,7 @@ routes
   .add('feed', '/inicio')
   .add('landing', '/')
   .add('myProfile', '/miperfil')
-  .add('pictureDetails', '/foto/:postId')
+  .add('pictureDetails', '/foto/:username/:postId')
   .add('profile', '/perfil/:username');
 
 module.exports = routes;

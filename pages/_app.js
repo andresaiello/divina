@@ -1,6 +1,5 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import styled from 'styled-components';
 import App, { Container } from 'next/app';
 import Head from 'next/head';
 import { ApolloProvider } from 'react-apollo';
@@ -13,7 +12,9 @@ import SecContext from '~/context/secContext';
 import getPageContext from '~/lib/getPageContext';
 import { fetchWrapper } from '~/util';
 import Fonts from '~/lib/Fonts';
-import { Loader, LoadingScreen } from '~/components/shared';
+import { LoadingScreen } from '~/components/shared';
+
+// @todo set 404
 
 class MyApp extends App {
   constructor () {
@@ -34,7 +35,7 @@ class MyApp extends App {
       this.setState(({ secContext }) => ({ secContext: { ...secContext, user, loading: false } }));
     })
     .catch((error) => {
-      this.setState(({ secContext }) => ({ secContext: { ...secContext, loading: false } }));
+      this.setState(({ secContext }) => ({ secContext: { ...secContext, user: null, loading: false } }));
       console.log(error);
     })
 

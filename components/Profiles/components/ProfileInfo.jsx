@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Avatar } from '@material-ui/core';
-import { People, PeopleOutlined } from '@material-ui/icons';
+import { People, PeopleOutlined, CameraAlt as Camera } from '@material-ui/icons';
 
 import withRouteProgress from '~/HOCs/withRouteProgress';
 import { FullscreenModal } from '~/components/shared/';
@@ -39,6 +39,10 @@ const StyledProfileInfo = styled.div`
       text-align: center;
       margin: 4px 7px;
 
+      &.action {
+        cursor: pointer;
+      }
+
       p {
         display: block;
         margin: 0;
@@ -56,6 +60,7 @@ class ProfileInfo extends Component {
     action: propTypes.element.isRequired,
     username: propTypes.string.isRequired,
     profilePic: propTypes.string.isRequired,
+    postsCount: propTypes.number.isRequired,
     followers: propTypes.number.isRequired,
     following: propTypes.number.isRequired,
   };
@@ -75,7 +80,7 @@ class ProfileInfo extends Component {
 
   render () {
     const {
-      action, username, profilePic, followers, following, ...rest
+      action, username, profilePic, followers, following, postsCount, ...rest
     } = this.props;
 
     const { followersModalOpen, followingModalOpen } = this.state;
@@ -106,6 +111,14 @@ class ProfileInfo extends Component {
         <div className="icons">
           <div
             className="icon"
+            role="button"
+            tabIndex={0}
+          >
+            <Camera />
+            <p>{postsCount === 1 ? '1 foto' : `${postsCount} fotos` }</p>
+          </div>
+          <div
+            className="icon action"
             onClick={() => this.openModal('followersModalOpen')}
             role="button"
             tabIndex={0}
@@ -114,7 +127,7 @@ class ProfileInfo extends Component {
             <p>{`${followers} siguiendo`}</p>
           </div>
           <div
-            className="icon"
+            className="icon action"
             onClick={() => this.openModal('followingModalOpen')}
             role="button"
             tabIndex={0}

@@ -1,8 +1,9 @@
 import React from 'react';
+import { Query } from 'react-apollo';
 
+import { PICTURE_DETAILS_GET_DETAILS } from '~/lib/queries';
 import { PictureDetails } from '~/components/PictureDetails';
-
-const createImageUrl = postId => postId;
+import { LoadingScreen } from '~/components/shared';
 
 export default class extends React.Component {
   static async getInitialProps ({ query }) {
@@ -10,8 +11,22 @@ export default class extends React.Component {
   }
 
   render () {
-    const imageUrl = createImageUrl(this.props.postId);
+    const { postId } = this.props;
 
-    return <PictureDetails imageUrl={imageUrl} />;
+    return (
+      <Query
+        query={PICTURE_DETAILS_GET_DETAILS}
+        variables={{ _id: postId }}
+      >
+        {({ data: postData, loading, error }) => (loading
+          ? <LoadingScreen withLayout />
+          : error
+            ? <div>Error!</div> // @todo: better error message
+            : !postData.post || !postData.post.author
+              ? <div>El perfil no existe!</div> // @todo: better error message
+              : <PictureDetails {...{ ...postData.post }} />
+        )}
+      </Query>
+    );
   }
 }
