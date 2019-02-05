@@ -35,7 +35,53 @@ const StyledAppBar = styled(AppBar)`
 `;
 
 class BottomAppBar extends Component {
-  uploadRef = {}
+  uploadRef = (event) => {
+    console.log(event);
+    this.onPhotoSelected(event.target.files);
+  }
+
+  onPhotoSelected = (files) => {
+    console.log('==');
+    console.log(files);
+
+    const url = 'https://api.cloudinary.com/v1_1/da9cucer2/upload';
+
+    const file = files[0];
+
+    console.log('==1');
+
+    console.log(file.name);
+
+    let fileToSend = null;
+    Array.from(files).forEach((file, i) => {
+      fileToSend = file;
+    });
+
+    const formData = new FormData();
+    formData.append('file', fileToSend);
+    formData.append('upload_preset', 'ov3f36hw');
+    formData.append('multiple', true);
+    formData.append('tags', 'myphotoalbum');
+    formData.append('context', '');
+
+    fetch(url, {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then((response) => {
+        console.log(response);
+      });
+  }
+
+  onPhotoUploadProgress (id, fileName, progress) {
+    console.log(progress);
+  }
+
+  onPhotoUploaded (id, fileName, response) {
+    console.log(response);
+  }
+
 
   render () {
     return (
@@ -57,7 +103,15 @@ class BottomAppBar extends Component {
               </a>
             </Link>
             <Fab className="fab upload" aria-label="Add">
-              <input type="file" id="upload" ref={(ref) => { this.uploadRef = ref; }} />
+              <input
+                type="file"
+                id="fileupload"
+                accept="image/*"
+                ref={fileInputEl => (this.fileInputEl = fileInputEl)}
+                onChange={() => this.onPhotoSelected(
+                  this.fileInputEl.files,
+                )}
+              />
               <CameraIcon color="primary" onClick={() => this.uploadRef.click()} />
             </Fab>
             <IconButton color="inherit">
