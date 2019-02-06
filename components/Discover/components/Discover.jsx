@@ -1,14 +1,10 @@
 import React, { Fragment } from 'react';
 import styled from 'styled-components';
 
-import { Image } from '~/components/shared';
-import { Link } from '~/routes';
+import { Image, SearchBar } from '~/components/shared';
+import { Link } from '~/server/routes';
 
 import withMainLayout from '~/HOCs/withMainLayout';
-
-const StyledDiscover = styled.div`
-
-`;
 
 const DiscoverGrid = styled.div`
   display: grid;
@@ -26,17 +22,18 @@ const DiscoverGrid = styled.div`
 function Discover () {
   return (
     <Fragment>
-      <div>Fotos de desconocidos</div>
+      <SearchBar />
       <DiscoverGrid>
         {[...Array(10).keys()].map((k, i) => (
-          <Link route="pictureDetails" prefetch key={k}>
-            <Image
-              height={i === 3 ? '165px' : '80px'}
-              className={i === 3 ? 'third' : ''}
-              src="/static/girl.jpeg"
-              alt="Foto de perfil"
-            />
-          </Link>
+          // <Link route="pictureDetails" params={{ postId: 1 }} prefetch key={k}>
+          <Image
+            key={i}
+            height={i === 3 ? '165px' : '80px'}
+            className={i === 3 ? 'third' : ''}
+            src="/static/girl.jpeg"
+            alt="Foto de perfil"
+          />
+          // </Link>
         ))}
       </DiscoverGrid>
     </Fragment>

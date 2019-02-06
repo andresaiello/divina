@@ -14,7 +14,6 @@ const Image = ({
 );
 
 Image.defaultProps = {
-  resize: 1,
   withLoader: false,
   height: 'auto',
   width: '100%',
@@ -23,7 +22,6 @@ Image.defaultProps = {
 Image.propTypes = {
   src: propTypes.string.isRequired,
   alt: propTypes.string.isRequired,
-  resize: propTypes.number,
   withLoader: propTypes.bool,
   height: ({ withLoader, ...rest }, propName) => {
     if (withLoader) {

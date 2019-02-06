@@ -1,11 +1,13 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  AppBar, Toolbar, Avatar, IconButton, Button,
+  AppBar, Toolbar, Avatar, IconButton,
 } from '@material-ui/core';
 import { ChevronLeft, MoreHoriz } from '@material-ui/icons';
 
-import { Link } from '~/routes';
+import { Link } from '~/server/routes';
+import { FollowButton } from '~/components/shared';
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -25,19 +27,19 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
-function Head (props) {
+function Head ({ username, profilePic, ...rest }) {
   return (
-    <StyledAppBar position="static" color="primary" {...props}>
+    <StyledAppBar position="static" color="primary" {...rest}>
       <Toolbar className="toolbar">
         <div className="leftContent">
-          <Link route="profile" prefetch>
+          <Link route="profile" params={{ username }} prefetch>
             <ChevronLeft />
           </Link>
-          <Avatar className="avatar" src="/static/girl.jpeg" alt="Foto de perfil" />
-          <h5>Chica del avatar</h5>
+          <Avatar className="avatar" src={profilePic} alt="Foto de perfil" />
+          <h5>{username}</h5>
         </div>
         <div>
-          <Button>Siguiendo</Button>
+          <FollowButton isFollowing={Math.random() < 0.5} />
           <IconButton>
             <MoreHoriz />
           </IconButton>
@@ -46,5 +48,10 @@ function Head (props) {
     </StyledAppBar>
   );
 }
+
+Head.propTypes = {
+  username: propTypes.string.isRequired,
+  profilePic: propTypes.string.isRequired,
+};
 
 export default Head;

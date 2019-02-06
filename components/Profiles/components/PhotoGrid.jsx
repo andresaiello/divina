@@ -1,8 +1,13 @@
 import React from 'react';
+import propTypes from 'prop-types';
 import styled from 'styled-components';
+import { Query } from 'react-apollo';
 
-import { Image } from '~/components/shared';
-import { Link } from '~/routes';
+import { Image, Loader } from '~/components/shared';
+import { Link } from '~/server/routes';
+import { PROFILE_GET_POSTS } from '~/lib/queries';
+
+const imageHeight = 155;
 
 const StyledPhotoGrid = styled.div`
   display: grid;
@@ -12,18 +17,48 @@ const StyledPhotoGrid = styled.div`
   justify-content: space-between;
 `;
 
-export default function PhotoGrid () {
+export default function PhotoGrid ({ userId, username }) {
+  // @todo case: user has no posts
   return (
-    <StyledPhotoGrid>
-      {[...Array(10).keys()].map(k => (
-        <Link route="pictureDetails" prefetch key={k}>
-          <Image
-            height="80px"
-            src="/static/girl.jpeg"
-            alt="Foto de perfil"
-          />
-        </Link>
-      ))}
-    </StyledPhotoGrid>
+    <Query
+      query={PROFILE_GET_POSTS}
+      variables={{ _id: userId }}
+    >
+      {({ data, loading, error }) => {
+        // @todo set a good error message
+        if (error) return <div>Hubo un error</div>;
+        if (loading) return <Loader height={imageHeight * 2} />;
+
+        const { profilePosts } = data;
+
+        // @todo: better empty message
+        if (!profilePosts || profilePosts.length === 0) {
+          return (
+            <div style={{ textAlign: 'center' }}>
+              Este usuario todavía no subió ninguna foto!
+            </div>
+          );
+        }
+
+        return (
+          <StyledPhotoGrid>
+            {profilePosts.map(post => (
+              <Link route="pictureDetails" params={{ username, postId: post._id }} key={post._id} prefetch>
+                <Image
+                  height={imageHeight}
+                  src={post.picUrl}
+                  alt="Foto de perfil"
+                />
+              </Link>
+            ))}
+          </StyledPhotoGrid>
+        );
+      }}
+    </Query>
   );
 }
+
+PhotoGrid.propTypes = {
+  userId: propTypes.string.isRequired,
+  username: propTypes.string.isRequired,
+};

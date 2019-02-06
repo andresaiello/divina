@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import propTypes from 'prop-types';
 
-import withMainLayout from '~/HOCs/withMainLayout';
+import withRouteProgress from '~/HOCs/withRouteProgress';
 import { Image } from '~/components/shared';
 
 import Head from './Head';
@@ -11,7 +12,7 @@ const StyledPictureDetails = styled.article`
   height: 100vh;
 
   .image {
-    height: 55vh;
+    height: 75vh;
   }
 `;
 
@@ -19,20 +20,29 @@ const ProfileActions = styled.aside`
 
 `;
 
-function PictureDetails () {
+function PictureDetails ({
+  author, comments, picUrl, ...rest
+}) {
   return (
-    <StyledPictureDetails>
-      <Head />
+    <StyledPictureDetails {...rest}>
+      <Head {...{ ...author }} />
       <Image
         className="image"
         withLoader
-        src="/static/girl.jpeg"
-        height="55vh"
-        alt="Foto de perfil"
+        src={picUrl}
+        alt="Post"
       />
       <SubBar />
     </StyledPictureDetails>
   );
 }
 
-export default PictureDetails;
+PictureDetails.propTypes = {
+  author: propTypes.shape({
+    profilePic: propTypes.string.isRequired,
+    username: propTypes.string.isRequired,
+  }).isRequired,
+  picUrl: propTypes.string.isRequired,
+};
+
+export default withRouteProgress(PictureDetails);

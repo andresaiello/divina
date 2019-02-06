@@ -1,108 +1,135 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import TimeAgo from 'javascript-time-ago';
+import es from 'javascript-time-ago/locale/es';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
-import { withStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
-import CardContent from '@material-ui/core/CardContent';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import Avatar from '@material-ui/core/Avatar';
-import Typography from '@material-ui/core/Typography';
-import red from '@material-ui/core/colors/red';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Image from '../../../../shared/components/Image';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import IconButton from '@material-ui/core/IconButton';
+import propTypes from 'prop-types';
+import {
+  Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton,
+} from '@material-ui/core';
+import {
+  Comment, Favorite, Share, MoreVert,
+} from '@material-ui/icons';
 
-import { Link } from '~/routes';
+import { Link } from '~/server/routes';
+import { Image, FollowButton } from '~/components/shared';
 
-const styles = theme => ({
-  card: {
-    maxWidth: 400,
-  },
-  media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
-  },
-  actions: {
-    display: 'flex',
-  },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
-  },
-  expandOpen: {
-    transform: 'rotate(180deg)',
-  },
-  avatar: {
-    backgroundColor: red[500],
-  },
-});
+import CommentsModal from './CommentsModal';
+
+TimeAgo.addLocale(es);
+const timeAgo = new TimeAgo('es');
 
 const StyledCard = styled(Card)`
   margin: 5px auto;
+  max-width: 400px;
+
+  .profileName {
+    display: inline-block;
+  }
 
   .actions {
-    justify-content: flex-end;
+    justify-content: space-between;
+
+    .liked {
+      color: red;
+    }
   }
 `;
 
-function PostCard ({ classes }) {
-  return (
-    <StyledCard className={classes.card}>
-      <CardHeader
-        avatar={(
-          <Link route="profile" prefetch>
-            <Avatar aria-label="Recipe" className={classes.avatar}>
-              R
-            </Avatar>
-          </Link>
-        )}
-        action={(
-          <IconButton>
-            <MoreVertIcon />
+class PostCard extends Component {
+  state = {
+    isCommentsModalOpen: false,
+  }
+
+  openCommentsModal = () => {
+    this.setState({ isCommentsModalOpen: true });
+  };
+
+  closeCommentsModal = () => {
+    this.setState({ isCommentsModalOpen: false });
+  };
+
+  render () {
+    const {
+      author: { username, profilePic }, picUrl, comments, createdAt,
+    } = this.props;
+    const { isCommentsModalOpen } = this.state;
+
+    return (
+      <StyledCard>
+        <CardHeader
+          avatar={(
+            <Link route="profile" params={{ username }} prefetch>
+              <Avatar alt="avatar" src={profilePic} />
+            </Link>
+          )}
+          action={(
+            <Fragment>
+              <FollowButton isFollowing={Math.random() < 0.5} />
+              <IconButton>
+                <MoreVert />
+              </IconButton>
+            </Fragment>
+          )}
+          title={(
+            <Link route="profile" params={{ username }} prefetch>
+              <div className="profileName">{username}</div>
+            </Link>
+          )}
+          subheader={timeAgo.format(parseInt(createdAt, 10))}
+        />
+        <Image
+          className="cardPic"
+          height="350"
+          src={picUrl}
+          withLoader
+          alt="Foto"
+        />
+        <CardContent>
+          <Typography component="p">
+            Hola!
+          </Typography>
+        </CardContent>
+        <CardActions className="actions" disableActionSpacing>
+          <div>
+            <IconButton aria-label="Like">
+              <Favorite className={Math.random() < 0.5 ? 'liked' : ''} />
+            </IconButton>
+            <IconButton onClick={this.openCommentsModal} aria-label="Comment">
+              <Comment />
+            </IconButton>
+          </div>
+          <IconButton aria-label="Share">
+            <Share />
           </IconButton>
-        )}
-        title={(
-          <Link route="profile" prefetch>
-            <div>chica123</div>
-          </Link>
-        )}
-        subheader="Hace 10 minutos"
-      />
-      <Image
-        className="cardPic"
-        height="250px"
-        src="/static/feedPic.jpeg"
-        withLoader
-        alt="Foto"
-      />
-      <CardContent>
-        <Typography component="p">
-          Hola!
-        </Typography>
-      </CardContent>
-      <CardActions className="actions" disableActionSpacing>
-        <IconButton aria-label="Add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="Share">
-          <ShareIcon />
-        </IconButton>
-      </CardActions>
-    </StyledCard>
-  );
+        </CardActions>
+        <CommentsModal comments={comments} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
+      </StyledCard>
+    );
+  }
 }
 
-PostCard.propTypes = {
-  classes: PropTypes.object.isRequired,
+PostCard.defaultProps = {
+  comments: [],
 };
 
-export default withStyles(styles)(PostCard);
+PostCard.propTypes = {
+  author: propTypes.shape({
+    username: propTypes.string.isRequired,
+    profilePic: propTypes.string.isRequired,
+  }).isRequired,
+  picUrl: propTypes.string.isRequired,
+  createdAt: propTypes.string.isRequired,
+  comments: propTypes.shape({
+    nodes: propTypes.arrayOf(propTypes.shape({
+      _id: propTypes.string,
+      author: propTypes.shape({
+        username: propTypes.string.isRequired,
+        profilePic: propTypes.string.isRequired,
+      }),
+      content: propTypes.string,
+      createdAt: propTypes.string,
+    })),
+  }),
+};
+
+export default PostCard;
