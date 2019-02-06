@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: List
+
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: app
+
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: app
+    namespace: app
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: app
+      spec:
+        containers:
+        - name: app
+          image: docker.io/aaiello/divina:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3004
+            name: http
+          env:
+            - name: AUTH0_DOMAIN
+              value: "divinaapp.eu.auth0.com"
+            - name: AUTH0_CLIENT_ID
+              value: "wn37BZhm1Zx-l2_B1D7oJJHJgm7R6dhc"
+            - name: AUTH0_CLIENT_SECRET
+              value: "WdVYhMdzI95F4axV_hi0AqZS9V-GGY6PzBpd9ni32z2i0RAp4ptoZBL-RPeIZdi_"
+            - name: AUTH0_CALLBACK_URL
+              value: "https://app.divinaapp.com/callback"            
+            - name: GQL_SERVER_URL
+              value: "https://app.divinaapp.com/graphql"  
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: app
+    namespace: app
+  spec:
+    ports:
+    - port: 80
+      targetPort: http
+      name: http
+    selector:
+      app: app
+
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: app
+    namespace: app
+    labels:
+      app: app
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "true"
+  spec:
+    rules:
+    - host: app.divinaapp.com
+      http:
+        paths:
+        - backend:
+            serviceName: app
+            servicePort: http
+          path: /
+
+
+

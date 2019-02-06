@@ -37,7 +37,7 @@ export default function Landing () {
       <SecContext.Consumer>
         {({ user }) => (!isAuthenticated(user)
           ? (
-            <Link route="/login" prefetch>
+            <Link route="/login">
               <a>
                 <div className="content">
                   <Button className="button" variant="contained" color="primary">
