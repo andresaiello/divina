@@ -46,6 +46,8 @@ const StyledAppBar = styled(AppBar)`
 `;
 
 class BottomAppBar extends Component {
+  static contextType = SecContext;
+
   constructor (props) {
     super(props);
     this.state = {
@@ -53,7 +55,7 @@ class BottomAppBar extends Component {
     };
   }
 
-  onDropImage = (acceptedFiles, rejectedFiles, user) => {
+  onDropImage = (acceptedFiles, rejectedFiles) => {
     this.setState({ uploading: true });
 
     const url = 'https://api.cloudinary.com/v1_1/da9cucer2/upload';
@@ -77,7 +79,7 @@ class BottomAppBar extends Component {
       .then(response => response.json())
       .then((response) => {
         this.setState({ uploading: false });
-        this.onPhotoUploaded(response.public_id, response, user);
+        this.onPhotoUploaded(response.public_id, response);
       });
   }
 
@@ -86,7 +88,9 @@ class BottomAppBar extends Component {
   //   console.log(response);
   // }
 
-  onPhotoUploaded = (id, response, user) => {
+  onPhotoUploaded = (id, response) => {
+    const { user } = this.context;
+
     // TODO: acceder a __APOLLO_CLIENT__ desde el componente
     __APOLLO_CLIENT__.mutate({
       mutation: CREATE_POST,
@@ -99,9 +103,7 @@ class BottomAppBar extends Component {
   render () {
     return (
       <Fragment>
-        <SecContext.Consumer>
-          {({ user }) => (
-            <StyledAppBar position="fixed" {...this.props}>
+        <StyledAppBar position="fixed" {...this.props}>
               <Toolbar className="toolbar">
                 <Link route="feed" prefetch>
                   <a>
@@ -122,7 +124,7 @@ class BottomAppBar extends Component {
                   <CircularProgress className="circular-progress" />
                   )}
                   <Dropzone
-                    onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected, user); }}
+                    onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
                     className="drop-zone"
                   >
                     {({ getRootProps, getInputProps }) => (
@@ -146,9 +148,6 @@ class BottomAppBar extends Component {
                 </Link>
               </Toolbar>
             </StyledAppBar>
-          )}
-
-        </SecContext.Consumer>
       </Fragment>
     );
   }
