@@ -60,6 +60,18 @@ userSchema.statics.findByUsername = async function findByUsername (username) {
   }
 };
 
+userSchema.statics.findById = async function findById (_id) {
+  try {
+    const [existingUser] = await this
+      .find({ _id })
+      .lean();
+    return existingUser;
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
 let User;
 
 try {
