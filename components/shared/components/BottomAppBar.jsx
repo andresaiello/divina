@@ -80,12 +80,13 @@ class BottomAppBar extends Component {
   }
 
   onPhotoUploadProgress (id, response) {
-    console.log(progress);
+    console.log(id);
+    console.log(response);
   }
 
   onPhotoUploaded (id, response) {
     console.log(id);
-    console.log(secure_url);
+    console.log(response);
   }
 
 
