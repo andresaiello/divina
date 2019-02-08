@@ -29,7 +29,7 @@ app.prepare()
     server.use(cookieParser());
     server.use(session({
       secret: '@todo CHANGE THIS SECRET',
-      cookie: { secure: ENV === 'production' },
+      cookie: { secure: process.env.SEC_COOKIE || false },
       resave: false,
       saveUninitialized: true,
       store: new MongoStore({

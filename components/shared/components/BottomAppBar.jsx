@@ -10,6 +10,9 @@ import CameraIcon from '@material-ui/icons/CameraAlt';
 import SearchIcon from '@material-ui/icons/Search';
 import HomeIcon from '@material-ui/icons/HomeOutlined';
 import ProfileIcon from '@material-ui/icons/Person';
+import Dropzone from 'react-dropzone';
+import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 import { Link } from '~/server/routes';
 
@@ -28,32 +31,33 @@ const StyledAppBar = styled(AppBar)`
       color: black;
     }
 
-    #upload {
+    #fileupload {
       display: none;
     }
+
+    .circular-progress {
+      position: fixed;
+      top: 50vh;
+    }
+
   }
 `;
 
 class BottomAppBar extends Component {
-  uploadRef = (event) => {
-    console.log(event);
-    this.onPhotoSelected(event.target.files);
+  constructor (props) {
+    super(props);
+    this.state = {
+      uploading: false,
+    };
   }
 
-  onPhotoSelected = (files) => {
-    console.log('==');
-    console.log(files);
+  onDropImage = (acceptedFiles, rejectedFiles) => {
+    this.setState({ uploading: true });
 
     const url = 'https://api.cloudinary.com/v1_1/da9cucer2/upload';
 
-    const file = files[0];
-
-    console.log('==1');
-
-    console.log(file.name);
-
     let fileToSend = null;
-    Array.from(files).forEach((file, i) => {
+    Array.from(acceptedFiles).forEach((file, i) => {
       fileToSend = file;
     });
 
@@ -70,15 +74,18 @@ class BottomAppBar extends Component {
     })
       .then(response => response.json())
       .then((response) => {
-        console.log(response);
+        this.setState({ uploading: false });
+        this.onPhotoUploaded(response.public_id, response);
       });
   }
 
-  onPhotoUploadProgress (id, fileName, progress) {
-    console.log(progress);
+  onPhotoUploadProgress (id, response) {
+    console.log(id);
+    console.log(response);
   }
 
-  onPhotoUploaded (id, fileName, response) {
+  onPhotoUploaded (id, response) {
+    console.log(id);
     console.log(response);
   }
 
@@ -103,16 +110,21 @@ class BottomAppBar extends Component {
               </a>
             </Link>
             <Fab className="fab upload" aria-label="Add">
-              <input
-                type="file"
-                id="fileupload"
-                accept="image/*"
-                ref={fileInputEl => (this.fileInputEl = fileInputEl)}
-                onChange={() => this.onPhotoSelected(
-                  this.fileInputEl.files,
+              {this.state.uploading && (
+                <CircularProgress className="circular-progress" />
+              )}
+              <Dropzone
+                onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
+                className="drop-zone"
+              >
+                {({ getRootProps, getInputProps }) => (
+                  <div {...getRootProps()} className="button-small">
+                    <input {...getInputProps()} />
+                    <CameraIcon color="primary" />
+                  </div>
                 )}
-              />
-              <CameraIcon color="primary" onClick={() => this.uploadRef.click()} />
+              </Dropzone>
+
             </Fab>
             <IconButton color="inherit">
               <Chat />
