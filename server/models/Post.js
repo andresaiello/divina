@@ -43,6 +43,15 @@ postSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
   return { nodes };
 };
 
+postSchema.statics.createPost = async function create ({ author, picUrl }) {
+  const { _id } = await this
+    .create({ author, picUrl });
+
+  const post = await this.getById(_id);
+
+  return post;
+};
+
 let Post;
 
 try {

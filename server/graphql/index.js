@@ -58,6 +58,10 @@ const typeDefs = gql`
     profile (username: String!): Profile
     profilePosts (_id: String!): [Post]
   }
+
+  type Mutation {
+    createPost (author: String, picUrl: String): Post
+  }
 `;
 
 const resolvers = {
@@ -74,6 +78,12 @@ const resolvers = {
     profilePosts: async (_, { _id }) => {
       const { nodes = [] } = await Post.getByAuthor({ author: _id });
       return nodes;
+    },
+  },
+  Mutation: {
+    createPost: async (_, { author, picUrl }) => {
+      const post = await Post.createPost({ author, picUrl });
+      return post;
     },
   },
   Post: {
