@@ -12,7 +12,9 @@ import HomeIcon from '@material-ui/icons/HomeOutlined';
 import ProfileIcon from '@material-ui/icons/Person';
 import Dropzone from 'react-dropzone';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { CREATE_POST } from '~/lib/queries';
 
+import SecContext from '~/context/secContext';
 
 import { Link } from '~/server/routes';
 
@@ -51,7 +53,7 @@ class BottomAppBar extends Component {
     };
   }
 
-  onDropImage = (acceptedFiles, rejectedFiles) => {
+  onDropImage = (acceptedFiles, rejectedFiles, user) => {
     this.setState({ uploading: true });
 
     const url = 'https://api.cloudinary.com/v1_1/da9cucer2/upload';
@@ -75,69 +77,78 @@ class BottomAppBar extends Component {
       .then(response => response.json())
       .then((response) => {
         this.setState({ uploading: false });
-        this.onPhotoUploaded(response.public_id, response);
+        this.onPhotoUploaded(response.public_id, response, user);
       });
   }
 
-  onPhotoUploadProgress (id, response) {
-    console.log(id);
-    console.log(response);
-  }
+  // onPhotoUploadProgress (id, response) {
+  //   console.log(id);
+  //   console.log(response);
+  // }
 
-  onPhotoUploaded (id, response) {
-    console.log(id);
-    console.log(response);
+  onPhotoUploaded = (id, response, user) => {
+    // TODO: acceder a __APOLLO_CLIENT__ desde el componente
+    __APOLLO_CLIENT__.mutate({
+      mutation: CREATE_POST,
+      variables: { author: user._id, picUrl: response.secure_url },
+    })
+      .then(response => console.log(response));
   }
 
 
   render () {
     return (
       <Fragment>
-        <StyledAppBar position="fixed" {...this.props}>
-          <Toolbar className="toolbar">
-            <Link route="feed" prefetch>
-              <a>
-                <IconButton color="inherit" aria-label="Open drawer">
-                  <HomeIcon />
-                </IconButton>
-              </a>
-            </Link>
-            <Link route="discover" prefetch>
-              <a>
-                <IconButton color="inherit">
-                  <SearchIcon />
-                </IconButton>
-              </a>
-            </Link>
-            <Fab className="fab upload" aria-label="Add">
-              {this.state.uploading && (
-                <CircularProgress className="circular-progress" />
-              )}
-              <Dropzone
-                onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
-                className="drop-zone"
-              >
-                {({ getRootProps, getInputProps }) => (
-                  <div {...getRootProps()} className="button-small">
-                    <input {...getInputProps()} />
-                    <CameraIcon color="primary" />
-                  </div>
-                )}
-              </Dropzone>
+        <SecContext.Consumer>
+          {({ user }) => (
+            <StyledAppBar position="fixed" {...this.props}>
+              <Toolbar className="toolbar">
+                <Link route="feed" prefetch>
+                  <a>
+                    <IconButton color="inherit" aria-label="Open drawer">
+                      <HomeIcon />
+                    </IconButton>
+                  </a>
+                </Link>
+                <Link route="discover" prefetch>
+                  <a>
+                    <IconButton color="inherit">
+                      <SearchIcon />
+                    </IconButton>
+                  </a>
+                </Link>
+                <Fab className="fab upload" aria-label="Add">
+                  {this.state.uploading && (
+                  <CircularProgress className="circular-progress" />
+                  )}
+                  <Dropzone
+                    onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected, user); }}
+                    className="drop-zone"
+                  >
+                    {({ getRootProps, getInputProps }) => (
+                      <div {...getRootProps()} className="button-small">
+                        <input {...getInputProps()} />
+                        <CameraIcon color="primary" />
+                      </div>
+                    )}
+                  </Dropzone>
 
-            </Fab>
-            <IconButton color="inherit">
-              <Chat />
-            </IconButton>
-            <Link route="myProfile" prefetch>
-              <a>
+                </Fab>
                 <IconButton color="inherit">
-                  <ProfileIcon />
+                  <Chat />
                 </IconButton>
-              </a>
-            </Link>
-          </Toolbar>
-        </StyledAppBar>
+                <Link route="myProfile" prefetch>
+                  <a>
+                    <IconButton color="inherit">
+                      <ProfileIcon />
+                    </IconButton>
+                  </a>
+                </Link>
+              </Toolbar>
+            </StyledAppBar>
+          )}
+
+        </SecContext.Consumer>
       </Fragment>
     );
   }
