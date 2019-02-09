@@ -19,6 +19,8 @@ const dev = ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const handler = routes.getRequestHandler(app);
+const { SEC_COOKIE } = require('./config'); // @todo: maybe conditionally import this only if SSR
+
 
 app.prepare()
   .then(() => {
@@ -29,7 +31,7 @@ app.prepare()
     server.use(cookieParser());
     server.use(session({
       secret: '@todo CHANGE THIS SECRET',
-      cookie: { secure: process.env.SEC_COOKIE || false },
+      cookie: { secure: SEC_COOKIE },
       resave: false,
       saveUninitialized: true,
       store: new MongoStore({

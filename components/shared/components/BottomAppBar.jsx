@@ -18,6 +18,9 @@ import SecContext from '~/context/secContext';
 
 import { Link } from '~/server/routes';
 
+const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = require('~/server/config');
+
+
 const StyledAppBar = styled(AppBar)`
   && {
     top: auto;
@@ -59,8 +62,6 @@ class BottomAppBar extends Component {
     const { user } = this.context;
     this.setState({ uploading: true });
 
-    const url = 'https://api.cloudinary.com/v1_1/da9cucer2/upload';
-
     let fileToSend = null;
     Array.from(acceptedFiles).forEach((file, i) => {
       fileToSend = file;
@@ -68,12 +69,12 @@ class BottomAppBar extends Component {
 
     const formData = new FormData();
     formData.append('file', fileToSend);
-    formData.append('upload_preset', 'ov3f36hw'); // se configura en cloudinary
+    formData.append('upload_preset', CLOUDINARY_PRESET); // se configura en cloudinary
     formData.append('multiple', true);
     formData.append('tags', `${user._id}, ${user.name}, ${user.username}`);
     formData.append('context', '');
 
-    fetch(url, {
+    fetch(CLOUDINARY_UPLOAD_URL, {
       method: 'POST',
       body: formData,
     })
@@ -106,21 +107,21 @@ class BottomAppBar extends Component {
       <Fragment>
         <StyledAppBar position="fixed" {...this.props}>
           <Toolbar className="toolbar">
-                <Link route="feed" prefetch>
+            <Link route="feed" prefetch>
                   <a>
                     <IconButton color="inherit" aria-label="Open drawer">
                       <HomeIcon />
                     </IconButton>
                   </a>
                 </Link>
-                <Link route="discover" prefetch>
+            <Link route="discover" prefetch>
                   <a>
                     <IconButton color="inherit">
                       <SearchIcon />
                     </IconButton>
                   </a>
                 </Link>
-                <Fab className="fab upload" aria-label="Add">
+            <Fab className="fab upload" aria-label="Add">
                   {this.state.uploading && (
                   <CircularProgress className="circular-progress" />
                   )}
@@ -137,17 +138,17 @@ class BottomAppBar extends Component {
                   </Dropzone>
 
                 </Fab>
-                <IconButton color="inherit">
+            <IconButton color="inherit">
                   <Chat />
                 </IconButton>
-                <Link route="myProfile" prefetch>
+            <Link route="myProfile" prefetch>
                   <a>
                     <IconButton color="inherit">
                       <ProfileIcon />
                     </IconButton>
                   </a>
                 </Link>
-              </Toolbar>
+          </Toolbar>
         </StyledAppBar>
       </Fragment>
     );

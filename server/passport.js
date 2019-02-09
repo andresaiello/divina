@@ -1,16 +1,18 @@
 const Passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
 
-const { PORT } = require('./config');
+const {
+  AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_CALLBACK_URL,
+} = require('./config');
 const User = require('./models/User');
 
 const setupPassport = (passport) => {
   // Configure Passport to use Auth0
   passport.use(new Auth0Strategy({
-    domain: process.env.AUTH0_DOMAIN || 'divinaapp.eu.auth0.com',
-    clientID: process.env.AUTH0_CLIENT_ID || 'wn37BZhm1Zx-l2_B1D7oJJHJgm7R6dhc',
-    clientSecret: process.env.AUTH0_CLIENT_SECRET || 'WdVYhMdzI95F4axV_hi0AqZS9V-GGY6PzBpd9ni32z2i0RAp4ptoZBL-RPeIZdi_',
-    callbackURL: process.env.AUTH0_CALLBACK_URL || `http://localhost:${PORT}/callback`,
+    domain: AUTH0_DOMAIN,
+    clientID: AUTH0_CLIENT_ID,
+    clientSecret: AUTH0_CLIENT_SECRET,
+    callbackURL: AUTH0_CALLBACK_URL,
   }, (async (accessToken, refreshToken, profile = {}, done) => {
     // https://auth0.com/docs/users/concepts/overview-user-profile#data-normalization
     try {
