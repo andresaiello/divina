@@ -46,6 +46,8 @@ const StyledAppBar = styled(AppBar)`
 `;
 
 class BottomAppBar extends Component {
+  static contextType = SecContext;
+
   constructor (props) {
     super(props);
     this.state = {
@@ -53,7 +55,8 @@ class BottomAppBar extends Component {
     };
   }
 
-  onDropImage = (acceptedFiles, rejectedFiles, user) => {
+  onDropImage = (acceptedFiles, rejectedFiles) => {
+    const { user } = this.context;
     this.setState({ uploading: true });
 
     const url = 'https://api.cloudinary.com/v1_1/da9cucer2/upload';
@@ -65,9 +68,9 @@ class BottomAppBar extends Component {
 
     const formData = new FormData();
     formData.append('file', fileToSend);
-    formData.append('upload_preset', 'ov3f36hw');
+    formData.append('upload_preset', 'ov3f36hw'); // se configura en cloudinary
     formData.append('multiple', true);
-    formData.append('tags', 'myphotoalbum');
+    formData.append('tags', `${user._id}, ${user.name}, ${user.username}`);
     formData.append('context', '');
 
     fetch(url, {
@@ -77,7 +80,7 @@ class BottomAppBar extends Component {
       .then(response => response.json())
       .then((response) => {
         this.setState({ uploading: false });
-        this.onPhotoUploaded(response.public_id, response, user);
+        this.onPhotoUploaded(response.public_id, response);
       });
   }
 
@@ -86,7 +89,9 @@ class BottomAppBar extends Component {
   //   console.log(response);
   // }
 
-  onPhotoUploaded = (id, response, user) => {
+  onPhotoUploaded = (id, response) => {
+    const { user } = this.context;
+
     // TODO: acceder a __APOLLO_CLIENT__ desde el componente
     __APOLLO_CLIENT__.mutate({
       mutation: CREATE_POST,
@@ -99,10 +104,8 @@ class BottomAppBar extends Component {
   render () {
     return (
       <Fragment>
-        <SecContext.Consumer>
-          {({ user }) => (
-            <StyledAppBar position="fixed" {...this.props}>
-              <Toolbar className="toolbar">
+        <StyledAppBar position="fixed" {...this.props}>
+          <Toolbar className="toolbar">
                 <Link route="feed" prefetch>
                   <a>
                     <IconButton color="inherit" aria-label="Open drawer">
@@ -122,7 +125,7 @@ class BottomAppBar extends Component {
                   <CircularProgress className="circular-progress" />
                   )}
                   <Dropzone
-                    onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected, user); }}
+                    onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
                     className="drop-zone"
                   >
                     {({ getRootProps, getInputProps }) => (
@@ -145,10 +148,7 @@ class BottomAppBar extends Component {
                   </a>
                 </Link>
               </Toolbar>
-            </StyledAppBar>
-          )}
-
-        </SecContext.Consumer>
+        </StyledAppBar>
       </Fragment>
     );
   }
