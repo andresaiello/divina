@@ -18,8 +18,10 @@ import SecContext from '~/context/secContext';
 
 import { Link } from '~/server/routes';
 
-const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = require('~/server/config');
+import getConfig from 'next/config';
 
+const { publicRuntimeConfig } = getConfig();
+const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -108,46 +110,46 @@ class BottomAppBar extends Component {
         <StyledAppBar position="fixed" {...this.props}>
           <Toolbar className="toolbar">
             <Link route="feed" prefetch>
-                  <a>
-                    <IconButton color="inherit" aria-label="Open drawer">
-                      <HomeIcon />
-                    </IconButton>
-                  </a>
-                </Link>
-            <Link route="discover" prefetch>
-                  <a>
-                    <IconButton color="inherit">
-                      <SearchIcon />
-                    </IconButton>
-                  </a>
-                </Link>
-            <Fab className="fab upload" aria-label="Add">
-                  {this.state.uploading && (
-                  <CircularProgress className="circular-progress" />
-                  )}
-                  <Dropzone
-                    onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
-                    className="drop-zone"
-                  >
-                    {({ getRootProps, getInputProps }) => (
-                      <div {...getRootProps()} className="button-small">
-                        <input {...getInputProps()} />
-                        <CameraIcon color="primary" />
-                      </div>
-                    )}
-                  </Dropzone>
-
-                </Fab>
-            <IconButton color="inherit">
-                  <Chat />
+              <a>
+                <IconButton color="inherit" aria-label="Open drawer">
+                  <HomeIcon />
                 </IconButton>
+              </a>
+            </Link>
+            <Link route="discover" prefetch>
+              <a>
+                <IconButton color="inherit">
+                  <SearchIcon />
+                </IconButton>
+              </a>
+            </Link>
+            <Fab className="fab upload" aria-label="Add">
+              {this.state.uploading && (
+              <CircularProgress className="circular-progress" />
+              )}
+              <Dropzone
+                onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
+                className="drop-zone"
+              >
+                {({ getRootProps, getInputProps }) => (
+                  <div {...getRootProps()} className="button-small">
+                    <input {...getInputProps()} />
+                    <CameraIcon color="primary" />
+                  </div>
+                )}
+              </Dropzone>
+
+            </Fab>
+            <IconButton color="inherit">
+              <Chat />
+            </IconButton>
             <Link route="myProfile" prefetch>
-                  <a>
-                    <IconButton color="inherit">
-                      <ProfileIcon />
-                    </IconButton>
-                  </a>
-                </Link>
+              <a>
+                <IconButton color="inherit">
+                  <ProfileIcon />
+                </IconButton>
+              </a>
+            </Link>
           </Toolbar>
         </StyledAppBar>
       </Fragment>
