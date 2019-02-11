@@ -23,6 +23,7 @@ const typeDefs = gql`
     _id: String
     author: User
     picUrl: String
+    caption: String
     comments: Comments
     createdAt: String
   }
@@ -52,7 +53,7 @@ const typeDefs = gql`
   }
 
   type Query {
-    comments (postId: String): Comments
+    comments (postId: String!): Comments
     post (_id: String!): Post
     posts (startingDate: String, amount: Int, username: String): Posts
     profile (username: String!): Profile
@@ -60,12 +61,18 @@ const typeDefs = gql`
   }
 
   type Mutation {
-    createPost (author: String, picUrl: String): Post
+    createPost (author: String!, caption: String!, picUrl: String!): Post
+    editPost (_id: String!, caption: String!): Post
+    commentPost (postId: String!, author: String!, comment: String!): Comment
   }
 `;
 
 const resolvers = {
   Query: {
+    comments: async (_, { postId }) => {
+      const nodes = await PostComment.findByPost({ postId });
+      return { nodes };
+    },
     post: async (_, { _id }) => Post.getById(_id) || null,
     posts: async (_, args) => {
       const { nodes, lastCursor, hasNextPage } = await Post.getFeedPosts(args);
@@ -81,9 +88,17 @@ const resolvers = {
     },
   },
   Mutation: {
-    createPost: async (_, { author, picUrl }) => {
-      const post = await Post.createPost({ author, picUrl });
+    createPost: async (_, { author, caption, picUrl }) => {
+      const post = await Post.createPost({ author, caption, picUrl });
       return post;
+    },
+    editPost: async (_, { _id, caption }) => {
+      const post = await Post.editPost({ _id, caption });
+      return post;
+    },
+    commentPost: async (_, { postId, author, comment }) => {
+      const newComment = await PostComment.addNew({ postId, author, comment });
+      return newComment;
     },
   },
   Post: {

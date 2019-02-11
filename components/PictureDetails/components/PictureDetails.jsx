@@ -21,7 +21,7 @@ const ProfileActions = styled.aside`
 `;
 
 function PictureDetails ({
-  author, comments, picUrl, ...rest
+  author, comments, picUrl, caption, ...rest
 }) {
   return (
     <StyledPictureDetails {...rest}>
@@ -32,7 +32,7 @@ function PictureDetails ({
         src={picUrl}
         alt="Post"
       />
-      <SubBar />
+      <SubBar caption={caption} />
     </StyledPictureDetails>
   );
 }
@@ -43,6 +43,7 @@ PictureDetails.propTypes = {
     username: propTypes.string.isRequired,
   }).isRequired,
   picUrl: propTypes.string.isRequired,
+  caption: propTypes.string.isRequired,
 };
 
 export default withRouteProgress(PictureDetails);

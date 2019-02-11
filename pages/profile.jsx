@@ -30,8 +30,8 @@ export default class extends React.Component {
   }
 
   componentDidMount () {
-    const { user = {} } = this.context || {};
-    const { username } = user;
+    const { user } = this.context || {};
+    const { username } = user || {};
     if (process.browser && username && window.location.pathname.indexOf(username) > -1) {
       Router.pushRoute('myProfile');
     } else {
@@ -57,7 +57,7 @@ export default class extends React.Component {
             ? <div>Error!</div> // @todo: better error message
             : !profileData.profile
               ? <div>El perfil no existe!</div> // @todo: better error message
-              : <Profile {...{ ...profileData }} />
+              : <Profile {...profileData} />
         )}
       </Query>
     );

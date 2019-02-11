@@ -6,6 +6,7 @@ const { Schema } = mongoose;
 const postSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   picUrl: { type: String, required: true },
+  caption: { type: String, default: '' },
 }, { timestamps: true });
 
 postSchema.statics.getFeedPosts = async function getFeedPosts ({ startingDate = Date.now(), amount = 5 }) {
@@ -43,13 +44,27 @@ postSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
   return { nodes };
 };
 
-postSchema.statics.createPost = async function create ({ author, picUrl }) {
+postSchema.statics.createPost = async function createPost ({ author, picUrl, caption }) {
   const { _id } = await this
-    .create({ author, picUrl });
+    .create({ author, picUrl, caption });
 
   const post = await this.getById(_id);
 
   return post;
+};
+
+postSchema.statics.editPost = async function editPost ({ _id, caption }) {
+  const post = await this
+    .findOneAndUpdate(
+      { _id },
+      {
+        $set: {
+          caption,
+        },
+      },
+    );
+
+  return post.toObject();
 };
 
 let Post;

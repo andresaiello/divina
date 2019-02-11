@@ -17,6 +17,17 @@ postCommentSchema.statics.findByPost = async function findByPost ({ postId }) {
     .lean();
 };
 
+postCommentSchema.statics.addNew = async function addNew ({ postId, author, comment }) {
+  const { _id } = await this
+    .create({ post: postId, author, content: comment });
+
+  const [newComment] = await this
+    .find({ _id })
+    .populate({ path: 'author', model: User });
+
+  return newComment;
+};
+
 let PostComment;
 
 try {

@@ -4,11 +4,12 @@ const routes = nextRoutes();
 
 routes
   .add('discover', '/descubrir')
-  .add('editProfile', '/editarperfil')
+  .add('editProfile', '/editar-perfil')
   .add('feed', '/inicio')
   .add('landing', '/')
-  .add('myProfile', '/miperfil')
+  .add('myProfile', '/mi-perfil')
   .add('pictureDetails', '/foto/:username/:postId')
-  .add('profile', '/perfil/:username');
+  .add('profile', '/perfil/:username')
+  .add('uploadPicture', '/subir-foto/:picUrl');
 
 module.exports = routes;
