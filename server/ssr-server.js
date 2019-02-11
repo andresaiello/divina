@@ -5,8 +5,9 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 const MongoStore = require('connect-mongo')(session);
+const getConfig = require('../next.config.js');
 
-const { PORT, ENV } = require('./config');
+const { PORT, ENV, SEC_COOKIE } = getConfig.serverRuntimeConfig;
 const db = require('./db');
 const routes = require('./routes');
 const authRouter = require('./routes/auth');
@@ -19,8 +20,6 @@ const dev = ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const handler = routes.getRequestHandler(app);
-const { SEC_COOKIE } = require('./config'); // @todo: maybe conditionally import this only if SSR
-
 
 app.prepare()
   .then(() => {

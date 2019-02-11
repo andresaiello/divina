@@ -1,9 +1,11 @@
 const Passport = require('passport');
 const Auth0Strategy = require('passport-auth0');
+const getConfig = require('../next.config.js');
 
 const {
   AUTH0_DOMAIN, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET, AUTH0_CALLBACK_URL,
-} = require('./config');
+} = getConfig.serverRuntimeConfig;
+
 const User = require('./models/User');
 
 const setupPassport = (passport) => {
