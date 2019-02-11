@@ -1,24 +1,27 @@
 import React, { Fragment, Component } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
-import { Fab } from '@material-ui/core';
-import { Add, Chat } from '@material-ui/icons';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import CameraIcon from '@material-ui/icons/CameraAlt';
-import SearchIcon from '@material-ui/icons/Search';
-import HomeIcon from '@material-ui/icons/HomeOutlined';
-import ProfileIcon from '@material-ui/icons/Person';
-import Dropzone from 'react-dropzone';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { CREATE_POST } from '~/lib/queries';
-
-import SecContext from '~/context/secContext';
-
-import { Link } from '~/server/routes';
-
 import getConfig from 'next/config';
+import {
+  Fab,
+  AppBar,
+  Toolbar,
+  CircularProgress,
+  IconButton,
+} from '@material-ui/core';
+import {
+  Chat,
+  CameraAlt as CameraIcon,
+  Search as SearchIcon,
+  HomeOutlined as HomeIcon,
+  Person as ProfileIcon,
+} from '@material-ui/icons';
+import Dropzone from 'react-dropzone';
+
+import { CREATE_POST } from '~/lib/queries';
+import SecContext from '~/context/secContext';
+import { Link, Router } from '~/server/routes';
+import { Mutation } from 'react-apollo';
 
 const { publicRuntimeConfig } = getConfig();
 const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
@@ -42,11 +45,9 @@ const StyledAppBar = styled(AppBar)`
       display: none;
     }
 
-    .circular-progress {
-      position: fixed;
-      top: 50vh;
+    .camera {
+      margin-top: 5px;
     }
-
   }
 `;
 
@@ -92,19 +93,14 @@ class BottomAppBar extends Component {
   //   console.log(response);
   // }
 
-  onPhotoUploaded = (id, response) => {
-    const { user } = this.context;
-
-    // TODO: acceder a __APOLLO_CLIENT__ desde el componente
-    __APOLLO_CLIENT__.mutate({
-      mutation: CREATE_POST,
-      variables: { author: user._id, picUrl: response.secure_url },
-    })
-      .then(response => console.log(response));
+  onPhotoUploaded = (_, response) => {
+    Router.pushRoute('uploadPicture', { picUrl: response.secure_url });
   }
 
 
   render () {
+    const { uploading } = this.state;
+
     return (
       <Fragment>
         <StyledAppBar position="fixed" {...this.props}>
@@ -124,21 +120,22 @@ class BottomAppBar extends Component {
               </a>
             </Link>
             <Fab className="fab upload" aria-label="Add">
-              {this.state.uploading && (
-              <CircularProgress className="circular-progress" />
-              )}
-              <Dropzone
-                onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
-                className="drop-zone"
-              >
-                {({ getRootProps, getInputProps }) => (
-                  <div {...getRootProps()} className="button-small">
-                    <input {...getInputProps()} />
-                    <CameraIcon color="primary" />
-                  </div>
-                )}
-              </Dropzone>
-
+              {uploading
+                ? <CircularProgress />
+                : (
+                  <Dropzone
+                    onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
+                    className="drop-zone"
+                  >
+                    {({ getRootProps, getInputProps }) => (
+                      <div {...getRootProps()} className="button-small">
+                        <input {...getInputProps()} />
+                        <CameraIcon className="camera" color="primary" />
+                      </div>
+                    )}
+                  </Dropzone>
+                )
+                  }
             </Fab>
             <IconButton color="inherit">
               <Chat />

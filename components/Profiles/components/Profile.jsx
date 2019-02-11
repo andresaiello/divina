@@ -23,7 +23,7 @@ function Profile ({ profile = {} }) {
         postsCount={profile.postsCount}
         {...{ ...profile.user }}
       />
-      <PhotoGrid username={profile.user.username} />
+      <PhotoGrid userId={profile.user._id} username={profile.user.username} />
     </StyledProfile>
   );
 }

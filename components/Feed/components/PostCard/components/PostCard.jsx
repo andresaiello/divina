@@ -50,8 +50,9 @@ class PostCard extends Component {
 
   render () {
     const {
-      author: { username, profilePic }, picUrl, comments, createdAt,
+      _id, author: { username, profilePic }, picUrl, caption, createdAt,
     } = this.props;
+
     const { isCommentsModalOpen } = this.state;
 
     return (
@@ -86,7 +87,7 @@ class PostCard extends Component {
         />
         <CardContent>
           <Typography component="p">
-            Hola!
+            {caption}
           </Typography>
         </CardContent>
         <CardActions className="actions" disableActionSpacing>
@@ -102,34 +103,32 @@ class PostCard extends Component {
             <Share />
           </IconButton>
         </CardActions>
-        <CommentsModal comments={comments} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
+        <CommentsModal postId={_id} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
       </StyledCard>
     );
   }
 }
-
-PostCard.defaultProps = {
-  comments: [],
-};
 
 PostCard.propTypes = {
   author: propTypes.shape({
     username: propTypes.string.isRequired,
     profilePic: propTypes.string.isRequired,
   }).isRequired,
+  _id: propTypes.string.isRequired,
   picUrl: propTypes.string.isRequired,
+  caption: propTypes.string.isRequired,
   createdAt: propTypes.string.isRequired,
-  comments: propTypes.shape({
-    nodes: propTypes.arrayOf(propTypes.shape({
-      _id: propTypes.string,
-      author: propTypes.shape({
-        username: propTypes.string.isRequired,
-        profilePic: propTypes.string.isRequired,
-      }),
-      content: propTypes.string,
-      createdAt: propTypes.string,
-    })),
-  }),
+  // comments: propTypes.shape({
+  //   nodes: propTypes.arrayOf(propTypes.shape({
+  //     _id: propTypes.string,
+  //     author: propTypes.shape({
+  //       username: propTypes.string.isRequired,
+  //       profilePic: propTypes.string.isRequired,
+  //     }),
+  //     content: propTypes.string,
+  //     createdAt: propTypes.string,
+  //   })),
+  // }),
 };
 
 export default PostCard;

@@ -6,3 +6,5 @@ export { default as SearchBar } from './components/SearchBar';
 export { default as FollowButton } from './components/FollowButton';
 export { default as FullscreenModal } from './components/FullscreenModal';
 export { default as LoadingScreen } from './components/LoadingScreen';
+export { default as CommentInput } from './components/CommentInput';
+export { default as Input } from './components/Input';
