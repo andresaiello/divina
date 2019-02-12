@@ -14,6 +14,7 @@ import { Link } from '~/server/routes';
 import { Image, FollowButton } from '~/components/shared';
 
 import CommentsModal from './CommentsModal';
+import ShareModal from './ShareModal';
 
 TimeAgo.addLocale(es);
 const timeAgo = new TimeAgo('es');
@@ -38,6 +39,7 @@ const StyledCard = styled(Card)`
 class PostCard extends Component {
   state = {
     isCommentsModalOpen: false,
+    isShareModalOpen: false,
   }
 
   openCommentsModal = () => {
@@ -48,12 +50,20 @@ class PostCard extends Component {
     this.setState({ isCommentsModalOpen: false });
   };
 
+  openShareModal = () => {
+    this.setState({ isShareModalOpen: true });
+  };
+
+  closeShareModal = () => {
+    this.setState({ isShareModalOpen: false });
+  };
+
   render () {
     const {
       _id, author: { username, profilePic }, picUrl, caption, createdAt,
     } = this.props;
 
-    const { isCommentsModalOpen } = this.state;
+    const { isCommentsModalOpen, isShareModalOpen } = this.state;
 
     return (
       <StyledCard>
@@ -99,11 +109,12 @@ class PostCard extends Component {
               <Comment />
             </IconButton>
           </div>
-          <IconButton aria-label="Share">
+          <IconButton onClick={this.openShareModal} aria-label="Share">
             <Share />
           </IconButton>
         </CardActions>
         <CommentsModal postId={_id} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
+        <ShareModal username={username} postId={_id} isOpen={isShareModalOpen} close={this.closeShareModal} />
       </StyledCard>
     );
   }
