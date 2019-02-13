@@ -14,17 +14,28 @@ import {
   FaFacebookF, FaWhatsapp, FaTwitter, FaEnvelope,
 } from 'react-icons/fa';
 
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const { SERVER_URL, FB_APP_ID } = publicRuntimeConfig;
+
+
 const StyledDialog = styled(Dialog)`
   && {
-    a{
+    div+div{
+      overflow-x: hidden;
+      width: 100px;
+    }
+
+    a {
       text-decoration: none;
     }
 
-    #share-title{
+    #share-title {
       border-bottom: 1px solid #efefef;
     }
 
-    #share-title h6{
+    #share-title h6 {
       font-family: Roboto,Helvetica,Arial,sans-serif;
       font-size: 16px;
       font-weight: 600;
@@ -32,36 +43,36 @@ const StyledDialog = styled(Dialog)`
       text-align: center;
     }
 
-    a.share-link{
+    a.share-link {
       text-decoration: none;
     }
 
-    .share-link span{
+    .share-link span {
       color: #262626;
       font-weight: 600;
     }
 
-    .avatar-facebook{
+    .avatar-facebook {
       background-color: #3b5999;
     }
 
-    .avatar-whatsapp{
+    .avatar-whatsapp {
       background-color: #25D366;
     }
 
-    .avatar-twitter{
+    .avatar-twitter {
       background-color: #55acee;
     }
 
-    .avatar-email{
+    .avatar-email {
+
     }
 
-    .cancel-button span{
+    .cancel-button span {
       color: #3897f0;
       font-weight: 600;
       margin-left: 55px;
     }
-
   }
 `;
 
@@ -80,9 +91,8 @@ class ShareModal extends Component {
       isOpen, postId, close, username,
     } = this.props;
     const { user } = this.context;
-    const url = 'http://localhost:3004/foto/aaiello/5c61ac925bd5ef0017f83d8e';
-
-    const fbId = '1217981644879628'; // @todo FAKE!!!
+    const url = `${SERVER_URL}/foto/${username}/${postId}`;
+    const shareText = `Ver esta foto de Divina de ${username}`;
 
     return (
       <StyledDialog open={isOpen} onClose={close} aria-labelledby="share-title">
@@ -90,7 +100,7 @@ class ShareModal extends Component {
         <div>
           <List>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?app_id=${fbId}&u=${encodeURI(url)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?app_id=${FB_APP_ID}&u=${encodeURI(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -105,7 +115,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`whatsapp://send/?text=Ver%20esta%20foto%20de%20Divina%20de%20%40${username}%3A%20${encodeURI(url)}`}
+              href={`whatsapp://send/?text=${encodeURI(shareText)}%3A%20${encodeURI(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -120,7 +130,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`https://twitter.com/share?text=Ver%20esta%20foto%20de%20Divina%20de%20%40${username}&url=${encodeURI(url)}`}
+              href={`https://twitter.com/share?text=${encodeURI(shareText)}&url=${encodeURI(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -135,7 +145,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`mailto:?subject=Ver%20esta%20foto%20de%Divina%20de%20%40${username}&body=Ver%20esta%20foto%20de%20Divina%20de%20%40${username}%3A%20${encodeURI(url)}`}
+              href={`mailto:?subject=${encodeURI(shareText)}&body=${encodeURI(shareText)}%3A%20${encodeURI(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"

@@ -15,7 +15,11 @@ const StyledProfile = styled.article`
 `;
 
 function MyProfile (props) {
-  const { profile: { postsCount, user: { _id, username, profilePic } } } = props;
+  const {
+    profile: {
+      postsCount, followersCount, followingCount, user: { _id, username, profilePic },
+    },
+  } = props;
 
   const editProfile = (
     <Link route="editProfile" prefetch>
@@ -27,9 +31,9 @@ function MyProfile (props) {
     <StyledProfile>
       <ProfileInfo
         action={editProfile}
+        followersCount={followersCount}
+        followingCount={followingCount}
         {...{ username, profilePic, postsCount }}
-        followers={1}
-        following={1}
       />
       <PhotoGrid userId={_id} username={username} />
     </StyledProfile>

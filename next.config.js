@@ -12,11 +12,12 @@ module.exports = {
     CLOUDINARY_PRESET: process.env.CLOUDINARY_PRESET || 'ov3f36hw',
     NPM_VERSION: process.env.npm_package_version || '---',
   },
-
   publicRuntimeConfig: {
     GQL_SERVER_URL: process.env.GQL_SERVER_URL || 'http://localhost:3004/graphql',
     CLOUDINARY_UPLOAD_URL: process.env.CLOUDINARY_UPLOAD_URL || 'https://api.cloudinary.com/v1_1/da9cucer2/upload',
     CLOUDINARY_PRESET: process.env.CLOUDINARY_PRESET || 'ov3f36hw',
     NPM_VERSION: process.env.npm_package_version || '---',
+    SERVER_URL: process.env.server_url || 'http://app.divinaapp.com',
+    FB_APP_ID: process.env.fb_app_id || '1217981644879628',
   },
 };

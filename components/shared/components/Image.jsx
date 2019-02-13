@@ -4,12 +4,15 @@ import ReactImage from 'react-image';
 import Loader from './Loader';
 
 const Image = ({
-  withLoader, width, height, ...rest
+  withLoader, fitCover, width, height, ...rest
 }) => (
   <ReactImage
     loader={withLoader ? <Loader {...{ height, width }} /> : null}
     unloader={<img src="/static/imageNotFound.png" width="100%" alt="Not found" />}
-    {...{ height, width, ...rest }}
+    style={fitCover ? { objectFit: 'cover' } : {}}
+    {...{
+      height, width, ...rest,
+    }}
   />
 );
 

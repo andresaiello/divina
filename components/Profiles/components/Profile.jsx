@@ -18,8 +18,8 @@ function Profile ({ profile = {} }) {
     <StyledProfile>
       <ProfileInfo
         action={<Button color="primary">Seguir</Button>}
-        followers={1}
-        following={1}
+        followersCount={profile.followersCount}
+        followingCount={profile.followingCount}
         postsCount={profile.postsCount}
         {...{ ...profile.user }}
       />

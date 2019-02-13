@@ -38,7 +38,6 @@ export default function FullscreenModal ({
       </AppBar>
       {children}
     </StyledDialog>
-
   );
 }
 
