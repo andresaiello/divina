@@ -15,6 +15,7 @@ import { Image, FollowButton, LikeButton } from '~/components/shared';
 import { FEED_GET_POSTS } from '~/lib/queries';
 
 import CommentsModal from './CommentsModal';
+import ShareModal from './ShareModal';
 
 const StyledCard = styled(Card)`
   margin: 5px auto;
@@ -34,6 +35,7 @@ class PostCard extends Component {
 
   state = {
     isCommentsModalOpen: false,
+    isShareModalOpen: false,
   }
 
   openCommentsModal = () => {
@@ -42,6 +44,14 @@ class PostCard extends Component {
 
   closeCommentsModal = () => {
     this.setState({ isCommentsModalOpen: false });
+  };
+
+  openShareModal = () => {
+    this.setState({ isShareModalOpen: true });
+  };
+
+  closeShareModal = () => {
+    this.setState({ isShareModalOpen: false });
   };
 
   followCacheUpdate = (cache, { data }) => {
@@ -83,7 +93,7 @@ class PostCard extends Component {
 
     const { user = {} } = this.context;
 
-    const { isCommentsModalOpen } = this.state;
+    const { isCommentsModalOpen, isShareModalOpen } = this.state;
 
     return (
       <StyledCard>
@@ -138,11 +148,12 @@ class PostCard extends Component {
               <Comment />
             </IconButton>
           </div>
-          <IconButton aria-label="Share">
+          <IconButton onClick={this.openShareModal} aria-label="Share">
             <Share />
           </IconButton>
         </CardActions>
         <CommentsModal postId={_id} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
+        <ShareModal username={username} postId={_id} isOpen={isShareModalOpen} close={this.closeShareModal} />
       </StyledCard>
     );
   }
