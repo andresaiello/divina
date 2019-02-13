@@ -16,15 +16,15 @@ import {
 
 const StyledDialog = styled(Dialog)`
   && {
-    a{
+    a {
       text-decoration: none;
     }
 
-    #share-title{
+    #share-title {
       border-bottom: 1px solid #efefef;
     }
 
-    #share-title h6{
+    #share-title h6 {
       font-family: Roboto,Helvetica,Arial,sans-serif;
       font-size: 16px;
       font-weight: 600;
@@ -32,36 +32,36 @@ const StyledDialog = styled(Dialog)`
       text-align: center;
     }
 
-    a.share-link{
+    a.share-link {
       text-decoration: none;
     }
 
-    .share-link span{
+    .share-link span {
       color: #262626;
       font-weight: 600;
     }
 
-    .avatar-facebook{
+    .avatar-facebook {
       background-color: #3b5999;
     }
 
-    .avatar-whatsapp{
+    .avatar-whatsapp {
       background-color: #25D366;
     }
 
-    .avatar-twitter{
+    .avatar-twitter {
       background-color: #55acee;
     }
 
-    .avatar-email{
+    .avatar-email {
+
     }
 
-    .cancel-button span{
+    .cancel-button span {
       color: #3897f0;
       font-weight: 600;
       margin-left: 55px;
     }
-
   }
 `;
 

@@ -5,9 +5,8 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
 const MongoStore = require('connect-mongo')(session);
-const getConfig = require('../next.config.js');
 
-const { PORT, ENV, SEC_COOKIE } = getConfig.serverRuntimeConfig;
+const getConfig = require('../next.config.js');
 const db = require('./db');
 const routes = require('./routes');
 const authRouter = require('./routes/auth');
@@ -16,6 +15,7 @@ const userRouter = require('./routes/user');
 const setupPassport = require('./passport');
 const { typeDefs, resolvers } = require('./graphql');
 
+const { PORT, ENV, SEC_COOKIE } = getConfig.serverRuntimeConfig;
 const dev = ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -45,6 +45,7 @@ app.prepare()
     const apolloServer = new ApolloServer({
       typeDefs,
       resolvers,
+      cors: { credentials: 'include' },
       context: ({ req }) => ({
         user: req.user,
       }),

@@ -29,7 +29,7 @@ postLikesSchema.statics.addLike = async function addLike ({ postId, user }) {
   try {
     await this.findOneAndUpdate(
       { post: postId },
-      { $push: { users: user } },
+      { $addToSet: { users: user } },
       { upsert: true },
     );
     return true;

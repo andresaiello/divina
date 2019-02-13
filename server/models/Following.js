@@ -11,9 +11,19 @@ const followingSchema = new Schema({
 followingSchema.statics.addFollowing = async function addFollowing ({ owner, userToFollow }) {
   return this.findOneAndUpdate(
     { owner },
-    { $push: { ids: userToFollow } },
+    { $addToSet: { ids: userToFollow } },
     { upsert: true },
   );
+};
+
+followingSchema.statics.countFollowing = async function countFollowing ({ owner }) {
+  if (!owner) return 0;
+
+  const [following] = await this
+    .find({ owner })
+    .lean();
+
+  return (following && following.ids.length) || 0;
 };
 
 followingSchema.statics.removeFollowing = async function removeFollowing ({ owner, userToUnfollow }) {

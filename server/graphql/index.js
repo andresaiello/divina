@@ -174,14 +174,14 @@ const resolvers = {
     },
     likes: async ({ _id }) => PostLikes.findByPost({ postId: _id }),
     liked: async ({ _id }, _, context) => PostLikes.isPostLiked({ _id, author: context.user && context.user._id }),
-    authorFollowed: async ({ author }, _, context) => Followers.isFollowedBy({
+    authorFollowed: async ({ author }, _, context) => console.log(context) || Followers.isFollowedBy({
       owner: author._id,
       followedBy: context.user && context.user._id,
     }),
   },
   Profile: {
-    followersCount: async ({ user }) => Followers.countDocuments({ owner: user._id }),
-    followingCount: async ({ user }) => Following.countDocuments({ owner: user._id }),
+    followersCount: async ({ user }) => Followers.countFollowers({ owner: user._id }),
+    followingCount: async ({ user }) => Following.countFollowing({ owner: user._id }),
     postsCount: async ({ user }) => Post.countDocuments({ author: user._id }),
     posts: async ({ user }) => Post.getByAuthor({ author: user._id }),
   },

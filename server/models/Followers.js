@@ -15,16 +15,25 @@ followersSchema.statics.isFollowedBy = async function isFollowedBy ({ owner, fol
     .find({ owner })
     .lean();
 
-
   // @todo: replace all .some filters because they block the event loop and can harm performance
   return followers && followers.ids.length ? followers.ids.some(id => id.toString() === followedBy) : false;
+};
+
+followersSchema.statics.countFollowers = async function countFollowers ({ owner }) {
+  if (!owner) return 0;
+
+  const [followers] = await this
+    .find({ owner })
+    .lean();
+
+  return (followers && followers.ids.length) || 0;
 };
 
 followersSchema.statics.addFollower = async function addFollower ({ owner, newFollower }) {
   try {
     await this.findOneAndUpdate(
       { owner },
-      { $push: { ids: newFollower } },
+      { $addToSet: { ids: newFollower } },
       { upsert: true },
     );
     return true;
