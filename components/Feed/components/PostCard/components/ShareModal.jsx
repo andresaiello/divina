@@ -24,7 +24,6 @@ const StyledDialog = styled(Dialog)`
   && {
     div+div{
       overflow-x: hidden;
-      width: 100px;
     }
 
     a {
