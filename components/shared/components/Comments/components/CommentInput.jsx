@@ -9,7 +9,7 @@ const Container = styled(Grid)`
   justify-content: space-around;
   background: white;
   bottom: 0px;
-  height: 50px;
+  height: 70px;
   padding-bottom: 10px;
   position: fixed;
 

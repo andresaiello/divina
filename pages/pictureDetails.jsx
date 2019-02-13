@@ -24,7 +24,7 @@ export default class extends React.Component {
             ? <div>Error!</div> // @todo: better error message
             : !postData.post || !postData.post.author
               ? <div>El perfil no existe!</div> // @todo: better error message
-              : <PictureDetails {...{ ...postData.post }} />
+              : <PictureDetails {...{ ...postData.post, postId }} />
         )}
       </Query>
     );

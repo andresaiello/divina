@@ -7,7 +7,7 @@ import { Image, Loader } from '~/components/shared';
 import { Link } from '~/server/routes';
 import { PROFILE_GET_POSTS } from '~/lib/queries';
 
-const imageHeight = 155;
+const imageHeight = 80;
 
 const StyledPhotoGrid = styled.div`
   display: grid;
@@ -45,6 +45,7 @@ export default function PhotoGrid ({ userId, username }) {
             {profilePosts.map(post => (
               <Link route="pictureDetails" params={{ username, postId: post._id }} key={post._id} prefetch>
                 <Image
+                  fitCover
                   height={imageHeight}
                   src={post.picUrl}
                   alt="Foto de perfil"

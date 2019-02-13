@@ -1,22 +1,20 @@
 import React, { Component, Fragment } from 'react';
-import TimeAgo from 'javascript-time-ago';
-import es from 'javascript-time-ago/locale/es';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import {
   Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton,
 } from '@material-ui/core';
 import {
-  Comment, Favorite, Share, MoreVert,
+  Comment, Share, MoreVert,
 } from '@material-ui/icons';
 
+import SecContext from '~/context/secContext';
+import timeAgo from '~/lib/timeAgo';
 import { Link } from '~/server/routes';
-import { Image, FollowButton } from '~/components/shared';
+import { Image, FollowButton, LikeButton } from '~/components/shared';
+import { FEED_GET_POSTS } from '~/lib/queries';
 
 import CommentsModal from './CommentsModal';
-
-TimeAgo.addLocale(es);
-const timeAgo = new TimeAgo('es');
 
 const StyledCard = styled(Card)`
   margin: 5px auto;
@@ -28,14 +26,12 @@ const StyledCard = styled(Card)`
 
   .actions {
     justify-content: space-between;
-
-    .liked {
-      color: red;
-    }
   }
 `;
 
 class PostCard extends Component {
+  static contextType = SecContext;
+
   state = {
     isCommentsModalOpen: false,
   }
@@ -48,10 +44,44 @@ class PostCard extends Component {
     this.setState({ isCommentsModalOpen: false });
   };
 
+  followCacheUpdate = (cache, { data }) => {
+    const prevQuery = cache.readQuery({ query: FEED_GET_POSTS, variables: { amount: 2 } });
+
+    const newNodes = prevQuery.posts.nodes.map((n) => {
+      if (n.author._id === data.followUser._id) return { ...n, authorFollowed: true };
+      return n;
+    });
+
+    cache.writeQuery({
+      query: FEED_GET_POSTS,
+      variables: { amount: 2 },
+      data: { ...prevQuery, posts: { ...prevQuery.posts, nodes: newNodes } },
+    });
+  }
+
+  unfollowCacheUpdate = (cache, { data }) => {
+    const prevQuery = cache.readQuery({ query: FEED_GET_POSTS, variables: { amount: 2 } });
+
+    const newNodes = prevQuery.posts.nodes.map((n) => {
+      if (n.author._id === data.unfollowUser._id) return { ...n, authorFollowed: false };
+      return n;
+    });
+
+    cache.writeQuery({
+      query: FEED_GET_POSTS,
+      variables: { amount: 2 },
+      data: { ...prevQuery, posts: { ...prevQuery.posts, nodes: newNodes } },
+    });
+  }
+
   render () {
     const {
-      _id, author: { username, profilePic }, picUrl, caption, createdAt,
+      _id, liked, authorFollowed, author, picUrl, caption, createdAt,
     } = this.props;
+
+    const { username, profilePic } = author;
+
+    const { user = {} } = this.context;
 
     const { isCommentsModalOpen } = this.state;
 
@@ -65,7 +95,13 @@ class PostCard extends Component {
           )}
           action={(
             <Fragment>
-              <FollowButton isFollowing={Math.random() < 0.5} />
+              <FollowButton
+                author={user && user._id}
+                receiver={author._id}
+                isFollowing={authorFollowed}
+                followCacheUpdate={this.followCacheUpdate}
+                unfollowCacheUpdate={this.unfollowCacheUpdate}
+              />
               <IconButton>
                 <MoreVert />
               </IconButton>
@@ -81,6 +117,7 @@ class PostCard extends Component {
         <Image
           className="cardPic"
           height="350"
+          fitCover
           src={picUrl}
           withLoader
           alt="Foto"
@@ -92,9 +129,11 @@ class PostCard extends Component {
         </CardContent>
         <CardActions className="actions" disableActionSpacing>
           <div>
-            <IconButton aria-label="Like">
-              <Favorite className={Math.random() < 0.5 ? 'liked' : ''} />
-            </IconButton>
+            <LikeButton
+              author={user && user._id}
+              liked={liked}
+              postId={_id}
+            />
             <IconButton onClick={this.openCommentsModal} aria-label="Comment">
               <Comment />
             </IconButton>
@@ -110,12 +149,15 @@ class PostCard extends Component {
 }
 
 PostCard.propTypes = {
+  _id: propTypes.string.isRequired,
+  picUrl: propTypes.string.isRequired,
+  liked: propTypes.bool.isRequired,
+  authorFollowed: propTypes.bool.isRequired,
   author: propTypes.shape({
+    _id: propTypes.string.isRequired,
     username: propTypes.string.isRequired,
     profilePic: propTypes.string.isRequired,
   }).isRequired,
-  _id: propTypes.string.isRequired,
-  picUrl: propTypes.string.isRequired,
   caption: propTypes.string.isRequired,
   createdAt: propTypes.string.isRequired,
   // comments: propTypes.shape({

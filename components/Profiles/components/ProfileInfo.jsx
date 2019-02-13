@@ -6,10 +6,15 @@ import { People, PeopleOutlined, CameraAlt as Camera } from '@material-ui/icons'
 
 import withRouteProgress from '~/HOCs/withRouteProgress';
 import { FullscreenModal } from '~/components/shared/';
+import { Query } from 'react-apollo';
+import { PROFILE_GET_FOLLOWERS, PROFILE_GET_FOLLOWING } from '~/lib/queries';
+import Loader from '~/components/shared/components/Loader';
+import FollowersModal from './FollowersModal';
+import FollowingModal from './FollowingModal';
 
 const StyledProfileInfo = styled.div`
   display: grid;
-  grid-template-columns: 30% 70%;
+  grid-template-columns: 25% 75%;
   margin: 10px;
 
   .avatar {
@@ -32,7 +37,7 @@ const StyledProfileInfo = styled.div`
   }
   
   .icons {
-    margin-left: auto;
+    margin: 0px auto;
 
     .icon {
       display: inline-block;
@@ -61,8 +66,8 @@ class ProfileInfo extends Component {
     username: propTypes.string.isRequired,
     profilePic: propTypes.string.isRequired,
     postsCount: propTypes.number.isRequired,
-    followers: propTypes.number.isRequired,
-    following: propTypes.number.isRequired,
+    followersCount: propTypes.number.isRequired,
+    followingCount: propTypes.number.isRequired,
   };
 
   state = {
@@ -80,29 +85,23 @@ class ProfileInfo extends Component {
 
   render () {
     const {
-      action, username, profilePic, followers, following, postsCount, ...rest
+      action, username, profilePic, followersCount, followingCount, postsCount, ...rest
     } = this.props;
 
     const { followersModalOpen, followingModalOpen } = this.state;
 
     return (
       <StyledProfileInfo {...rest}>
-        <FullscreenModal
-          title="Seguidores"
+        <FollowersModal
           isOpen={followersModalOpen}
-          close={() => this.closeModal('followersModalOpen')}
-        >
-          <div>Seguidor 1</div>
-          <div>Seguidor 2</div>
-        </FullscreenModal>
-        <FullscreenModal
-          title="Siguiendo"
+          closeModal={this.closeModal}
+          username={username}
+        />
+        <FollowingModal
           isOpen={followingModalOpen}
-          close={() => this.closeModal('followingModalOpen')}
-        >
-          <div>Seguido 1</div>
-          <div>Seguido 2</div>
-        </FullscreenModal>
+          closeModal={this.closeModal}
+          username={username}
+        />
         <div className="follow">
           <Avatar className="avatar" src={profilePic} alt="Foto de perfil" />
           <h2>{username}</h2>
@@ -124,7 +123,7 @@ class ProfileInfo extends Component {
             tabIndex={0}
           >
             <People />
-            <p>{`${followers} siguiendo`}</p>
+            <p>{followersCount === 1 ? '1 seguidor' : `${followersCount} seguidores` }</p>
           </div>
           <div
             className="icon action"
@@ -133,7 +132,7 @@ class ProfileInfo extends Component {
             tabIndex={0}
           >
             <PeopleOutlined />
-            <p>{following === 1 ? '1 seguido' : `${followers} seguidos` }</p>
+            <p>{followingCount === 1 ? '1 seguido' : `${followingCount} seguidos` }</p>
           </div>
         </div>
         <div className="details">

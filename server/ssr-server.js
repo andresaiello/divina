@@ -23,10 +23,10 @@ const handler = routes.getRequestHandler(app);
 
 app.prepare()
   .then(() => {
-    const connection = db.connect();
-    const apolloServer = new ApolloServer({ typeDefs, resolvers });
+    const dbConnection = db.connect();
     const server = express();
-    apolloServer.applyMiddleware({ app: server });
+    const passport = setupPassport();
+
     server.use(cookieParser());
     server.use(session({
       secret: '@todo CHANGE THIS SECRET',
@@ -34,15 +34,23 @@ app.prepare()
       resave: false,
       saveUninitialized: true,
       store: new MongoStore({
-        mongooseConnection: connection,
+        mongooseConnection: dbConnection,
       }),
     }));
-
-    const passport = setupPassport();
 
     server.use(passport.initialize());
     server.use(passport.session());
     server.use(flash());
+
+    const apolloServer = new ApolloServer({
+      typeDefs,
+      resolvers,
+      context: ({ req }) => ({
+        user: req.user,
+      }),
+    });
+
+    apolloServer.applyMiddleware({ app: server });
 
     server.use('/', authRouter);
     server.use('/api/', apiRouter);
