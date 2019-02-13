@@ -22,6 +22,11 @@ const { SERVER_URL, FB_APP_ID } = publicRuntimeConfig;
 
 const StyledDialog = styled(Dialog)`
   && {
+    div+div{
+      overflow-x: hidden;
+      width: 100px;
+    }
+
     a {
       text-decoration: none;
     }
