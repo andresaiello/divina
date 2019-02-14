@@ -18,18 +18,12 @@ export default class InfiniteScroll extends Component {
   }
 
   handleScroll = () => {
-    console.log('===================');
     const scrollTop = (document.documentElement && document.documentElement.scrollTop)
       || document.body.scrollTop;
     const scrollHeight = (document.documentElement && document.documentElement.scrollHeight)
       || document.body.scrollHeight;
     const clientHeight = document.documentElement.clientHeight || window.innerHeight;
     const scrolledToBottom = Math.ceil(scrollTop + clientHeight + FOOTER_HEIGHT) >= scrollHeight;
-
-    console.log(scrollTop);
-    console.log(scrollHeight);
-    console.log(clientHeight);
-    console.log(scrolledToBottom);
 
     if (scrolledToBottom) {
       const { onScrollBottom } = this.props;
