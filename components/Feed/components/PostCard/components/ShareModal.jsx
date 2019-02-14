@@ -91,12 +91,13 @@ class ShareModal extends Component {
     } = this.props;
     const { user } = this.context;
     const url = `${SERVER_URL}/foto/${username}/${postId}`;
+    const oldurl = 'http://localhost:3004/foto/aaiello/5c61ac925bd5ef0017f83d8e';
 
     const shareText = `Ver esta foto de Divina de ${username}`;
 
     const urlEncoded = encodeURI(url);
     const sharedTextEncoded = encodeURI(shareText);
-    const sharedLongTextEncoded = `${sharedTextEncoded}%3A${urlEncoded}`;
+    const sharedLongTextEncoded = `${sharedTextEncoded}%3A%20${urlEncoded}`;
 
 
     return (
@@ -117,6 +118,21 @@ class ShareModal extends Component {
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText primary="Compartir en Facebook" />
+              </ListItem>
+            </a>
+            <a
+              href={`whatsapp://send/?text=Ver%20esta%20foto%20de%20Divina%20de%20%40${username}%3A%20${encodeURI(oldurl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="share-link"
+            >
+              <ListItem button>
+                <ListItemAvatar>
+                  <Avatar className="avatar-whatsapp">
+                    <FaWhatsapp />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary="Compartir en Whatsapp" />
               </ListItem>
             </a>
             <a
