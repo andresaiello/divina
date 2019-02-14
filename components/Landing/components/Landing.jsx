@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
+import classNames from 'classnames';
 
 import { Link } from '~/server/routes';
 import SecContext, { isAuthenticated } from '~/context/secContext';
@@ -9,6 +10,8 @@ const StyledLanding = styled.article`
   height: 100vh;
   width: 100%;
   color: white;
+  background-image: url('/static/background01.jpg');
+  background-size: cover;
 
   video {
     position: fixed;
@@ -31,9 +34,9 @@ const StyledLanding = styled.article`
 export default function Landing () {
   return (
     <StyledLanding>
-      <video autoPlay muted loop>
+      {/* <video autoPlay muted loop>
         <source src="/static/background.mp4" type="video/mp4" />
-      </video>
+      </video> */}
       <SecContext.Consumer>
         {({ user }) => (!isAuthenticated(user)
           ? (
@@ -43,7 +46,9 @@ export default function Landing () {
                   <Button className="button" variant="contained" color="primary">
                     Crear Cuenta
                   </Button>
-                  <p>¿Ya tienes una cuenta? Conectarse</p>
+                  <Button className={classNames('button')} variant="outlined" color="primary">
+                    ¿Ya tienes una cuenta? Conectarse
+                  </Button>
                 </div>
               </a>
             </Link>
@@ -51,10 +56,12 @@ export default function Landing () {
             <Link route="/feed" prefetch>
               <a>
                 <div className="content">
-                  <p>
-                    Bienvenido
+                  <Button className={classNames('button')} variant="contained" color="primary">
+                Bienvenido
                     {` ${user.name}`}
-                  </p>
+                  </Button>
+
+                  <p />
                 </div>
               </a>
             </Link>

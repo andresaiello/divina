@@ -1,0 +1,84 @@
+
+  414  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml
+  415  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get nodes
+  416  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  417  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete pod nginx-demo
+  418  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml
+  419  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml --validate=false
+  420  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete pod whoami
+  421  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  422  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete service whoami
+  423  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  424  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml --validate=false
+  425  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  426  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  427  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml --validate=false
+  428  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" describe ingress whoiam
+  429  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" describe ingress whoami
+  430  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  431  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  432  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml --validate=false
+  433  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  434  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  435  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  436  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  437  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" logs hello-6c699bddcd-46x78
+  438  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete pod hello-6c699bddcd-46x78
+  439  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  440  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete hello
+  441  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete hello --all
+  442  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete label hello
+  443  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete ingresses.extensions hello
+  444  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete services hello
+  445  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete deployments.extensions hello
+  446  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  447  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  448  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  449  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  450  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  451  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  452  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  453  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  454  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  455  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  456  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  457  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  458  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  459  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  460  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" delete namespace whoami
+  461  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" create -f ./nginx-demo.yaml 
+  462  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  463  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" apply -f ./nginx-demo.yaml 
+  464  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods
+  465  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" get pods -n whoami
+  466  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" exec -n whoami whoami-6556f6b95c-5ms7q bash
+  467  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" exec -n whoami whoami-6556f6b95c-5ms7q sh
+  468  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" exec -ti -n whoami whoami-6556f6b95c-5ms7q sh
+  469  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" apply -f ./nginx-demo.yaml 
+  470  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n whoami get pods
+  471  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n whoami port-fordward whoami-55dc8c6ffc-cmsp9 8080:80
+  472  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n whoami port-forward whoami-55dc8c6ffc-cmsp9 8080:80
+  473  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n kube-system get pods
+  474  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n kube-system get ds
+  475  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n kube-system get nodes
+  476  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n kube-system get nodes --show-labels
+  477  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" label node/unruffled-kepler-8j4d kubernetes.io/lb=true
+  478  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n kube-system get nodes --show-labels
+  479  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n kube-system get pods
+  480  curl 68.183.252.127.xip.io
+  481  sudo apt install curl
+  482  curl 68.183.252.127.xip.io
+  483  curl 68.183.252.127.xip.io -v
+  484  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n whoami get ingress
+  485  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" apply -f ./nginx-demo.yaml 
+  486  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n whoami get ingress
+  487  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" apply -f ./nginx-demo.yaml 
+  488  curl whoami.68.183.252.127.xip.io -v
+  489  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n whoami get ingress
+  490  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n whoami describe ingress
+  491  curl whoami.68.183.252.127.xip.io -v
+  492  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" apply -f ./nginx-demo.yaml 
+  493  kubectl --kubeconfig="/home/andy/.kube/digitalocean.yaml" -n whoami describe ingress
+  494  curl whoami.68.183.252.127.xip.io -v
+  495  history
+  496  history > configuracion-digitalocean.txt
