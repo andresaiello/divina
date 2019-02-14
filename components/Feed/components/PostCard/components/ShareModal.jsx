@@ -16,8 +16,12 @@ import {
 
 import getConfig from 'next/config';
 
+import {
+  FacebookShareButton, WhatsappShareButton, TwitterShareButton, EmailShareButton,
+} from 'react-share';
+
 const { publicRuntimeConfig } = getConfig();
-const { SERVER_URL, FB_APP_ID } = publicRuntimeConfig;
+const { SERVER_URL } = publicRuntimeConfig;
 
 
 const StyledDialog = styled(Dialog)`
@@ -91,12 +95,8 @@ class ShareModal extends Component {
     } = this.props;
     const { user } = this.context;
     const url = `${SERVER_URL}/foto/${username}/${postId}`;
-
     const shareText = `Ver esta foto de Divina de ${username}`;
-
-    const urlEncoded = encodeURI(url);
-    const sharedTextEncoded = encodeURI(shareText);
-    const sharedLongTextEncoded = `${sharedTextEncoded}%3A${urlEncoded}`;
+    const sharedLongTextEncoded = `${shareText} ${url}`;
 
 
     return (
@@ -104,10 +104,10 @@ class ShareModal extends Component {
         <DialogTitle id="share-title">Compartir</DialogTitle>
         <div>
           <List>
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?app_id=${FB_APP_ID}&u=${urlEncoded}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <FacebookShareButton
+              url={url}
+              title={shareText}
+              quote={shareText}
               className="share-link"
             >
               <ListItem button>
@@ -118,11 +118,10 @@ class ShareModal extends Component {
                 </ListItemAvatar>
                 <ListItemText primary="Compartir en Facebook" />
               </ListItem>
-            </a>
-            <a
-              href={`whatsapp://send/?text=${sharedLongTextEncoded}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            </FacebookShareButton>
+            <WhatsappShareButton
+              url={url}
+              title={shareText}
               className="share-link"
             >
               <ListItem button>
@@ -133,11 +132,10 @@ class ShareModal extends Component {
                 </ListItemAvatar>
                 <ListItemText primary="Compartir en Whatsapp" />
               </ListItem>
-            </a>
-            <a
-              href={`https://twitter.com/share?text=${sharedTextEncoded}&url=${urlEncoded}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            </WhatsappShareButton>
+            <TwitterShareButton
+              url={url}
+              title={shareText}
               className="share-link"
             >
               <ListItem button>
@@ -148,11 +146,11 @@ class ShareModal extends Component {
                 </ListItemAvatar>
                 <ListItemText primary="Compartir en Twitter" />
               </ListItem>
-            </a>
-            <a
-              href={`mailto:?subject=${sharedTextEncoded}&body=${sharedLongTextEncoded}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            </TwitterShareButton>
+            <EmailShareButton
+              url={url}
+              subject={shareText}
+              body={sharedLongTextEncoded}
               className="share-link"
             >
               <ListItem button>
@@ -163,7 +161,7 @@ class ShareModal extends Component {
                 </ListItemAvatar>
                 <ListItemText primary="Compartir por correo electrónico" />
               </ListItem>
-            </a>
+            </EmailShareButton>
             <ListItem button className="cancel-button" onClick={close}>
               <ListItemText primary="Cancelar" />
             </ListItem>
