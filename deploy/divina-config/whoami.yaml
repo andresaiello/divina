@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: List
+
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: whoami
+
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: whoami
+    namespace: whoami
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: whoami
+      spec:
+        containers:
+        - name: whoami
+          image: nginxdemos/hello
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 80
+            name: http
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: whoami
+    namespace: whoami
+  spec:
+    ports:
+    - port: 80
+      targetPort: http
+      name: http
+    selector:
+      app: whoami
+
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: whoami
+    namespace: whoami
+    labels:
+      app: whoami
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "false"
+  spec:
+    rules:
+    - host: whoami.divinaapp.com
+      http:
+        paths:
+        - backend:
+            serviceName: whoami
+            servicePort: http
+          path: /
+
+
+

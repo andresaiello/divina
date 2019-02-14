@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: List
+
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: app
+
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: app
+    namespace: app
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          app: app
+      spec:
+        containers:
+        - name: app
+          image: docker.io/aaiello/divina
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3004
+            name: http
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: app
+    namespace: app
+  spec:
+    ports:
+    - port: 80
+      targetPort: http
+      name: http
+    selector:
+      app: app
+
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: app
+    namespace: app
+    labels:
+      app: app
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "true"
+  spec:
+    rules:
+    - host: app.divinaapp.com
+      http:
+        paths:
+        - backend:
+            serviceName: app
+            servicePort: http
+          path: /
+
+
+

@@ -1,0 +1,63 @@
+apiVersion: v1
+kind: List
+
+items:
+- apiVersion: v1
+  kind: Namespace
+  metadata:
+    name: mongo
+
+- apiVersion: extensions/v1beta1
+  kind: Deployment
+  metadata:
+    name: mongo
+    namespace: mongo
+  spec:
+    replicas: 1
+    template:
+      metadata:
+        labels:
+          mongo: mongo
+      spec:
+        containers:
+        - name: mongo
+          image: docker.io/aaiello/divina:latest
+          imagePullPolicy: Always
+          ports:
+          - containerPort: 3004
+            name: http
+
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: mongo
+    namespace: mongo
+  spec:
+    ports:
+    - port: 80
+      targetPort: http
+      name: http
+    selector:
+      mongo: mongo
+
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    name: mongo
+    namespace: mongo
+    labels:
+      mongo: mongo
+    annotations:
+      ingress.kubernetes.io/ssl-redirect: "true"
+  spec:
+    rules:
+    - host: mongo.divinamongo.com
+      http:
+        paths:
+        - backend:
+            serviceName: mongo
+            servicePort: http
+          path: /
+
+mongodb://divinaapp:k6gbTKbThhKrD5b1@ds059692.mlab.com:59692/divina-app
+
