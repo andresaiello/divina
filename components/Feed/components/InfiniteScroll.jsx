@@ -1,6 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import propTypes from 'prop-types';
 
+const FOOTER_HEIGHT = 60;
+
 export default class InfiniteScroll extends Component {
   static propTypes = {
     onScrollBottom: propTypes.func.isRequired,
@@ -22,7 +24,7 @@ export default class InfiniteScroll extends Component {
     const scrollHeight = (document.documentElement && document.documentElement.scrollHeight)
       || document.body.scrollHeight;
     const clientHeight = document.documentElement.clientHeight || window.innerHeight;
-    const scrolledToBottom = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+    const scrolledToBottom = Math.ceil(scrollTop + clientHeight + FOOTER_HEIGHT) >= scrollHeight;
 
     console.log(scrollTop);
     console.log(scrollHeight);
