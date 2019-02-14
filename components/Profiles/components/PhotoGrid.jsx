@@ -7,6 +7,7 @@ import { Image, Loader } from '~/components/shared';
 import { Link } from '~/server/routes';
 import { PROFILE_GET_POSTS } from '~/lib/queries';
 
+const imageHeight = 80;
 
 const StyledPhotoGrid = styled.div`
   display: grid;

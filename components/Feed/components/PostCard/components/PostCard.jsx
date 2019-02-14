@@ -130,7 +130,7 @@ class PostCard extends Component {
         />
         <Image
           className="cardPic"
-          // height="351"
+          height="350"
           fitCover
           src={picUrl}
           withLoader
