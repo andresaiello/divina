@@ -91,7 +91,13 @@ class ShareModal extends Component {
     } = this.props;
     const { user } = this.context;
     const url = `${SERVER_URL}/foto/${username}/${postId}`;
+
     const shareText = `Ver esta foto de Divina de ${username}`;
+
+    const urlEncoded = encodeURI(url);
+    const sharedTextEncoded = encodeURI(shareText);
+    const sharedLongTextEncoded = `${sharedTextEncoded}%3A${urlEncoded}`;
+
 
     return (
       <StyledDialog open={isOpen} onClose={close} aria-labelledby="share-title">
@@ -99,7 +105,7 @@ class ShareModal extends Component {
         <div>
           <List>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?app_id=${FB_APP_ID}&u=${encodeURIComponent(url)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?app_id=${FB_APP_ID}&u=${urlEncoded}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -114,7 +120,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`whatsapp://send/?text=${encodeURIComponent(shareText)}%3A%20${encodeURIComponent(url)}`}
+              href={`whatsapp://send/?text=${sharedLongTextEncoded}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -129,7 +135,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`https://twitter.com/share?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`}
+              href={`https://twitter.com/share?text=${sharedTextEncoded}&url=${urlEncoded}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -144,7 +150,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(shareText)}%3A%20${encodeURIComponent(url)}`}
+              href={`mailto:?subject=${sharedTextEncoded}&body=${sharedLongTextEncoded}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
