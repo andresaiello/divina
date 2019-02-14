@@ -25,7 +25,7 @@ function HeadAppBar (props) {
   return (
     <StyledAppBar position="static" {...props}>
       <Toolbar className="toolbar">
-        <Typography variant="h6" color="inherit">
+        <Typography variant="h6" color="inherit" className="disable-select">
           Divina
         </Typography>
       </Toolbar>
