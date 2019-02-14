@@ -28,6 +28,10 @@ const StyledCard = styled(Card)`
   .actions {
     justify-content: space-between;
   }
+
+  .cardPic{
+    height: 100vw;
+  }
 `;
 
 class PostCard extends Component {
@@ -126,7 +130,7 @@ class PostCard extends Component {
         />
         <Image
           className="cardPic"
-          height="350"
+          // height="351"
           fitCover
           src={picUrl}
           withLoader
