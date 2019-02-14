@@ -99,7 +99,7 @@ class ShareModal extends Component {
         <div>
           <List>
             <a
-              href={`https://www.facebook.com/sharer/sharer.php?app_id=${FB_APP_ID}&u=${encodeURI(url)}`}
+              href={`https://www.facebook.com/sharer/sharer.php?app_id=${FB_APP_ID}&u=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -114,7 +114,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`whatsapp://send/?text=${encodeURI(shareText)}%3A%20${encodeURI(url)}`}
+              href={`whatsapp://send/?text=${encodeURIComponent(shareText)}%3A%20${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -129,7 +129,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`https://twitter.com/share?text=${encodeURI(shareText)}&url=${encodeURI(url)}`}
+              href={`https://twitter.com/share?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
@@ -144,7 +144,7 @@ class ShareModal extends Component {
               </ListItem>
             </a>
             <a
-              href={`mailto:?subject=${encodeURI(shareText)}&body=${encodeURI(shareText)}%3A%20${encodeURI(url)}`}
+              href={`mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(shareText)}%3A%20${encodeURIComponent(url)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="share-link"
