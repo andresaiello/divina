@@ -28,6 +28,10 @@ const StyledCard = styled(Card)`
   .actions {
     justify-content: space-between;
   }
+
+  .cardPic{
+    height: 100vw;
+  }
 `;
 
 class PostCard extends Component {

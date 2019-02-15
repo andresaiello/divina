@@ -12,7 +12,7 @@ const StyledPictureDetails = styled.article`
   height: 100vh;
 
   .image {
-    height: 50vh;
+    height: 100vw;
   }
 `;
 

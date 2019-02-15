@@ -14,8 +14,22 @@ import {
   FaFacebookF, FaWhatsapp, FaTwitter, FaEnvelope,
 } from 'react-icons/fa';
 
+import getConfig from 'next/config';
+
+import {
+  FacebookShareButton, WhatsappShareButton, TwitterShareButton, EmailShareButton,
+} from 'react-share';
+
+const { publicRuntimeConfig } = getConfig();
+const { SERVER_URL } = publicRuntimeConfig;
+
+
 const StyledDialog = styled(Dialog)`
   && {
+    div+div{
+      overflow-x: hidden;
+    }
+
     a {
       text-decoration: none;
     }
@@ -80,19 +94,20 @@ class ShareModal extends Component {
       isOpen, postId, close, username,
     } = this.props;
     const { user } = this.context;
-    const url = 'http://localhost:3004/foto/aaiello/5c61ac925bd5ef0017f83d8e';
+    const url = `${SERVER_URL}/foto/${username}/${postId}`;
+    const shareText = `Ver esta foto de Divina de ${username}`;
+    const sharedLongTextEncoded = `${shareText} ${url}`;
 
-    const fbId = '1217981644879628'; // @todo FAKE!!!
 
     return (
       <StyledDialog open={isOpen} onClose={close} aria-labelledby="share-title">
         <DialogTitle id="share-title">Compartir</DialogTitle>
         <div>
           <List>
-            <a
-              href={`https://www.facebook.com/sharer/sharer.php?app_id=${fbId}&u=${encodeURI(url)}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <FacebookShareButton
+              url={url}
+              title={shareText}
+              quote={shareText}
               className="share-link"
             >
               <ListItem button>
@@ -103,11 +118,10 @@ class ShareModal extends Component {
                 </ListItemAvatar>
                 <ListItemText primary="Compartir en Facebook" />
               </ListItem>
-            </a>
-            <a
-              href={`whatsapp://send/?text=Ver%20esta%20foto%20de%20Divina%20de%20%40${username}%3A%20${encodeURI(url)}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            </FacebookShareButton>
+            <WhatsappShareButton
+              url={url}
+              title={shareText}
               className="share-link"
             >
               <ListItem button>
@@ -118,11 +132,10 @@ class ShareModal extends Component {
                 </ListItemAvatar>
                 <ListItemText primary="Compartir en Whatsapp" />
               </ListItem>
-            </a>
-            <a
-              href={`https://twitter.com/share?text=Ver%20esta%20foto%20de%20Divina%20de%20%40${username}&url=${encodeURI(url)}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            </WhatsappShareButton>
+            <TwitterShareButton
+              url={url}
+              title={shareText}
               className="share-link"
             >
               <ListItem button>
@@ -133,11 +146,11 @@ class ShareModal extends Component {
                 </ListItemAvatar>
                 <ListItemText primary="Compartir en Twitter" />
               </ListItem>
-            </a>
-            <a
-              href={`mailto:?subject=Ver%20esta%20foto%20de%Divina%20de%20%40${username}&body=Ver%20esta%20foto%20de%20Divina%20de%20%40${username}%3A%20${encodeURI(url)}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            </TwitterShareButton>
+            <EmailShareButton
+              url={url}
+              subject={shareText}
+              body={sharedLongTextEncoded}
               className="share-link"
             >
               <ListItem button>
@@ -148,7 +161,7 @@ class ShareModal extends Component {
                 </ListItemAvatar>
                 <ListItemText primary="Compartir por correo electrónico" />
               </ListItem>
-            </a>
+            </EmailShareButton>
             <ListItem button className="cancel-button" onClick={close}>
               <ListItemText primary="Cancelar" />
             </ListItem>

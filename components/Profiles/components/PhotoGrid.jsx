@@ -15,6 +15,11 @@ const StyledPhotoGrid = styled.div`
   grid-template-columns: 32% 32% 32%;
   grid-row-gap: 5px;
   justify-content: space-between;
+
+  .cardPic{
+    width:calc(100vw / 3 - 8px);
+    height:calc(100vw / 3 - 8px);
+  }
 `;
 
 export default function PhotoGrid ({ userId, username }) {
@@ -45,8 +50,8 @@ export default function PhotoGrid ({ userId, username }) {
             {profilePosts.map(post => (
               <Link route="pictureDetails" params={{ username, postId: post._id }} key={post._id} prefetch>
                 <Image
+                  className="cardPic"
                   fitCover
-                  height={imageHeight}
                   src={post.picUrl}
                   alt="Foto de perfil"
                 />
