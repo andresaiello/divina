@@ -35,7 +35,7 @@ const StyledDialog = styled(Dialog)`
     }
 
     #share-title {
-      border-bottom: 1px solid #efefef;
+      border-bottom: 1px solid #EFEFEF;
     }
 
     #share-title h6 {

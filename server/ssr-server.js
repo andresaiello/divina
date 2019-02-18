@@ -47,7 +47,7 @@ app.prepare()
       resolvers,
       cors: { credentials: 'include' },
       context: ({ req }) => ({
-        user: req.user,
+        loggedUser: req.user,
       }),
     });
 

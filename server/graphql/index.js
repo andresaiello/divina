@@ -7,6 +7,8 @@ const Followers = require('../models/Followers');
 const Following = require('../models/Following');
 const User = require('../models/User');
 
+const { missing } = require('../util');
+
 const typeDefs = gql`
   type Comment {
     _id: String
@@ -110,9 +112,8 @@ const resolvers = {
       const newComment = await PostComment.addNew({ postId, author, comment });
       return newComment;
     },
-    likePost: async (_, { postId }, { user }) => {
-      const author = user._id;
-      if (!author) throw new Error('User not logged in');
+    likePost: async (_, { postId }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
 
       try {
         await PostLikes.addLike({ postId, user: author });
@@ -122,9 +123,8 @@ const resolvers = {
         throw e;
       }
     },
-    unlikePost: async (_, { postId }, { user }) => {
-      const author = user._id;
-      if (!author) throw new Error('User not logged in');
+    unlikePost: async (_, { postId }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
 
       try {
         await PostLikes.removeLike({ postId, user: author });
@@ -134,9 +134,8 @@ const resolvers = {
         throw e;
       }
     },
-    followUser: async (_, { userToFollow }, { user }) => {
-      const author = user._id;
-      if (!author) throw new Error('User not logged in');
+    followUser: async (_, { userToFollow }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
 
       // @todo: ensure that both operations were successful, if 1 was and other not, revert the one that was
       const addFollower = Followers.addFollower({ owner: userToFollow, newFollower: author });
@@ -150,9 +149,8 @@ const resolvers = {
         throw e;
       }
     },
-    unfollowUser: async (_, { userToUnfollow }, { user }) => {
-      const author = user._id;
-      if (!author) throw new Error('User not logged in');
+    unfollowUser: async (_, { userToUnfollow }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
 
       // @todo: ensure that both operations were successful, if 1 was and other not, revert the one that was
       const removeFollower = Followers.removeFollower({ owner: userToUnfollow, followerToRemove: author });
@@ -173,10 +171,12 @@ const resolvers = {
       return { nodes };
     },
     likes: async ({ _id }) => PostLikes.findByPost({ postId: _id }),
-    liked: async ({ _id }, _, context) => PostLikes.isPostLiked({ _id, author: context.user && context.user._id }),
-    authorFollowed: async ({ author }, _, context) => console.log(context) || Followers.isFollowedBy({
+    liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => (
+      PostLikes.isPostLiked({ _id, author: loggedUser._id })
+    ),
+    authorFollowed: async ({ author }, _, { loggedUser = missing('needLogin') }) => Followers.isFollowedBy({
       owner: author._id,
-      followedBy: context.user && context.user._id,
+      followedBy: loggedUser && loggedUser._id,
     }),
   },
   Profile: {
