@@ -10,6 +10,7 @@ routes
   .add('myProfile', '/mi-perfil')
   .add('pictureDetails', '/foto/:username/:postId')
   .add('profile', '/perfil/:username')
-  .add('uploadPicture', '/subir-foto/:picUrl');
+  .add('uploadPicture', '/subir-foto/:picUrl')
+  .add('embeddedBrowser', '/browser');
 
 module.exports = routes;
