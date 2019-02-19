@@ -1,6 +1,9 @@
 const express = require('express');
 const next = require('next');
 const { ApolloServer } = require('apollo-server-express');
+const http = require('http');
+
+
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -47,25 +50,29 @@ app.prepare()
       resolvers,
       cors: { credentials: 'include' },
       context: ({ req }) => ({
-        loggedUser: req.user,
+        loggedUser: req ? req.user : 'ANON', // @todo: no anda cuando se usan socks
       }),
     });
 
     apolloServer.applyMiddleware({ app: server });
 
-    server.use('/', authRouter);
+    const httpServer = http.createServer(server);
+    apolloServer.installSubscriptionHandlers(httpServer);
+
+    // server.use('/', authRouter);
     server.use('/api/', apiRouter);
     server.use('/api/', userRouter);
 
-    server.use('/', handler);
+    // server.use('/', handler);
 
     server.get('*', (req, res) => handle(req, res));
 
-    server.listen(PORT, (err) => {
+    httpServer.listen(PORT, (err) => {
       if (err) throw err;
       console.log(`Running in ${ENV} mode`);
       console.log(`> Server ready on http://localhost:${PORT}`);
       console.log(`> GraphQL server: http://localhost:${PORT}${apolloServer.graphqlPath}`);
+      console.log(`> GraphQL Subscriptions ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`);
     });
   })
   .catch((ex) => {
