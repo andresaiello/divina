@@ -1,4 +1,10 @@
 const { gql } = require('apollo-server-express');
+const { PubSub, withFilter } = require('apollo-server-express');
+
+// const { Message } = require('../models/message');
+const menssages = []
+
+const pubsub = new PubSub();
 
 const Post = require('../models/Post');
 const PostLikes = require('../models/PostLikes');
@@ -8,6 +14,9 @@ const Following = require('../models/Following');
 const User = require('../models/User');
 
 const { missing } = require('../util');
+
+const MESSAGE_CREATED = 'MESSAGE_CREATED';
+const MESSAGE_UPDATED = 'MESSAGE_UPDATED';
 
 const typeDefs = gql`
   type Comment {
@@ -61,12 +70,33 @@ const typeDefs = gql`
     hasNextPage: Boolean!
   }
 
+  
+
+
+  type Message {
+        id: Int!,
+        from: String!,
+        text: String!,
+        isFavorite: Boolean!
+    }
+
+    type Subscription {
+      messageCreated: Message
+       messageUpdated(id: Int!): Message
+    }
+
+
+
+
   type Query {
     comments (postId: String!): Comments
     post (_id: String!): Post
     posts (startingDate: String, amount: Int, username: String): Posts
     profile (username: String): Profile
     profilePosts (_id: String!): [Post]
+
+    allMessages: [Message]
+    fetchMessage(id: Int!): Message
   }
 
   type Mutation {
@@ -78,7 +108,18 @@ const typeDefs = gql`
     unlikePost (postId: String!): User
     followUser (userToFollow: String!): User
     unfollowUser (userToUnfollow: String!): User
+
+    createMessage (
+            text: String!
+        ): Message
+        updateMessage (
+           id: Int!
+           text: String!
+           isFavorite: Boolean!
+       ): Message
   }
+
+
 `;
 
 const resolvers = {
@@ -103,6 +144,13 @@ const resolvers = {
       const { nodes = [] } = await Post.getByAuthor({ author: _id });
       return nodes;
     },
+    allMessages () {
+      return menssages;
+    },
+    fetchMessage (_, { id }) {
+      return menssages[0];
+    },
+
   },
   Mutation: {
     createPost: async (_, { author, caption, picUrl }) => {
@@ -173,7 +221,34 @@ const resolvers = {
         throw e;
       }
     },
+
+    async createMessage (_, { text }) {
+      const message = { id: menssages.length + 1, from: 'andy', text };
+      menssages.push(message);
+      await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
+      return message;
+    },
+    async updateMessage (_, { id, text, isFavorite }) {
+      const message = { from: 'andy', text };
+      menssages.push(message);
+      await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
+      return message;
+    },
+
   },
+
+  Subscription: {
+    messageCreated: {
+      subscribe: () => pubsub.asyncIterator([MESSAGE_CREATED]),
+    },
+    messageUpdated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator('MESSAGE_UPDATED'),
+        (payload, variables) => payload.messageUpdated.id === variables.id,
+      ),
+    },
+  },
+
   Post: {
     comments: async ({ _id }) => {
       const nodes = await PostComment.findByPost({ postId: _id });
