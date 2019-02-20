@@ -59,11 +59,11 @@ app.prepare()
     const httpServer = http.createServer(server);
     apolloServer.installSubscriptionHandlers(httpServer);
 
-    // server.use('/', authRouter);
+    server.use('/', authRouter);
     server.use('/api/', apiRouter);
     server.use('/api/', userRouter);
 
-    // server.use('/', handler);
+    server.use('/', handler);
 
     server.get('*', (req, res) => handle(req, res));
 
