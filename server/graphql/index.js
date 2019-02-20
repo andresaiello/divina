@@ -1,4 +1,10 @@
 const { gql } = require('apollo-server-express');
+const { PubSub, withFilter } = require('apollo-server-express');
+
+// const { Message } = require('../models/message');
+const menssages = [];
+
+const pubsub = new PubSub();
 
 const Post = require('../models/Post');
 const PostLikes = require('../models/PostLikes');
@@ -6,6 +12,11 @@ const PostComment = require('../models/PostComment');
 const Followers = require('../models/Followers');
 const Following = require('../models/Following');
 const User = require('../models/User');
+
+const { missing } = require('../util');
+
+const MESSAGE_CREATED = 'MESSAGE_CREATED';
+const MESSAGE_UPDATED = 'MESSAGE_UPDATED';
 
 const typeDefs = gql`
   type Comment {
@@ -48,6 +59,7 @@ const typeDefs = gql`
   type User {
     _id: String
     username: String
+    description: String
     profilePic: String
     followers: [User]
     following: [User]
@@ -58,23 +70,56 @@ const typeDefs = gql`
     hasNextPage: Boolean!
   }
 
+  
+
+
+  type Message {
+        id: Int!,
+        from: String!,
+        text: String!,
+        isFavorite: Boolean!
+    }
+
+    type Subscription {
+      messageCreated: Message
+       messageUpdated(id: Int!): Message
+    }
+
+
+
+
   type Query {
     comments (postId: String!): Comments
     post (_id: String!): Post
     posts (startingDate: String, amount: Int, username: String): Posts
-    profile (username: String!): Profile
+    profile (username: String): Profile
     profilePosts (_id: String!): [Post]
+
+    allMessages: [Message]
+    fetchMessage(id: Int!): Message
   }
 
   type Mutation {
     createPost (author: String!, caption: String!, picUrl: String!): Post
     commentPost (postId: String!, author: String!, comment: String!): Comment
+    editUserDescription (description: String!): User
     editPost (_id: String!, caption: String!): Post
     likePost (postId: String!): User
     unlikePost (postId: String!): User
     followUser (userToFollow: String!): User
     unfollowUser (userToUnfollow: String!): User
+
+    createMessage (
+            text: String!
+        ): Message
+        updateMessage (
+           id: Int!
+           text: String!
+           isFavorite: Boolean!
+       ): Message
   }
+
+
 `;
 
 const resolvers = {
@@ -88,13 +133,22 @@ const resolvers = {
       const { nodes, lastCursor, hasNextPage } = await Post.getFeedPosts(args);
       return { nodes, pageInfo: { lastCursor, hasNextPage } };
     },
-    profile: async (_, { username }) => {
-      const user = await User.findByUsername(username);
+    profile: async (_, { username }, { loggedUser }) => {
+      let findBy = username;
+      if (!username) findBy = loggedUser.username;
+
+      const user = await User.findByUsername(findBy);
       return user ? { user } : null;
     },
     profilePosts: async (_, { _id }) => {
       const { nodes = [] } = await Post.getByAuthor({ author: _id });
       return nodes;
+    },
+    allMessages () {
+      return menssages;
+    },
+    fetchMessage (_, { id }) {
+      return menssages[0];
     },
   },
   Mutation: {
@@ -106,13 +160,16 @@ const resolvers = {
       const post = await Post.editPost({ _id, caption });
       return post;
     },
+    editUserDescription: async (_, { description }, { loggedUser = missing('needLogin') }) => {
+      const user = await User.editDescription({ _id: loggedUser._id, description });
+      return user;
+    },
     commentPost: async (_, { postId, author, comment }) => {
       const newComment = await PostComment.addNew({ postId, author, comment });
       return newComment;
     },
-    likePost: async (_, { postId }, { user }) => {
-      const author = user._id;
-      if (!author) throw new Error('User not logged in');
+    likePost: async (_, { postId }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
 
       try {
         await PostLikes.addLike({ postId, user: author });
@@ -122,9 +179,8 @@ const resolvers = {
         throw e;
       }
     },
-    unlikePost: async (_, { postId }, { user }) => {
-      const author = user._id;
-      if (!author) throw new Error('User not logged in');
+    unlikePost: async (_, { postId }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
 
       try {
         await PostLikes.removeLike({ postId, user: author });
@@ -134,9 +190,8 @@ const resolvers = {
         throw e;
       }
     },
-    followUser: async (_, { userToFollow }, { user }) => {
-      const author = user._id;
-      if (!author) throw new Error('User not logged in');
+    followUser: async (_, { userToFollow }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
 
       // @todo: ensure that both operations were successful, if 1 was and other not, revert the one that was
       const addFollower = Followers.addFollower({ owner: userToFollow, newFollower: author });
@@ -150,9 +205,8 @@ const resolvers = {
         throw e;
       }
     },
-    unfollowUser: async (_, { userToUnfollow }, { user }) => {
-      const author = user._id;
-      if (!author) throw new Error('User not logged in');
+    unfollowUser: async (_, { userToUnfollow }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
 
       // @todo: ensure that both operations were successful, if 1 was and other not, revert the one that was
       const removeFollower = Followers.removeFollower({ owner: userToUnfollow, followerToRemove: author });
@@ -166,17 +220,44 @@ const resolvers = {
         throw e;
       }
     },
+    async createMessage (_, { text }) {
+      const message = { id: menssages.length + 1, from: 'andy', text };
+      menssages.push(message);
+      await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
+      return message;
+    },
+    async updateMessage (_, { id, text, isFavorite }) {
+      const message = { from: 'andy', text };
+      menssages.push(message);
+      await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
+      return message;
+    },
   },
+
+  Subscription: {
+    messageCreated: {
+      subscribe: () => pubsub.asyncIterator([MESSAGE_CREATED]),
+    },
+    messageUpdated: {
+      subscribe: withFilter(
+        () => pubsub.asyncIterator('MESSAGE_UPDATED'),
+        (payload, variables) => payload.messageUpdated.id === variables.id,
+      ),
+    },
+  },
+
   Post: {
     comments: async ({ _id }) => {
       const nodes = await PostComment.findByPost({ postId: _id });
       return { nodes };
     },
     likes: async ({ _id }) => PostLikes.findByPost({ postId: _id }),
-    liked: async ({ _id }, _, context) => PostLikes.isPostLiked({ _id, author: context.user && context.user._id }),
-    authorFollowed: async ({ author }, _, context) => console.log(context) || Followers.isFollowedBy({
+    liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => (
+      PostLikes.isPostLiked({ _id, author: loggedUser._id })
+    ),
+    authorFollowed: async ({ author }, _, { loggedUser = missing('needLogin') }) => Followers.isFollowedBy({
       owner: author._id,
-      followedBy: context.user && context.user._id,
+      followedBy: loggedUser && loggedUser._id,
     }),
   },
   Profile: {

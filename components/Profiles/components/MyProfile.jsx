@@ -16,9 +16,7 @@ const StyledProfile = styled.article`
 
 function MyProfile (props) {
   const {
-    profile: {
-      postsCount, followersCount, followingCount, user: { _id, username, profilePic },
-    },
+    profile,
   } = props;
 
   const editProfile = (
@@ -31,11 +29,12 @@ function MyProfile (props) {
     <StyledProfile>
       <ProfileInfo
         action={editProfile}
-        followersCount={followersCount}
-        followingCount={followingCount}
-        {...{ username, profilePic, postsCount }}
+        followersCount={profile.followersCount}
+        followingCount={profile.followingCount}
+        postsCount={profile.postsCount}
+        {...{ ...profile.user }}
       />
-      <PhotoGrid userId={_id} username={username} />
+      <PhotoGrid userId={profile.user._id} username={profile.user.username} />
     </StyledProfile>
   );
 }

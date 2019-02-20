@@ -9,10 +9,11 @@ import withMainLayout from '~/HOCs/withMainLayout';
 import { Image, Input, LoadingScreen } from '~/components/shared';
 import secContext from '~/context/secContext';
 import { Router } from '~/server/routes';
+import ImageCrop from './ImageCrop';
 
 const Container = styled.div`
   display: grid;
-  
+
   .save {
     width: 50%;
     max-width: 200px;
@@ -29,10 +30,6 @@ class UploadPicture extends Component {
 
   state = {
     caption: '',
-  }
-
-  componentDidMount () {
-    return true;
   }
 
   editCaption = (e) => {
@@ -53,12 +50,7 @@ class UploadPicture extends Component {
       >
         {(createPost, { data }) => console.log(data) || (
         <Container>
-          <Image
-            className="image"
-            withLoader
-            src={picUrl}
-            alt="Post"
-          />
+          <ImageCrop picUrl={picUrl} />
           <Input
             onChange={this.editCaption}
             value={caption}

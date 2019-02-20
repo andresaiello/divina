@@ -36,6 +36,26 @@ userSchema.statics.createFromAuth0 = async function createFromAuth0 (data = {}) 
   return newUser.toObject();
 };
 
+userSchema.statics.editDescription = async function editDescription ({ _id, description }) {
+  try {
+    const user = await this.findOneAndUpdate(
+      { _id },
+      {
+        $set: {
+          description,
+        },
+      },
+    );
+
+    console.log(user);
+
+    return user.toObject();
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+};
+
 userSchema.statics.findByEmail = async function findByEmail (email) {
   try {
     const [existingUser] = await this

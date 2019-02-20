@@ -85,8 +85,9 @@ class ProfileInfo extends Component {
 
   render () {
     const {
-      action, username, profilePic, followersCount, followingCount, postsCount, ...rest
+      action, username, description, profilePic, followersCount, followingCount, postsCount, ...rest
     } = this.props;
+
 
     const { followersModalOpen, followingModalOpen } = this.state;
 
@@ -136,8 +137,7 @@ class ProfileInfo extends Component {
           </div>
         </div>
         <div className="details">
-          <div>Hola</div>
-          <div>Me gusta la moda</div>
+          <div>{description}</div>
         </div>
       </StyledProfileInfo>
     );

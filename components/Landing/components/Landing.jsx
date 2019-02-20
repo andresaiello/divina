@@ -10,7 +10,7 @@ const StyledLanding = styled.article`
   height: 100vh;
   width: 100%;
   color: white;
-  background-image: url('/static/background01.jpg');
+  background-image: url("/static/background01.jpg");
   background-size: cover;
 
   video {
