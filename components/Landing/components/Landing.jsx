@@ -15,7 +15,7 @@ const StyledLanding = styled.article`
 
   video {
     position: fixed;
-    min-width: 100%; 
+    min-width: 100%;
     min-height: 100%;
   }
 

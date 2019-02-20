@@ -17,7 +17,7 @@ function Transition (props) {
 }
 
 export default function FullscreenModal ({
-  isOpen, close, title, children,
+  isOpen, close, title, children, ...rest
 }) {
   return (
     <StyledDialog
@@ -25,6 +25,7 @@ export default function FullscreenModal ({
       open={isOpen}
       onClose={close}
       TransitionComponent={Transition}
+      {...rest}
     >
       <AppBar className="appBar">
         <Toolbar>

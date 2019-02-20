@@ -5,7 +5,7 @@ import { Query } from 'react-apollo';
 
 import { Image, Loader } from '~/components/shared';
 import { Link } from '~/server/routes';
-import { PROFILE_GET_POSTS } from '~/lib/queries';
+import { Profile } from '~/lib/graphql';
 
 const imageHeight = 80;
 
@@ -17,8 +17,8 @@ const StyledPhotoGrid = styled.div`
   justify-content: space-between;
 
   .cardPic{
-    width:calc(100vw / 3 - 8px);
-    height:calc(100vw / 3 - 8px);
+    width: calc(100vw / 3 - 8px);
+    height: calc(100vw / 3 - 8px);
   }
 `;
 
@@ -26,7 +26,7 @@ export default function PhotoGrid ({ userId, username }) {
   // @todo case: user has no posts
   return (
     <Query
-      query={PROFILE_GET_POSTS}
+      query={Profile.Queries.GET_POSTS}
       variables={{ _id: userId }}
     >
       {({ data, loading, error }) => {

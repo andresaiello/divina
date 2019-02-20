@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { Component } from 'react';
+import propTypes from 'prop-types';
+import { EditPost } from '~/components/EditPost';
 import { Query } from 'react-apollo';
-
-import { PictureDetails as PictureDetailsGQL } from '~/lib/graphql';
-import { PictureDetails } from '~/components/PictureDetails';
 import { LoadingScreen } from '~/components/shared';
+import { PictureDetails } from '~/lib/graphql';
 
-export default class extends React.Component {
+export default class extends Component {
+  static propTypes = {
+    postId: propTypes.string.isRequired,
+  }
+
   static async getInitialProps ({ query }) {
     return { ...query };
   }
@@ -15,7 +19,7 @@ export default class extends React.Component {
 
     return (
       <Query
-        query={PictureDetailsGQL.Queries.GET_DETAILS}
+        query={PictureDetails.Queries.GET_DETAILS}
         variables={{ _id: postId }}
       >
         {({ data: postData, loading, error }) => (loading
@@ -23,8 +27,8 @@ export default class extends React.Component {
           : error
             ? <div>Error!</div> // @todo: better error message
             : !postData.post || !postData.post.author
-              ? <div>El perfil no existe!</div> // @todo: better error message
-              : <PictureDetails {...{ ...postData.post, postId }} />
+              ? <div>No existe!</div> // @todo: better error message
+              : <EditPost {...{ ...postData.post, postId }} />
         )}
       </Query>
     );

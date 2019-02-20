@@ -12,7 +12,6 @@ import SecContext from '~/context/secContext';
 import timeAgo from '~/lib/timeAgo';
 import { Link } from '~/server/routes';
 import { Image, FollowButton, LikeButton } from '~/components/shared';
-import { FEED_GET_POSTS } from '~/lib/queries';
 
 import CommentsModal from './CommentsModal';
 import ShareModal from './ShareModal';
@@ -58,36 +57,6 @@ class PostCard extends Component {
     this.setState({ isShareModalOpen: false });
   };
 
-  followCacheUpdate = (cache, { data }) => {
-    const prevQuery = cache.readQuery({ query: FEED_GET_POSTS, variables: { amount: 2 } });
-
-    const newNodes = prevQuery.posts.nodes.map((n) => {
-      if (n.author._id === data.followUser._id) return { ...n, authorFollowed: true };
-      return n;
-    });
-
-    cache.writeQuery({
-      query: FEED_GET_POSTS,
-      variables: { amount: 2 },
-      data: { ...prevQuery, posts: { ...prevQuery.posts, nodes: newNodes } },
-    });
-  }
-
-  unfollowCacheUpdate = (cache, { data }) => {
-    const prevQuery = cache.readQuery({ query: FEED_GET_POSTS, variables: { amount: 2 } });
-
-    const newNodes = prevQuery.posts.nodes.map((n) => {
-      if (n.author._id === data.unfollowUser._id) return { ...n, authorFollowed: false };
-      return n;
-    });
-
-    cache.writeQuery({
-      query: FEED_GET_POSTS,
-      variables: { amount: 2 },
-      data: { ...prevQuery, posts: { ...prevQuery.posts, nodes: newNodes } },
-    });
-  }
-
   render () {
     const {
       _id, liked, authorFollowed, author, picUrl, caption, createdAt,
@@ -112,9 +81,7 @@ class PostCard extends Component {
               <FollowButton
                 author={user && user._id}
                 receiver={author._id}
-                isFollowing={authorFollowed}
-                followCacheUpdate={this.followCacheUpdate}
-                unfollowCacheUpdate={this.unfollowCacheUpdate}
+                isFollowing={authorFollowed.isFollowing}
               />
               <IconButton>
                 <MoreVert />
@@ -145,7 +112,7 @@ class PostCard extends Component {
           <div>
             <LikeButton
               author={user && user._id}
-              liked={liked}
+              liked={liked.isLiked}
               postId={_id}
             />
             <IconButton onClick={this.openCommentsModal} aria-label="Comment">
@@ -166,8 +133,14 @@ class PostCard extends Component {
 PostCard.propTypes = {
   _id: propTypes.string.isRequired,
   picUrl: propTypes.string.isRequired,
-  liked: propTypes.bool.isRequired,
-  authorFollowed: propTypes.bool.isRequired,
+  liked: propTypes.shape({
+    _id: propTypes.string.isRequired,
+    isLiked: propTypes.bool.isRequired,
+  }).isRequired,
+  authorFollowed: propTypes.shape({
+    _id: propTypes.string.isRequired,
+    isFollowing: propTypes.bool.isRequired,
+  }).isRequired,
   author: propTypes.shape({
     _id: propTypes.string.isRequired,
     username: propTypes.string.isRequired,

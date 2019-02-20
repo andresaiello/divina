@@ -5,6 +5,7 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  picId: { type: String, required: true },
   picUrl: { type: String, required: true },
   caption: { type: String, default: '' },
 }, { timestamps: true });
@@ -44,9 +45,13 @@ postSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
   return { nodes };
 };
 
-postSchema.statics.createPost = async function createPost ({ author, picUrl, caption }) {
+postSchema.statics.createPost = async function createPost ({
+  author, picUrl, picId, caption,
+}) {
   const { _id } = await this
-    .create({ author, picUrl, caption });
+    .create({
+      author, picUrl, picId, caption,
+    });
 
   const post = await this.getById(_id);
 
