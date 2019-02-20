@@ -17,8 +17,8 @@ const StyledPhotoGrid = styled.div`
   justify-content: space-between;
 
   .cardPic{
-    width:calc(100vw / 3 - 8px);
-    height:calc(100vw / 3 - 8px);
+    width: calc(100vw / 3 - 8px);
+    height: calc(100vw / 3 - 8px);
   }
 `;
 

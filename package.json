@@ -53,6 +53,7 @@
     "react-icons": "3.4.0",
     "react-iframe": "1.4.0",
     "react-image": "^2.0.0",
+    "react-image-crop": "^6.0.13",
     "react-jss": "^8.6.1",
     "react-share": "2.4.0",
     "styled-components": "^4.1.3",

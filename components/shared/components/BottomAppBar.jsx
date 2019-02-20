@@ -97,7 +97,6 @@ class BottomAppBar extends Component {
     Router.pushRoute('uploadPicture', { picUrl: response.secure_url });
   }
 
-
   render () {
     const { uploading } = this.state;
 

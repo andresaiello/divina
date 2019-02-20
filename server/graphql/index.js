@@ -2,7 +2,7 @@ const { gql } = require('apollo-server-express');
 const { PubSub, withFilter } = require('apollo-server-express');
 
 // const { Message } = require('../models/message');
-const menssages = []
+const menssages = [];
 
 const pubsub = new PubSub();
 
@@ -59,6 +59,7 @@ const typeDefs = gql`
   type User {
     _id: String
     username: String
+    description: String
     profilePic: String
     followers: [User]
     following: [User]
@@ -91,7 +92,7 @@ const typeDefs = gql`
     comments (postId: String!): Comments
     post (_id: String!): Post
     posts (startingDate: String, amount: Int, username: String): Posts
-    profile (username: String!): Profile
+    profile (username: String): Profile
     profilePosts (_id: String!): [Post]
 
     allMessages: [Message]
@@ -101,6 +102,7 @@ const typeDefs = gql`
   type Mutation {
     createPost (author: String!, caption: String!, picUrl: String!): Post
     commentPost (postId: String!, author: String!, comment: String!): Comment
+    editUserDescription (description: String!): User
     editPost (_id: String!, caption: String!): Post
     likePost (postId: String!): User
     unlikePost (postId: String!): User
@@ -131,8 +133,11 @@ const resolvers = {
       const { nodes, lastCursor, hasNextPage } = await Post.getFeedPosts(args);
       return { nodes, pageInfo: { lastCursor, hasNextPage } };
     },
-    profile: async (_, { username }) => {
-      const user = await User.findByUsername(username);
+    profile: async (_, { username }, { loggedUser }) => {
+      let findBy = username;
+      if (!username) findBy = loggedUser.username;
+
+      const user = await User.findByUsername(findBy);
       return user ? { user } : null;
     },
     profilePosts: async (_, { _id }) => {
@@ -145,7 +150,6 @@ const resolvers = {
     fetchMessage (_, { id }) {
       return menssages[0];
     },
-
   },
   Mutation: {
     createPost: async (_, { author, caption, picUrl }) => {
@@ -155,6 +159,10 @@ const resolvers = {
     editPost: async (_, { _id, caption }) => {
       const post = await Post.editPost({ _id, caption });
       return post;
+    },
+    editUserDescription: async (_, { description }, { loggedUser = missing('needLogin') }) => {
+      const user = await User.editDescription({ _id: loggedUser._id, description });
+      return user;
     },
     commentPost: async (_, { postId, author, comment }) => {
       const newComment = await PostComment.addNew({ postId, author, comment });
@@ -212,7 +220,6 @@ const resolvers = {
         throw e;
       }
     },
-
     async createMessage (_, { text }) {
       const message = { id: menssages.length + 1, from: 'andy', text };
       menssages.push(message);
@@ -225,7 +232,6 @@ const resolvers = {
       await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
       return message;
     },
-
   },
 
   Subscription: {
