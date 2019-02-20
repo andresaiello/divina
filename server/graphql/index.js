@@ -2,7 +2,7 @@ const { gql } = require('apollo-server-express');
 const { PubSub, withFilter } = require('apollo-server-express');
 
 // const { Message } = require('../models/message');
-const menssages = []
+const menssages = [];
 
 const pubsub = new PubSub();
 
@@ -150,7 +150,6 @@ const resolvers = {
     fetchMessage (_, { id }) {
       return menssages[0];
     },
-
   },
   Mutation: {
     createPost: async (_, { author, caption, picUrl }) => {
@@ -221,7 +220,6 @@ const resolvers = {
         throw e;
       }
     },
-
     async createMessage (_, { text }) {
       const message = { id: menssages.length + 1, from: 'andy', text };
       menssages.push(message);
@@ -234,7 +232,6 @@ const resolvers = {
       await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
       return message;
     },
-
   },
 
   Subscription: {
