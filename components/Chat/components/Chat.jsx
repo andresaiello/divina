@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
+import { isFetchingMore, isRefreshing } from '~/util';
+
 import withMainLayout from '~/HOCs/withMainLayout';
 
 import PageVisibility from 'react-page-visibility';
@@ -17,15 +19,16 @@ const StyledChat = styled.div`
 
 const Chat = class extends React.Component {
   state = {
-    isVisible: null,
+    doRefetch: null,
   }
 
   handleVisibilityChange = (isVisible) => {
     console.log(isVisible);
-    this.setState({ isVisible });
+    this.setState({ doRefetch: isVisible });
   }
 
   render () {
+    const { doRefetch } = this.state;
     return (
       <PageVisibility onChange={this.handleVisibilityChange}>
         <Query query={CHAT_GET_MSG}>
@@ -39,7 +42,7 @@ const Chat = class extends React.Component {
             if (loading && !isRefreshing(networkStatus)) loader = <Loader height="150" />;
             // @todo set a good error message
             if (error) errorMessage = <div>Error!</div>;
-            if (this.state.isVisible) { refetch(); }
+            if (doRefetch) { refetch(); this.setState({ doRefetch: false }); }
             // @todo add timeout and no connection error message to refetch and fetch more
 
 
