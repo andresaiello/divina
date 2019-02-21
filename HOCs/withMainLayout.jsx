@@ -6,7 +6,7 @@ import withRouteProgress from './withRouteProgress';
 
 const GlobalStyle = createGlobalStyle`
   body {
-    padding: 0 0 55px;
+    padding: 0;
   }
 
   .disable-select{

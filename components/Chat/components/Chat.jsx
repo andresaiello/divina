@@ -12,7 +12,6 @@ import MessageList from './MessageList';
 import InputText from './InputText';
 import { CHAT_GET_MSG, CHAT_SUB_NEW_MSG } from '~/lib/queries';
 
-
 const StyledChat = styled.div`
 
 `;
@@ -23,12 +22,12 @@ const Chat = class extends React.Component {
   }
 
   handleVisibilityChange = (isVisible) => {
-    console.log(isVisible);
     this.setState({ doRefetch: isVisible });
   }
 
   render () {
     const { doRefetch } = this.state;
+
     return (
       <PageVisibility onChange={this.handleVisibilityChange}>
         <Query query={CHAT_GET_MSG}>
@@ -59,7 +58,7 @@ const Chat = class extends React.Component {
             });
             return (
               <StyledChat>
-                <MessageList allMessages={allMessages} subscribeToMore={more} />
+                <MessageList allMessages={allMessages || []} subscribeToMore={more} />
                 <InputText />
               </StyledChat>);
           }}
