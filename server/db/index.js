@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
+const getConfig = require('../../next.config.js');
+
+const { MONGO_SERVER_URL } = getConfig.serverRuntimeConfig;
 
 module.exports = {
   connect: () => {
-    const dbURI = 'mongodb://divinaapp:k6gbTKbThhKrD5b1@ds059692.mlab.com:59692/divina-app';
+    const dbURI = MONGO_SERVER_URL;
 
     mongoose.set('useFindAndModify', false);
 
