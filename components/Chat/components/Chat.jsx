@@ -1,89 +1,52 @@
 import React from 'react';
-import gql from 'graphql-tag';
+import styled from 'styled-components';
 import { Query } from 'react-apollo';
+import withMainLayout from '~/HOCs/withMainLayout';
 
-const query = gql`
- query GET_CHATS {
-    allMessages  {
-      id
-      from
-      text
-    }
-  }
+import { Loader } from '../../shared';
+
+import MessageList from './MessageList';
+import InputText from './InputText';
+import { CHAT_GET_MSG, CHAT_SUB_NEW_MSG } from '~/lib/queries';
+
+const StyledChat = styled.div`
+
 `;
 
-const subscription = gql`
-subscription messageCreated {
-  messageCreated {
-    id
-    from
-    text
-  }
-}
-`;
-
-
-const MessageItem = ({ message }) => (
-  <li style={{ borderTop: '1px solid lightgray' }}>
-    <p>
-      {message.text}
-      {' '}
-      {' '}
-    </p>
-  </li>
-);
-
-const MessageListView = class extends React.PureComponent {
-  componentDidMount () {
-    this.props.subscribeToMore();
-  }
-
-  render () {
-    const { data } = this.props;
-    return (
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
-        {data.allMessages.map(message => <MessageItem key={message.id} message={message} />)}
-      </ul>
-    );
-  }
-};
-
-
-const MessageList = () => (
-  <Query query={query}>
+const Chat = () => (
+  <Query query={CHAT_GET_MSG}>
     {({
-      loading, error, data, subscribeToMore,
+      loading, error, data, subscribeToMore, networkStatus,
     }) => {
-      if (loading) return <p>Loading...</p>;
-      if (error) {
-        return (
-          <p>
-Error:
-            {' '}
-            {error.message}
-          </p>
-        );
-      }
+      let loader = null;
+      let errorMessage = null;
+      const { allMessages } = data || { allMessages: null };
+      // shows the loader only if the user is fetching more content (scrolling) and not refreshing (pull up)
+      if (loading && !isRefreshing(networkStatus)) loader = <Loader height="150" />;
+      // @todo set a good error message
+      if (error) errorMessage = <div>Error!</div>;
+
+      // @todo add timeout and no connection error message to refetch and fetch more
+
+
       const more = () => subscribeToMore({
-        document: subscription,
+        document: CHAT_SUB_NEW_MSG,
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) return prev;
-          console.log(subscriptionData.data);
-          console.log(subscriptionData.data.messageCreated);
-          // const { mutation, node } = subscriptionData.data.allMessages;
-          // if (mutation !== 'CREATED') return prev;
-          // return Object.assign({}, prev, {
-          //   allMessages: [node, ...prev.allMessages].slice(0, 20),
-          // });
+          // console.log(subscriptionData.data);
+          // console.log(subscriptionData.data.messageCreated);
           return Object.assign({}, prev, {
-            allMessages: [subscriptionData.data.messageCreated, ...prev.allMessages].slice(0, 20),
+            allMessages: [subscriptionData.data.messageCreated, ...prev.allMessages].slice(0, 200),
           });
-
         },
       });
-      return <MessageListView data={data} subscribeToMore={more} />;
+      return (
+        <StyledChat>
+          <MessageList allMessages={allMessages} subscribeToMore={more} />
+          <InputText />
+        </StyledChat>);
     }}
   </Query>
 );
 
-export default MessageList;
+export default withMainLayout(Chat);
