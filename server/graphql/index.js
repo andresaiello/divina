@@ -96,7 +96,6 @@ const typeDefs = gql`
     profilePosts (_id: String!): [Post]
 
     allMessages: [Message]
-    fetchMessage(id: Int!): Message
   }
 
   type Mutation {
@@ -109,14 +108,7 @@ const typeDefs = gql`
     followUser (userToFollow: String!): User
     unfollowUser (userToUnfollow: String!): User
 
-    createMessage (
-            text: String!
-        ): Message
-        updateMessage (
-           id: Int!
-           text: String!
-           isFavorite: Boolean!
-       ): Message
+    createMessage (text: String!): Message
   }
 
 
@@ -146,9 +138,6 @@ const resolvers = {
     },
     allMessages () {
       return menssages;
-    },
-    fetchMessage (_, { id }) {
-      return menssages[0];
     },
   },
   Mutation: {
@@ -220,14 +209,11 @@ const resolvers = {
         throw e;
       }
     },
-    async createMessage (_, { text }) {
+    createMessage: async (_, { text }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
+      console.log(loggedUser);
+
       const message = { id: menssages.length + 1, from: 'andy', text };
-      menssages.push(message);
-      await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
-      return message;
-    },
-    async updateMessage (_, { id, text, isFavorite }) {
-      const message = { from: 'andy', text };
       menssages.push(message);
       await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
       return message;
@@ -237,12 +223,6 @@ const resolvers = {
   Subscription: {
     messageCreated: {
       subscribe: () => pubsub.asyncIterator([MESSAGE_CREATED]),
-    },
-    messageUpdated: {
-      subscribe: withFilter(
-        () => pubsub.asyncIterator('MESSAGE_UPDATED'),
-        (payload, variables) => payload.messageUpdated.id === variables.id,
-      ),
     },
   },
 

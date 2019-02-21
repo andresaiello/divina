@@ -11,6 +11,7 @@ module.exports = {
     SEC_COOKIE: process.env.SEC_COOKIE || false,
     CLOUDINARY_UPLOAD_URL: process.env.CLOUDINARY_UPLOAD_URL || 'https://api.cloudinary.com/v1_1/da9cucer2/upload',
     CLOUDINARY_PRESET: process.env.CLOUDINARY_PRESET || 'ov3f36hw',
+    SESSION_SECRET: process.env.SESSION_SECRET || 'fsdffsdlfkjsoiuyd65876sbe',
     NPM_VERSION: process.env.npm_package_version || '---',
   },
   publicRuntimeConfig: {
