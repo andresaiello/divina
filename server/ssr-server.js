@@ -18,7 +18,9 @@ const userRouter = require('./routes/user');
 const setupPassport = require('./passport');
 const { typeDefs, resolvers } = require('./graphql');
 
-const { PORT, ENV, SEC_COOKIE } = getConfig.serverRuntimeConfig;
+const {
+  PORT, ENV, SEC_COOKIE, SESSION_SECRET,
+} = getConfig.serverRuntimeConfig;
 const dev = ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -32,7 +34,7 @@ app.prepare()
 
     server.use(cookieParser());
     server.use(session({
-      secret: '@todo CHANGE THIS SECRET',
+      secret: SESSION_SECRET,
       cookie: { secure: SEC_COOKIE },
       resave: false,
       saveUninitialized: true,
@@ -50,7 +52,7 @@ app.prepare()
       resolvers,
       cors: { credentials: 'include' },
       context: ({ req }) => ({
-        loggedUser: req ? req.user : 'ANON', // @todo: no anda cuando se usan socks
+        loggedUser: req ? req.user : {},
       }),
     });
 
