@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import { Query } from 'react-apollo';
 import { isFetchingMore, isRefreshing } from '~/util';
 
-import withMainLayout from '~/HOCs/withMainLayout';
-
 import PageVisibility from 'react-page-visibility';
 import { Loader } from '../../shared';
 
@@ -58,4 +56,4 @@ const Chat = class extends React.Component {
   }
 };
 
-export default withMainLayout(Chat);
+export default Chat;

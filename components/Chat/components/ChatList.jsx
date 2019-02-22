@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import propTypes from 'prop-types';
 import { Query } from 'react-apollo';
 import { isFetchingMore, isRefreshing } from '~/util';
-
-import withMainLayout from '~/HOCs/withMainLayout';
 
 import PageVisibility from 'react-page-visibility';
 import { Loader } from '../../shared';
@@ -16,6 +15,7 @@ const StyledChatList = styled.div`
 
 const ChatList = class extends React.Component {
   render () {
+    const { onChatClick } = this.props;
     return (
       <Query query={CHAT_GET_CHAT_GROUPS}>
         {({
@@ -36,7 +36,7 @@ const ChatList = class extends React.Component {
               <StyledChatList>
                 <ul>
                   {nodes.map(elem => (
-                    <li>
+                    <li onClick={() => onChatClick(elem._id)}>
 Creador:
                       {' '}
                       {elem.author.username}
@@ -56,4 +56,8 @@ Creador:
   }
 };
 
-export default withMainLayout(ChatList);
+ChatList.propTypes = {
+  onChatClick: propTypes.func.isRequired,
+};
+
+export default ChatList;
