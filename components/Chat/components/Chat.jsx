@@ -17,53 +17,44 @@ const StyledChat = styled.div`
 `;
 
 const Chat = class extends React.Component {
-  state = {
-    doRefetch: null,
-  }
-
-  handleVisibilityChange = (isVisible) => {
-    this.setState({ doRefetch: isVisible });
-  }
-
   render () {
-    const { doRefetch } = this.state;
-
     return (
-      <PageVisibility onChange={this.handleVisibilityChange}>
-        <Query query={CHAT_GET_MSG}>
-          {({
-            loading, error, data, subscribeToMore, networkStatus, refetch,
-          }) => {
-            let loader = null;
-            let errorMessage = null;
-            const { allMessages } = data || { allMessages: null };
-            // shows the loader only if the user is fetching more content (scrolling) and not refreshing (pull up)
-            if (loading && !isRefreshing(networkStatus)) loader = <Loader height="150" />;
-            // @todo set a good error message
-            if (error) errorMessage = <div>Error!</div>;
-            if (doRefetch) { refetch(); this.setState({ doRefetch: false }); }
-            // @todo add timeout and no connection error message to refetch and fetch more
+      <Query query={CHAT_GET_MSG}>
+        {({
+          loading, error, data, subscribeToMore, networkStatus, refetch,
+        }) => {
+          let loader = null;
+          let errorMessage = null;
+          const { allMessages } = data || { allMessages: null };
+          // shows the loader only if the user is fetching more content (scrolling) and not refreshing (pull up)
+          if (loading && !isRefreshing(networkStatus)) loader = <Loader height="150" />;
+          // @todo set a good error message
+          if (error) errorMessage = <div>Error!</div>;
+          // if (doRefetch) { refetch(); this.setState({ doRefetch: false }); }
+          // @todo add timeout and no connection error message to refetch and fetch more
 
 
-            const more = () => subscribeToMore({
-              document: CHAT_SUB_NEW_MSG,
-              updateQuery: (prev, { subscriptionData }) => {
-                if (!subscriptionData.data) return prev;
-                // console.log(subscriptionData.data);
-                // console.log(subscriptionData.data.messageCreated);
-                return Object.assign({}, prev, {
-                  allMessages: [...prev.allMessages, subscriptionData.data.messageCreated].slice(0, 200),
-                });
-              },
-            });
-            return (
+          const more = () => subscribeToMore({
+            document: CHAT_SUB_NEW_MSG,
+            updateQuery: (prev, { subscriptionData }) => {
+              if (!subscriptionData.data) return prev;
+              // console.log(subscriptionData.data);
+              // console.log(subscriptionData.data.messageCreated);
+              return Object.assign({}, prev, {
+                allMessages: [...prev.allMessages, subscriptionData.data.messageCreated].slice(0, 200),
+              });
+            },
+          });
+          return (
+            <PageVisibility onChange={isVisible => (isVisible && refetch())}>
               <StyledChat>
                 <MessageList allMessages={allMessages || []} subscribeToMore={more} />
                 <InputText />
-              </StyledChat>);
-          }}
-        </Query>
-      </PageVisibility>
+              </StyledChat>
+            </PageVisibility>);
+        }}
+      </Query>
+
     );
   }
 };
