@@ -1,7 +1,6 @@
 const { gql } = require('apollo-server-express');
 const { PubSub, withFilter } = require('apollo-server-express');
 
-// const { Message } = require('../models/message');
 const menssages = [];
 
 const pubsub = new PubSub();
@@ -12,11 +11,13 @@ const PostComment = require('../models/PostComment');
 const Followers = require('../models/Followers');
 const Following = require('../models/Following');
 const User = require('../models/User');
+const ChatGroup = require('../models/ChatGroup');
+const ChatMessage = require('../models/ChatMessage');
+
 
 const { missing } = require('../util');
 
 const MESSAGE_CREATED = 'MESSAGE_CREATED';
-const MESSAGE_UPDATED = 'MESSAGE_UPDATED';
 
 const typeDefs = gql`
   type Comment {
@@ -70,20 +71,45 @@ const typeDefs = gql`
     hasNextPage: Boolean!
   }
 
-  
+
+  type ChatMessage {
+    _id: String
+    author: User
+    content: String
+    chatGroup: String
+    createdAt: String
+  }
+
+  type ChatMessages {
+    nodes: [ChatMessage]
+  }
+
+  type ChatGroup {
+    _id: String
+    author: User
+    picUrl: [String]
+    caption: String
+    chatMessages: ChatMessages
+    createdAt: String
+  }
+
+  type ChatGroups {
+    nodes: [ChatGroup]
+    pageInfo: PageInfo
+  }
 
 
   type Message {
-        id: Int!,
-        from: String!,
-        text: String!,
-        isFavorite: Boolean!
-    }
+    id: Int!,
+    from: String!,
+    text: String!,
+    isFavorite: Boolean!
+  }
 
-    type Subscription {
-      messageCreated: Message
-       messageUpdated(id: Int!): Message
-    }
+  type Subscription {
+    messageCreated: Message
+    messageUpdated(id: Int!): Message
+  }
 
 
 
@@ -94,6 +120,9 @@ const typeDefs = gql`
     posts (startingDate: String, amount: Int, username: String): Posts
     profile (username: String): Profile
     profilePosts (_id: String!): [Post]
+
+    chatGroup (_id: String!): ChatGroup
+    chatGroups (amount: Int, member: String): ChatGroups
 
     allMessages: [Message]
   }
@@ -108,6 +137,8 @@ const typeDefs = gql`
     followUser (userToFollow: String!): User
     unfollowUser (userToUnfollow: String!): User
 
+    createChatGroup (author: String!, caption: String!, picUrl: [String!], members: [String!]): ChatGroup
+    
     createMessage (text: String!): Message
   }
 
@@ -136,6 +167,14 @@ const resolvers = {
       const { nodes = [] } = await Post.getByAuthor({ author: _id });
       return nodes;
     },
+
+    chatGroup: async (_, { _id }) => ChatGroup.getById(_id) || null,
+    chatGroups: async (_, args) => {
+      const { nodes, lastCursor, hasNextPage } = await ChatGroup.getChatGroups(args);
+      return { nodes, pageInfo: { lastCursor, hasNextPage } };
+    },
+
+
     allMessages () {
       return menssages;
     },
@@ -209,6 +248,17 @@ const resolvers = {
         throw e;
       }
     },
+
+    createChatGroup: async (_, {
+      author, caption, picUrl, members,
+    }) => {
+      const chatGroup = await ChatGroup.createChatGroup({
+        author, caption, picUrl, members,
+      });
+      return chatGroup;
+    },
+
+
     createMessage: async (_, { text }, { loggedUser = missing('needLogin') }) => {
       const author = loggedUser._id;
       console.log(loggedUser);

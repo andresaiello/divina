@@ -1,7 +1,7 @@
 import React from 'react';
 import SecContext from '~/context/secContext';
 
-import { Chat } from '~/components/Chat';
+import { Chat, ChatList } from '~/components/Chat';
 
 export default class extends React.Component {
   static contextType = SecContext;
@@ -11,7 +11,7 @@ export default class extends React.Component {
     if (!user || !user.username) return <div>Necesitás estar logueado</div>; // @todo: set better error
 
     return (
-      <Chat />
+      <ChatList />
     );
   }
 }

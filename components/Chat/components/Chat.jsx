@@ -30,7 +30,6 @@ const Chat = class extends React.Component {
           if (loading && !isRefreshing(networkStatus)) loader = <Loader height="150" />;
           // @todo set a good error message
           if (error) errorMessage = <div>Error!</div>;
-          // if (doRefetch) { refetch(); this.setState({ doRefetch: false }); }
           // @todo add timeout and no connection error message to refetch and fetch more
 
 
