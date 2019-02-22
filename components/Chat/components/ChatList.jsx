@@ -35,15 +35,10 @@ const ChatList = class extends React.Component {
             <PageVisibility onChange={isVisible => (isVisible && refetch())}>
               <StyledChatList>
                 <ul>
-                  {nodes.map(elem => (
-                    <li onClick={() => onChatClick(elem._id)}>
-Creador:
-                      {' '}
-                      {elem.author.username}
-                      {' '}
-|
-                      {' '}
-                      {elem.caption}
+                  {nodes.map((elem, index) => (
+                    <li key={index} onClick={() => onChatClick(elem._id)}>
+
+                      {`Creador: ${elem.author.username} | ${elem.caption}: ${elem.updatedAt}`}
                     </li>
                   ))}
                 </ul>

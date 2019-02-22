@@ -91,6 +91,7 @@ const typeDefs = gql`
     caption: String
     chatMessages: ChatMessages
     createdAt: String
+    updatedAt: String
   }
 
   type ChatGroups {
