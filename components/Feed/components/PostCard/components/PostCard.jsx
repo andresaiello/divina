@@ -20,6 +20,7 @@ import ShareModal from './ShareModal';
 const StyledCard = styled(Card)`
   margin: 5px auto;
   max-width: 400px;
+  max-height: calc(100vh - 140px);
 
   .profileName {
     display: inline-block;
