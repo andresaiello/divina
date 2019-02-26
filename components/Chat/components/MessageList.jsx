@@ -2,16 +2,16 @@ import React from 'react';
 import styled from 'styled-components';
 import MessageItem from './MessageItem';
 
-const MessageList = class extends React.PureComponent {
+const MessageList = class extends React.Component {
   componentDidMount () {
     this.props.subscribeToMore();
   }
 
   render () {
-    const { allMessages } = this.props;
+    const { messages } = this.props;
     return (
       <ul style={{ listStyleType: 'none', padding: 0 }}>
-        {allMessages.map(message => <MessageItem key={message.id} message={message} />)}
+        {messages.map(message => <MessageItem key={message._id} message={message} />)}
       </ul>
     );
   }

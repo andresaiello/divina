@@ -5,11 +5,9 @@ const MessageItem = class extends React.PureComponent {
   render () {
     const { message } = this.props;
     return (
-      <li style={{ borderTop: '1px solid lightgray' }}>
-        <p>
-          {message.text}
-        </p>
-      </li>
+      <div style={{ borderTop: '1px solid lightgray' }}>
+        {message.content}
+      </div>
     );
   }
 };

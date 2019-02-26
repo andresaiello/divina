@@ -14,14 +14,13 @@ const ChatView = class extends React.Component {
   }
 
   onChatClick = (chatGroupId) => {
-    console.log(chatGroupId);
     this.setState({ chatGroupId });
   }
 
   render () {
     const { chatGroupId } = this.state;
     return (
-      (chatGroupId) ? <Chat /> : <ChatList onChatClick={this.onChatClick} />
+      (chatGroupId) ? <Chat chatGroupId={chatGroupId} /> : <ChatList onChatClick={this.onChatClick} />
     );
   }
 };

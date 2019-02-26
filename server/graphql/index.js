@@ -99,17 +99,8 @@ const typeDefs = gql`
     pageInfo: PageInfo
   }
 
-
-  type Message {
-    id: Int!,
-    from: String!,
-    text: String!,
-    isFavorite: Boolean!
-  }
-
   type Subscription {
-    messageCreated: Message
-    messageUpdated(id: Int!): Message
+    messageCreated: ChatMessage
   }
 
 
@@ -124,8 +115,7 @@ const typeDefs = gql`
 
     chatGroup (_id: String!): ChatGroup
     chatGroups (amount: Int, member: String): ChatGroups
-
-    allMessages: [Message]
+    chatMessages (_id: String!): ChatMessages
   }
 
   type Mutation {
@@ -139,8 +129,7 @@ const typeDefs = gql`
     unfollowUser (userToUnfollow: String!): User
 
     createChatGroup (author: String!, caption: String!, picUrl: [String!], members: [String!]): ChatGroup
-    
-    createMessage (text: String!): Message
+    addMessageToChatGroup (chatGroupId: String!, content: String!): ChatMessage
   }
 
 
@@ -174,11 +163,11 @@ const resolvers = {
       const { nodes, lastCursor, hasNextPage } = await ChatGroup.getChatGroups(args);
       return { nodes, pageInfo: { lastCursor, hasNextPage } };
     },
-
-
-    allMessages () {
-      return menssages;
+    chatMessages: async (_, { _id }) => {
+      const nodes = await ChatMessage.findByChatGroup({ chatGroupId: _id });
+      return { nodes };
     },
+
   },
   Mutation: {
     createPost: async (_, { author, caption, picUrl }) => {
@@ -259,16 +248,15 @@ const resolvers = {
       return chatGroup;
     },
 
-
-    createMessage: async (_, { text }, { loggedUser = missing('needLogin') }) => {
+    addMessageToChatGroup: async (_, { chatGroupId, content }, { loggedUser = missing('needLogin') }) => {
       const author = loggedUser._id;
-      console.log(loggedUser);
+      const newMessage = await ChatMessage.addNew({ chatGroupId, author, content });
 
-      const message = { id: menssages.length + 1, from: 'andy', text };
-      menssages.push(message);
-      await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
-      return message;
+      await pubsub.publish(MESSAGE_CREATED, { messageCreated: newMessage });
+
+      return newMessage;
     },
+
   },
 
   Subscription: {

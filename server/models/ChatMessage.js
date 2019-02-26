@@ -17,9 +17,9 @@ chatMessageSchema.statics.findByChatGroup = async function findByChatGroup ({ ch
     .lean();
 };
 
-chatMessageSchema.statics.addNew = async function addNew ({ chatGroupId, author, comment }) {
+chatMessageSchema.statics.addNew = async function addNew ({ chatGroupId, author, content }) {
   const { _id } = await this
-    .create({ chatGroup: chatGroupId, author, content: comment });
+    .create({ chatGroup: chatGroupId, author, content });
 
   const [newComment] = await this
     .find({ _id })
