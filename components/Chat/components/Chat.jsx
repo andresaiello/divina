@@ -8,10 +8,14 @@ import { Loader } from '../../shared';
 
 import MessageList from './MessageList';
 import InputText from './InputText';
-import { CHAT_GET_MESSAGES, CHAT_SUB_NEW_MSG } from '~/lib/queries';
+import { CHAT_GET_MESSAGES, CHAT_SUB_NEW_MSG } from '~/lib/graphql/Chat';
 
 const StyledChat = styled.div`
-
+  && {
+    background-image: url("/static/chat-background.jpg");
+    background-size: cover;
+    height: calc(100vh - 110px);
+  }
 `;
 
 const Chat = class extends React.PureComponent {

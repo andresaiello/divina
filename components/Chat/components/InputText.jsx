@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Mutation, Query } from 'react-apollo';
-import { CHAT_NEW_MSG } from '~/lib/queries';
+import { CHAT_NEW_MSG } from '~/lib/graphql/Chat';
 import MessageInput from './MessageInput';
 import SecContext from '~/context/secContext';
 
