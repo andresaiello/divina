@@ -7,13 +7,20 @@ import { isFetchingMore, isRefreshing } from '~/util';
 import PageVisibility from 'react-page-visibility';
 import { Loader } from '../../shared';
 
-import { CHAT_GET_CHAT_GROUPS } from '~/lib/queries';
+import { CHAT_GET_CHAT_GROUPS } from '~/lib/graphql/Chat';
+import ChatGroupItem from './ChatGroupItem';
 
 const StyledChatList = styled.div`
+  && {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
+  }
 
 `;
 
-const ChatList = class extends React.Component {
+const ChatList = class extends React.PureComponent {
   render () {
     const { onChatClick } = this.props;
     return (
@@ -34,14 +41,9 @@ const ChatList = class extends React.Component {
           return (
             <PageVisibility onChange={isVisible => (isVisible && refetch())}>
               <StyledChatList>
-                <ul>
-                  {nodes.map((elem, index) => (
-                    <li key={index} onClick={() => onChatClick(elem._id)}>
-
-                      {`Creador: ${elem.author.username} | ${elem.caption}: ${elem.updatedAt}`}
-                    </li>
-                  ))}
-                </ul>
+                {nodes.map((elem, index) => (
+                  <ChatGroupItem onChatClick={onChatClick} item={elem} key={index} />
+                ))}
               </StyledChatList>
             </PageVisibility>);
         }}
