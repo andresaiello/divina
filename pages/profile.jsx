@@ -3,7 +3,7 @@ import propTypes from 'prop-types';
 import { Query } from 'react-apollo';
 
 import SecContext from '~/context/secContext';
-import { GET_USER_PROFILE } from '~/lib/queries';
+import { User } from '~/lib/graphql';
 import { Profile } from '~/components/Profiles';
 import { LoadingScreen } from '~/components/shared';
 import router, { Router } from '~/server/routes';
@@ -19,7 +19,6 @@ export default class extends React.Component {
     if (req && res && req.user && req.user.username === query.username) {
       res.writeHead(302, { Location: router.findByName('myProfile').toPath() });
       res.end();
-      return { ...query };
     }
 
     return { ...query };
@@ -47,7 +46,7 @@ export default class extends React.Component {
 
     return (
       <Query
-        query={GET_USER_PROFILE}
+        query={User.Queries.GET_PROFILE}
         notifyOnNetworkStatusChange
         variables={{ username }}
       >

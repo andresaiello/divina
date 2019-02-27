@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Query } from 'react-apollo';
 
 import { isFetchingMore, isRefreshing } from '~/util';
-import { FEED_GET_POSTS } from '~/lib/queries';
+import { Feed as FeedGQL } from '~/lib/graphql';
 import withMainLayout from '~/HOCs/withMainLayout';
 
 import { Loader } from '../../shared';
@@ -16,7 +16,7 @@ const StyledFeed = styled.div`
 function Feed () {
   return (
     <Query
-      query={FEED_GET_POSTS}
+      query={FeedGQL.Queries.GET_POSTS}
       notifyOnNetworkStatusChange
       variables={{ amount: 2 }}
     >

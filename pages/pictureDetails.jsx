@@ -1,7 +1,7 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 
-import { PICTURE_DETAILS_GET_DETAILS } from '~/lib/queries';
+import { PictureDetails as PictureDetailsGQL } from '~/lib/graphql';
 import { PictureDetails } from '~/components/PictureDetails';
 import { LoadingScreen } from '~/components/shared';
 
@@ -15,7 +15,7 @@ export default class extends React.Component {
 
     return (
       <Query
-        query={PICTURE_DETAILS_GET_DETAILS}
+        query={PictureDetailsGQL.Queries.GET_DETAILS}
         variables={{ _id: postId }}
       >
         {({ data: postData, loading, error }) => (loading

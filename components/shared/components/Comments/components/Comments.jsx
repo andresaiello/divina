@@ -4,7 +4,7 @@ import { Mutation, Query } from 'react-apollo';
 
 import SecContext from '~/context/secContext';
 import { Loader } from '~/components/shared/';
-import { COMMENT_POST, GET_POST_COMMENTS } from '~/lib/queries';
+import { Post } from '~/lib/graphql';
 
 import CommentsList from './CommentsList';
 import CommentInput from './CommentInput';
@@ -40,10 +40,11 @@ export default class extends Component {
     const { currentComment } = this.state;
     const { user } = this.context;
 
+    // @todo: set an animation + go down with the overflow on add comment
     return (
       <Fragment>
         <Query
-          query={GET_POST_COMMENTS}
+          query={Post.Queries.GET_COMMENTS}
           variables={{ postId }}
         >
           {({ data: { comments }, error, loading }) => (error
@@ -58,22 +59,10 @@ export default class extends Component {
         {user && user._id
           ? (
             <Mutation
-              mutation={COMMENT_POST}
-              update={(cache, { data }) => {
-                const prevQuery = cache.readQuery({ query: GET_POST_COMMENTS, variables: { postId } });
-
-                const newNodes = [...prevQuery.comments.nodes, data.commentPost];
-
-                cache.writeQuery({
-                  query: GET_POST_COMMENTS,
-                  variables: { postId },
-                  data: { ...prevQuery, comments: { ...prevQuery.comments, nodes: newNodes } },
-                });
-              }}
+              mutation={Post.Mutations.COMMENT}
             >
               {(send, { data, loading, error }) => (
                 <CommentInput
-                  className="123"
                   editComment={this.editComment}
                   currentComment={currentComment}
                   sendComment={this.sendComment(send)}
