@@ -40,15 +40,18 @@ const Chat = class extends React.PureComponent {
 
           const more = () => subscribeToMore({
             document: CHAT_SUB_NEW_MSG,
+            variables: { _id: chatGroupId },
             updateQuery: (prev, { subscriptionData }) => {
               if (!subscriptionData.data) return prev;
               // console.log(prev);
-              // console.log(subscriptionData.data);
+              // console.log(subscriptionData);
               // console.log(subscriptionData.data.messageCreated);
               return Object.assign({}, prev, {
                 chatMessages: {
                   nodes: [...prev.chatMessages.nodes, subscriptionData.data.messageCreated].slice(0, 200),
+                  __typename: 'ChatMessages',
                 },
+
               });
             },
           });

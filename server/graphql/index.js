@@ -100,7 +100,7 @@ const typeDefs = gql`
   }
 
   type Subscription {
-    messageCreated: ChatMessage
+    messageCreated(_id: String!): ChatMessage
   }
 
 
@@ -261,7 +261,10 @@ const resolvers = {
 
   Subscription: {
     messageCreated: {
-      subscribe: () => pubsub.asyncIterator([MESSAGE_CREATED]),
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(['MESSAGE_CREATED']),
+        (payload, variables) => payload.messageCreated.chatGroup.toString() === variables._id.toString(),
+      ),
     },
   },
 
