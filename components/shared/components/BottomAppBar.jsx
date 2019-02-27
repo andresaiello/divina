@@ -1,7 +1,6 @@
 import React, { Fragment, Component } from 'react';
-import styled from 'styled-components';
 import propTypes from 'prop-types';
-import getConfig from 'next/config';
+import styled from 'styled-components';
 import {
   Fab,
   AppBar,
@@ -18,13 +17,9 @@ import {
 } from '@material-ui/icons';
 import Dropzone from 'react-dropzone';
 
-import { CREATE_POST } from '~/lib/queries';
 import SecContext from '~/context/secContext';
+import PictureUploadContext from '~/context/PictureUploadContext';
 import { Link, Router } from '~/server/routes';
-import { Mutation } from 'react-apollo';
-
-const { publicRuntimeConfig } = getConfig();
-const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -54,38 +49,29 @@ const StyledAppBar = styled(AppBar)`
 class BottomAppBar extends Component {
   static contextType = SecContext;
 
-  constructor (props) {
-    super(props);
-    this.state = {
-      uploading: false,
-    };
-  }
+  state = {
+    uploading: false,
+  };
 
-  onDropImage = (acceptedFiles, rejectedFiles) => {
-    const { user } = this.context;
+  onDropImage = (acceptedFiles, rejectedFiles, uploadPicture) => {
     this.setState({ uploading: true });
 
     let fileToSend = null;
-    Array.from(acceptedFiles).forEach((file, i) => {
-      fileToSend = file;
-    });
+    Array.from(acceptedFiles).forEach((file) => { fileToSend = file; });
 
-    const formData = new FormData();
-    formData.append('file', fileToSend);
-    formData.append('upload_preset', CLOUDINARY_PRESET); // se configura en cloudinary
-    formData.append('multiple', true);
-    formData.append('tags', `${user._id}, ${user.name}, ${user.username}`);
-    formData.append('context', '');
+    const reader = new FileReader();
 
-    fetch(CLOUDINARY_UPLOAD_URL, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.json())
-      .then((response) => {
-        this.setState({ uploading: false });
-        this.onPhotoUploaded(response.public_id, response);
-      });
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        uploadPicture({ src: reader.result, width: img.width, height: img.height }, () => Router.pushRoute('uploadPicture'));
+      };
+      img.src = reader.result;
+    };
+
+    if (fileToSend) {
+      reader.readAsDataURL(fileToSend);
+    }
   }
 
   // onPhotoUploadProgress (id, response) {
@@ -94,61 +80,65 @@ class BottomAppBar extends Component {
   // }
 
   onPhotoUploaded = (_, response) => {
-    Router.pushRoute('uploadPicture', { picUrl: response.secure_url });
+    Router.pushRoute('uploadPicture');
   }
 
   render () {
     const { uploading } = this.state;
 
     return (
-      <Fragment>
-        <StyledAppBar position="fixed" {...this.props}>
-          <Toolbar className="toolbar">
-            <Link route="feed" prefetch>
-              <a>
-                <IconButton color="inherit" aria-label="Open drawer">
-                  <HomeIcon />
-                </IconButton>
-              </a>
-            </Link>
-            <Link route="discover" prefetch>
-              <a>
+      <PictureUploadContext.Consumer>
+        {({ uploadPicture }) => (
+          <Fragment>
+            <StyledAppBar position="fixed" {...this.props}>
+              <Toolbar className="toolbar">
+                <Link route="feed" prefetch>
+                  <a>
+                    <IconButton color="inherit" aria-label="Open drawer">
+                      <HomeIcon />
+                    </IconButton>
+                  </a>
+                </Link>
+                <Link route="discover" prefetch>
+                  <a>
+                    <IconButton color="inherit">
+                      <SearchIcon />
+                    </IconButton>
+                  </a>
+                </Link>
+                <Fab className="fab upload" aria-label="Add">
+                  {uploading
+                    ? <CircularProgress />
+                    : (
+                      <Dropzone
+                        onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected, uploadPicture); }}
+                        className="drop-zone"
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <div {...getRootProps()} className="button-small">
+                            <input {...getInputProps()} />
+                            <CameraIcon className="camera" color="primary" />
+                          </div>
+                        )}
+                      </Dropzone>
+                    )
+                            }
+                </Fab>
                 <IconButton color="inherit">
-                  <SearchIcon />
+                  <Chat />
                 </IconButton>
-              </a>
-            </Link>
-            <Fab className="fab upload" aria-label="Add">
-              {uploading
-                ? <CircularProgress />
-                : (
-                  <Dropzone
-                    onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected); }}
-                    className="drop-zone"
-                  >
-                    {({ getRootProps, getInputProps }) => (
-                      <div {...getRootProps()} className="button-small">
-                        <input {...getInputProps()} />
-                        <CameraIcon className="camera" color="primary" />
-                      </div>
-                    )}
-                  </Dropzone>
-                )
-                  }
-            </Fab>
-            <IconButton color="inherit">
-              <Chat />
-            </IconButton>
-            <Link route="myProfile" prefetch>
-              <a>
-                <IconButton color="inherit">
-                  <ProfileIcon />
-                </IconButton>
-              </a>
-            </Link>
-          </Toolbar>
-        </StyledAppBar>
-      </Fragment>
+                <Link route="myProfile" prefetch>
+                  <a>
+                    <IconButton color="inherit">
+                      <ProfileIcon />
+                    </IconButton>
+                  </a>
+                </Link>
+              </Toolbar>
+            </StyledAppBar>
+          </Fragment>
+        )}
+      </PictureUploadContext.Consumer>
     );
   }
 }

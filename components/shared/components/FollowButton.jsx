@@ -1,30 +1,33 @@
 import React from 'react';
+import styled from 'styled-components';
 import propTypes from 'prop-types';
 import { Button } from '@material-ui/core';
 import { Mutation } from 'react-apollo';
 
-import { UNFOLLOW_USER, FOLLOW_USER } from '~/lib/queries';
+import { User } from '~/lib/graphql';
 
-function FollowButton ({
-  author, receiver, isFollowing, followCacheUpdate, unfollowCacheUpdate,
-}) {
+const StyledButton = styled(Button)`
+  width: 88.75px;
+`;
+
+function FollowButton ({ author, receiver, isFollowing }) {
+  // @todo: bring followers/following with button mutation so the cache gets updated automatically
   if (!author || !receiver) return null;
   if (author === receiver) return null;
 
   if (isFollowing) {
     return (
       <Mutation
-        mutation={UNFOLLOW_USER}
-        update={unfollowCacheUpdate}
+        mutation={User.Mutations.UNFOLLOW}
       >
         {(unfollowUser, { data, loading, error }) => (
-          <Button
+          <StyledButton
             variant="contained"
             color="primary"
             onClick={() => unfollowUser({ variables: { userToUnfollow: receiver } })}
           >
             Siguiendo
-          </Button>
+          </StyledButton>
         )}
       </Mutation>
     );
@@ -32,17 +35,16 @@ function FollowButton ({
 
   return (
     <Mutation
-      mutation={FOLLOW_USER}
-      update={followCacheUpdate}
+      mutation={User.Mutations.FOLLOW}
     >
       {(followUser, { data, loading, error }) => (
-        <Button
+        <StyledButton
           variant="outlined"
           color="primary"
           onClick={() => followUser({ variables: { userToFollow: receiver } })}
         >
           Seguir
-        </Button>
+        </StyledButton>
       )}
     </Mutation>
   );
@@ -54,8 +56,6 @@ FollowButton.defaultProps = {
 };
 
 FollowButton.propTypes = {
-  followCacheUpdate: propTypes.func.isRequired,
-  unfollowCacheUpdate: propTypes.func.isRequired,
   author: propTypes.string,
   receiver: propTypes.string,
   isFollowing: propTypes.bool.isRequired,

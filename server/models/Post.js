@@ -5,8 +5,17 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  picUrl: { type: String, required: true },
   caption: { type: String, default: '' },
+  dots: [{
+    xPosition: { type: Number },
+    yPosition: { type: Number },
+    title: { type: String },
+    brand: { type: String },
+    price: { type: Number },
+    currency: { type: String },
+  }],
+  picId: { type: String, required: true },
+  picUrl: { type: String, required: true },
 }, { timestamps: true });
 
 postSchema.statics.getFeedPosts = async function getFeedPosts ({ startingDate = Date.now(), amount = 5 }) {
@@ -32,6 +41,7 @@ postSchema.statics.getById = async function getById (_id) {
     .find({ _id })
     .populate({ path: 'author', model: User })
     .lean();
+
   return post;
 };
 
@@ -44,9 +54,13 @@ postSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
   return { nodes };
 };
 
-postSchema.statics.createPost = async function createPost ({ author, picUrl, caption }) {
+postSchema.statics.createPost = async function createPost ({
+  author, picUrl, picId, caption,
+}) {
   const { _id } = await this
-    .create({ author, picUrl, caption });
+    .create({
+      author, picUrl, picId, caption,
+    });
 
   const post = await this.getById(_id);
 
@@ -62,6 +76,18 @@ postSchema.statics.editPost = async function editPost ({ _id, caption }) {
           caption,
         },
       },
+    );
+
+  return post.toObject();
+};
+
+postSchema.statics.addDot = async function addDot ({ _id, dot }) {
+  const post = await this
+    .findOneAndUpdate(
+      { _id },
+      // @todo: maybe generate an unique id based on dot position to avoid two dots in the same position
+      { $addToSet: { dots: dot } },
+      { new: true },
     );
 
   return post.toObject();
