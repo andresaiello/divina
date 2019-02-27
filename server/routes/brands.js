@@ -2115,10 +2115,19 @@ function compare (a, b) {
   return 0;
 }
 
+function uniqBy (a, key) {
+  const seen = {};
+  return a.filter((item) => {
+    let k = key(item);
+    return seen.hasOwnProperty(k) ? false : (seen[k] = true);
+  });
+}
+
 router.get('/brands', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   const y = x.elems.reduce((acc, item) => [...acc, ...item.results], []);
-  const ret = y.sort(compare);
+  let ret = y.sort(compare);
+  ret = uniqBy(ret, item => item.name);
 
   res.send(
     JSON.stringify(ret),
