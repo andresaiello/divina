@@ -4,8 +4,10 @@ import styled from 'styled-components';
 import { Search } from '@material-ui/icons';
 import NumberFormat from 'react-number-format';
 
-import { FullscreenModal } from '~/components/shared';
+import { FullscreenModal, LoadingScreen, Loader } from '~/components/shared';
 import { TextField, Button } from '@material-ui/core';
+import { Mutation } from 'react-apollo';
+import { Post } from '~/lib/graphql';
 
 const FormContainer = styled.form`
   display: grid;
@@ -64,30 +66,62 @@ const brands = [
   },
 ];
 
-function NumberFormatCustom ({ inputRef, onChange, ...other }) {
+function NumberFormatCustom ({
+  name, inputRef, onChange, ...other
+}) {
   return (
     <NumberFormat
-      {...other}
+      name={name}
       getInputRef={inputRef}
-      onValueChange={(values) => { onChange({ target: { value: values.value } }); }}
+      onValueChange={(values) => { onChange({ target: { name, value: parseInt(values.value, 10) } }); }}
       thousandSeparator
       prefix="€"
+      {...other}
     />
   );
 }
 
+const initialState = {
+  selectedBrand: null,
+  title: '',
+  price: '',
+};
+
 export default class DotsModal extends PureComponent {
-  state = {
-    selectedBrand: null,
+  static propTypes = {
+    isOpen: propTypes.bool.isRequired,
+    close: propTypes.func.isRequired,
+    onSaveDot: propTypes.func.isRequired,
+    persistDot: propTypes.func.isRequired,
+    savingDot: propTypes.bool.isRequired,
   }
+
+  state = { ...initialState }
 
   selectBrand = (brand) => {
     this.setState({ selectedBrand: brand });
   }
 
+  saveDot = async () => {
+    const { onSaveDot, persistDot } = this.props;
+    const { title, selectedBrand, price } = this.state;
+
+    this.setState({ ...initialState }, async () => {
+      await onSaveDot(persistDot, {
+        title, brand: selectedBrand, price, currency: 'EUR',
+      });
+    });
+  }
+
+  updateValue = (e) => {
+    const { name, value } = e.target;
+
+    this.setState({ [name]: value });
+  }
+
   render () {
-    const { selectedBrand } = this.state;
-    const { isOpen, close, saveDotData } = this.props;
+    const { title, selectedBrand, price } = this.state;
+    const { isOpen, close, savingDot } = this.props;
 
     return (
       <FullscreenModal
@@ -96,53 +130,67 @@ export default class DotsModal extends PureComponent {
         title="Agregar dots!"
         disableBackdropClick
       >
-        {selectedBrand
-          ? (
-            <FormContainer>
-              <TextField
-                label="Marca"
-                margin="normal"
-                value={selectedBrand}
-                disabled
-              />
-              <TextField
-                label="Precio"
-                id="formatted-numberformat-input"
-                InputProps={{ inputComponent: NumberFormatCustom }}
-              />
-              <Button
-                className="save"
-                color="primary"
-                variant="contained"
-                onClick={() => saveDotData({})}
-              >
-                Guardar
-              </Button>
-            </FormContainer>
-          )
-          : (
-            <BrandsGrid>
-              <div className="search brand">
-                <Search
-                  className="icon"
-                  color="primary"
-                  fontSize="large"
+        {savingDot
+          ? <Loader />
+          : selectedBrand
+            ? (
+              <FormContainer>
+                <TextField
+                  label="Título"
+                  name="title"
+                  margin="normal"
+                  value={title}
+                  onChange={this.updateValue}
                 />
-                <div>Buscar</div>
-              </div>
-              {brands.map(brand => (
-                <div
-                  key={brand.name}
-                  className="brand"
-                  onClick={() => this.selectBrand(brand.name)}
-                  role="button"
-                  tabIndex={0}
+                <TextField
+                  label="Marca"
+                  margin="normal"
+                  value={selectedBrand}
+                  disabled
+                />
+                <TextField
+                  label="Precio"
+                  id="formatted-numberformat-input"
+                  InputProps={{
+                    inputComponent: NumberFormatCustom,
+                    name: 'price',
+                    onChange: this.updateValue,
+                    value: price,
+                  }}
+                />
+                <Button
+                  className="save"
+                  color="primary"
+                  variant="contained"
+                  onClick={this.saveDot}
                 >
-                  {brand.name}
+                    Guardar
+                </Button>
+              </FormContainer>
+            )
+            : (
+              <BrandsGrid>
+                <div className="search brand">
+                  <Search
+                    className="icon"
+                    color="primary"
+                    fontSize="large"
+                  />
+                  <div>Buscar</div>
                 </div>
-              ))}
-            </BrandsGrid>
-          )
+                {brands.map(brand => (
+                  <div
+                    key={brand.name}
+                    className="brand"
+                    onClick={() => this.selectBrand(brand.name)}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    {brand.name}
+                  </div>
+                ))}
+              </BrandsGrid>
+            )
         }
       </FullscreenModal>
     );

@@ -38,16 +38,36 @@ const typeDefs = gql`
     isLiked: Boolean
   }
 
+  enum Currency {
+    EUR
+  }
+
+  type Dot {
+    _id: String
+    xPosition: Float
+    yPosition: Float
+    title: String
+    brand: String
+    price: Int
+    currency: Currency
+  }
+
+  type Dots {
+    _id: String
+    nodes: [Dot]
+  }
+
   type Post {
     _id: String
     author: User
     authorFollowed: FollowingStatus
-    liked: LikeStatus
-    likes: Likes
-    picUrl: String
     caption: String
     comments: Comments
     createdAt: String
+    dots: Dots
+    liked: LikeStatus
+    likes: Likes
+    picUrl: String
   }
 
   type Posts {
@@ -92,6 +112,9 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    addDot (
+      postId: String!, xPosition: Float!, yPosition: Float!, title: String!, brand: String!, price: Int!, currency: String!
+    ): Post
     createPost (author: String!, caption: String!, picUrl: String!, picId: String!): Post
     commentPost (postId: String!, author: String!, comment: String!): Comments
     editUserDescription (description: String!): User
@@ -109,7 +132,10 @@ const resolvers = {
       const nodes = await PostComment.findByPost({ postId });
       return { _id: postId, nodes };
     },
-    post: async (_, { _id }) => Post.getById(_id) || null,
+    post: async (_, { _id }) => {
+      const { dots, ...post } = await Post.getById(_id);
+      return { ...post, dots: { _id, nodes: dots } };
+    },
     posts: async (_, args) => {
       const { nodes, lastCursor, hasNextPage } = await Post.getFeedPosts(args);
       return { nodes, pageInfo: { lastCursor, hasNextPage } };
@@ -127,6 +153,17 @@ const resolvers = {
     },
   },
   Mutation: {
+    addDot: async (_, { postId, ...dot }, { loggedUser = missing('needLogin') }) => {
+      const { _id, author } = await Post.getById(postId);
+      const authorId = author._id && author._id.toString();
+      const loggedUserId = loggedUser._id && loggedUser._id.toString();
+      if (!loggedUserId) throw new Error('Authentication needed');
+      if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
+
+      const { dots, ...post } = await Post.addDot({ _id, dot });
+
+      return { ...post, dots: { _id: postId, nodes: dots } };
+    },
     // @todo: set authorization for this mutation
     createPost: async (_, {
       author, caption, picUrl, picId,
@@ -208,7 +245,7 @@ const resolvers = {
   Post: {
     comments: async ({ _id }) => {
       const nodes = await PostComment.findByPost({ postId: _id });
-      return { nodes };
+      return { _id, nodes };
     },
     likes: async ({ _id }) => PostLikes.findByPost({ postId: _id }),
     liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => ({

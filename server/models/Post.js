@@ -5,9 +5,17 @@ const { Schema } = mongoose;
 
 const postSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  caption: { type: String, default: '' },
+  dots: [{
+    xPosition: { type: Number },
+    yPosition: { type: Number },
+    title: { type: String },
+    brand: { type: String },
+    price: { type: Number },
+    currency: { type: String },
+  }],
   picId: { type: String, required: true },
   picUrl: { type: String, required: true },
-  caption: { type: String, default: '' },
 }, { timestamps: true });
 
 postSchema.statics.getFeedPosts = async function getFeedPosts ({ startingDate = Date.now(), amount = 5 }) {
@@ -67,6 +75,18 @@ postSchema.statics.editPost = async function editPost ({ _id, caption }) {
           caption,
         },
       },
+    );
+
+  return post.toObject();
+};
+
+postSchema.statics.addDot = async function addDot ({ _id, dot }) {
+  const post = await this
+    .findOneAndUpdate(
+      { _id },
+      // @todo: maybe generate an unique id based on dot position to avoid two dots in the same position
+      { $addToSet: { dots: dot } },
+      { new: true },
     );
 
   return post.toObject();

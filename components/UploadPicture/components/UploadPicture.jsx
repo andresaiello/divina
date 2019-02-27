@@ -101,19 +101,20 @@ class UploadPicture extends Component {
               className="save"
               color="primary"
               onClick={async () => {
-                this.setState({ uploading: true });
-                try {
-                  const { public_id: picId, secure_url: picUrl } = await this.uploadToImageServer();
-                  const { data: { createPost: { _id } } } = await createPost({
-                    variables: {
-                      author: user._id, caption, picUrl, picId,
-                    },
-                  });
-                  Router.pushRoute('editPost', { postId: _id });
-                } catch (e) {
-                  console.log(e);
-                  Router.pushRoute('feed');
-                }
+                this.setState({ uploading: true }, async () => {
+                  try {
+                    const { public_id: picId, secure_url: picUrl } = await this.uploadToImageServer();
+                    const { data: { createPost: { _id } } } = await createPost({
+                      variables: {
+                        author: user._id, caption, picUrl, picId,
+                      },
+                    });
+                    Router.pushRoute('editPost', { postId: _id });
+                  } catch (e) {
+                    console.log(e);
+                    Router.pushRoute('feed');
+                  }
+                });
               }}
               variant="contained"
             >

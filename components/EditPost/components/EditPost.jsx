@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import { Button } from '@material-ui/core';
+import { Mutation, Query } from 'react-apollo';
 
 import withMainLayout from '~/HOCs/withMainLayout';
 import AddDots from './AddDots';
 import DotsModal from './DotsModal';
+import { Post, EditPost as EditPostGQL } from '~/lib/graphql';
+import { LoadingScreen } from '~/components/shared';
 
 const Container = styled.div`
   text-align: center;
@@ -14,81 +17,116 @@ const Container = styled.div`
 class EditPost extends Component {
   static propTypes = {
     postId: propTypes.string.isRequired,
-    author: propTypes.shape({
-      profilePic: propTypes.string.isRequired,
-      username: propTypes.string.isRequired,
-    }).isRequired,
-    picUrl: propTypes.string.isRequired,
-    caption: propTypes.string.isRequired,
   };
 
   state = {
-    currentDotX: 0,
-    currentDotY: 0,
-    imageSize: null,
+    xPosition: 0,
+    xLength: null,
+    yPosition: 0,
+    yLength: null,
     dotsModalOpen: false,
+    savingDot: false,
   }
 
   selectDotPlace = (e) => {
     this.setState({
       dotsModalOpen: true,
-      currentDotX: e.nativeEvent.offsetX,
-      currentDotY: e.nativeEvent.offsetY,
+      xPosition: e.nativeEvent.offsetX,
+      yPosition: e.nativeEvent.offsetY,
     });
   }
 
-  saveDotData = ({ brand, price }) => {
-    this.setState({
-      dotsModalOpen: false,
-      currentDotX: 0,
-      currentDotY: 0,
+  onSaveDot = async (persistDot, dotData) => {
+    const {
+      xPosition, xLength, yPosition, yLength,
+    } = this.state;
+    const { postId } = this.props;
+
+    this.setState({ savingDot: true }, async () => {
+      await persistDot({
+        variables: {
+          postId,
+          xPosition: xPosition / xLength,
+          yPosition: yPosition / yLength,
+          ...dotData,
+        },
+      });
+
+      this.setState({
+        xPosition: 0,
+        yPosition: 0,
+        savingDot: false,
+        dotsModalOpen: false,
+      });
     });
   }
 
   closeDotsModal = () => {
     this.setState({
       dotsModalOpen: false,
-      currentDotX: 0,
-      currentDotY: 0,
+      xPosition: 0,
+      yPosition: 0,
     });
   }
 
   getImageSize = (e) => {
-    this.setState({ imageSize: e.target.width });
+    this.setState({ xLength: e.target.width, yLength: e.target.height });
   }
 
   render () {
-    const { currentDotX, currentDotY, dotsModalOpen } = this.state;
     const {
-      postId, author, comments, picUrl, caption, ...rest
-    } = this.props;
-
-    console.log(this.state);
+      xPosition, xLength, yPosition, yLength, dotsModalOpen, savingDot,
+    } = this.state;
+    const { postId, ...rest } = this.props;
 
     return (
-      <Container {...rest}>
-        <AddDots
-          selectDotPlace={this.selectDotPlace}
-          dotX={currentDotX}
-          dotY={currentDotY}
-          displayDot={currentDotX + currentDotY !== 0}
-          getImageSize={this.getImageSize}
-          picUrl={picUrl}
-        />
-        <p>¡Toca sobre la imagen para empezar a agregar tus dots!</p>
-        <DotsModal
-          isOpen={dotsModalOpen}
-          close={this.closeDotsModal}
-          saveDotData={this.saveDotData}
-        />
-        <Button
-          className="save"
-          color="primary"
-          variant="contained"
-        >
-          Guardar
-        </Button>
-      </Container>
+      <Query
+        query={EditPostGQL.Queries.GET_POST}
+        variables={{ _id: postId }}
+      >
+        {({ data, loading, error }) => {
+          if (loading) return <LoadingScreen withLayout />;
+          if (error) return <div>Error!</div>; // @todo: better error message
+          if (!data.post || !data.post.picUrl) return <div>No existe!</div>; // @todo: better error message
+
+          return (
+            <Container {...rest}>
+              <AddDots
+                selectDotPlace={this.selectDotPlace}
+                existentDots={data.post.dots && data.post.dots.nodes}
+                imageSizeX={xLength}
+                imageSizeY={yLength}
+                dotX={xPosition}
+                dotY={yPosition}
+                displayDot={xPosition + yPosition !== 0}
+                getImageSize={this.getImageSize}
+                picUrl={data.post.picUrl}
+              />
+              <p>¡Toca sobre la imagen para empezar a agregar tus dots!</p>
+              <Mutation
+                mutation={Post.Mutations.ADD_DOT}
+              >
+                {addDot => (
+                  <DotsModal
+                    isOpen={dotsModalOpen}
+                    close={this.closeDotsModal}
+                    onSaveDot={this.onSaveDot}
+                    savingDot={savingDot}
+                    persistDot={addDot}
+                  />
+                )}
+              </Mutation>
+              <Button
+                className="save"
+                color="primary"
+                variant="contained"
+              >
+              Guardar
+              </Button>
+            </Container>
+          );
+        }}
+      </Query>
     );
   }
 }

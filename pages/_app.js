@@ -60,7 +60,12 @@ class MyApp extends App {
       jssStyles.parentNode.removeChild(jssStyles);
     }
 
-    await Promise.all([Fonts(), this.updateUserState()]);
+    try {
+      await Promise.all([Fonts(), this.updateUserState()]);
+    } catch (e) {
+      console.log(e);
+    }
+
     this.setState({ displayLoader: false });
   }
 
