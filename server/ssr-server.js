@@ -15,6 +15,7 @@ const routes = require('./routes');
 const authRouter = require('./routes/auth');
 const apiRouter = require('./routes/api');
 const userRouter = require('./routes/user');
+const brandsRouter = require('./routes/brands');
 const setupPassport = require('./passport');
 const { typeDefs, resolvers } = require('./graphql');
 
@@ -64,6 +65,7 @@ app.prepare()
     server.use('/', authRouter);
     server.use('/api/', apiRouter);
     server.use('/api/', userRouter);
+    server.use('/api/', brandsRouter);
 
     server.use('/', handler);
 
