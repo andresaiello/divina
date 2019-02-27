@@ -10,14 +10,10 @@ import withMainLayout from '~/HOCs/withMainLayout';
 import { Image, Input, LoadingScreen } from '~/components/shared';
 import secContext from '~/context/secContext';
 import { Router } from '~/server/routes';
-<<<<<<< HEAD
 import PictureCrop from './PictureCrop';
 
 const { publicRuntimeConfig } = getConfig();
 const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
-=======
-import ImageCrop from './ImageCrop';
->>>>>>> c7eea25f4587ea29a192d2cb1be3de332f6925d8
 
 const Container = styled.div`
   display: grid;
@@ -44,13 +40,10 @@ class UploadPicture extends Component {
     base64Img: this.props.height === this.props.width ? this.props.src : null,
   }
 
-<<<<<<< HEAD
   updatePicture = (base64Img) => {
     this.setState({ base64Img });
   }
 
-=======
->>>>>>> c7eea25f4587ea29a192d2cb1be3de332f6925d8
   editCaption = (e) => {
     const { target: { value } } = e;
     this.setState({ caption: value });
@@ -116,6 +109,7 @@ class UploadPicture extends Component {
                         author: user._id, caption, picUrl, picId,
                       },
                     });
+
                     Router.pushRoute('editPost', { postId: _id });
                   } catch (e) {
                     console.log(e);

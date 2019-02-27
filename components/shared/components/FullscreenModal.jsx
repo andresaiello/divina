@@ -37,7 +37,9 @@ export default function FullscreenModal ({
           </Typography>
         </Toolbar>
       </AppBar>
-      {children}
+      <div className="content">
+        {children}
+      </div>
     </StyledDialog>
   );
 }
