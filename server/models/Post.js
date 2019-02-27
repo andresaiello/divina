@@ -41,6 +41,7 @@ postSchema.statics.getById = async function getById (_id) {
     .find({ _id })
     .populate({ path: 'author', model: User })
     .lean();
+
   return post;
 };
 

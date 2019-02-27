@@ -37,7 +37,7 @@ export default function ImageWithDots ({
         {...rest}
       />
       {newDot}
-      {imageSize.height && imageSize.width && dots.map(dot => (
+      {imageSize.height && imageSize.width && dots && dots.map(dot => (
         <Dot
           key={dot._id}
           displayDot

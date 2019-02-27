@@ -47,8 +47,6 @@ userSchema.statics.editDescription = async function editDescription ({ _id, desc
       },
     );
 
-    console.log(user);
-
     return user.toObject();
   } catch (e) {
     console.log(e);

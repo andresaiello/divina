@@ -11,7 +11,9 @@ import {
 import SecContext from '~/context/secContext';
 import timeAgo from '~/lib/timeAgo';
 import { Link } from '~/server/routes';
-import { Image, FollowButton, LikeButton } from '~/components/shared';
+import {
+  Image, FollowButton, LikeButton, ImageWithDots,
+} from '~/components/shared';
 
 import CommentsModal from './CommentsModal';
 import ShareModal from './ShareModal';
@@ -59,7 +61,7 @@ class PostCard extends Component {
 
   render () {
     const {
-      _id, liked, authorFollowed, author, picUrl, caption, createdAt,
+      _id, liked, authorFollowed, dots, author, picUrl, caption, createdAt,
     } = this.props;
 
     const { username, profilePic } = author;
@@ -95,12 +97,13 @@ class PostCard extends Component {
           )}
           subheader={timeAgo.format(parseInt(createdAt, 10))}
         />
-        <Image
+        <ImageWithDots
           className="cardPic"
           height="350"
           fitCover
           src={picUrl}
           withLoader
+          dots={dots.nodes}
           alt="Foto"
         />
         <CardContent>

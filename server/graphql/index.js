@@ -132,10 +132,7 @@ const resolvers = {
       const nodes = await PostComment.findByPost({ postId });
       return { _id: postId, nodes };
     },
-    post: async (_, { _id }) => {
-      const { dots, ...post } = await Post.getById(_id);
-      return { ...post, dots: { _id, nodes: dots } };
-    },
+    post: async (_, { _id }) => Post.getById(_id),
     posts: async (_, args) => {
       const { nodes, lastCursor, hasNextPage } = await Post.getFeedPosts(args);
       return { nodes, pageInfo: { lastCursor, hasNextPage } };
@@ -160,9 +157,7 @@ const resolvers = {
       if (!loggedUserId) throw new Error('Authentication needed');
       if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
 
-      const { dots, ...post } = await Post.addDot({ _id, dot });
-
-      return { ...post, dots: { _id: postId, nodes: dots } };
+      return Post.addDot({ _id, dot });
     },
     // @todo: set authorization for this mutation
     createPost: async (_, {
@@ -246,6 +241,11 @@ const resolvers = {
     comments: async ({ _id }) => {
       const nodes = await PostComment.findByPost({ postId: _id });
       return { _id, nodes };
+    },
+    dots: async (nonFormattedPost) => {
+      const { _id, dots } = nonFormattedPost;
+
+      return { _id, nodes: dots || [] };
     },
     likes: async ({ _id }) => PostLikes.findByPost({ postId: _id }),
     liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => ({
