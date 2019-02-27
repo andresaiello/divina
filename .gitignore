@@ -27,3 +27,7 @@ yarn.lock*
 # Editor/IDE
 .idea
 packages/api/etc/
+
+package-lock\.json
+local-notes.txt
+.eslintrc.json

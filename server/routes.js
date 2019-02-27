@@ -11,6 +11,8 @@ routes
   .add('myProfile', '/mi-perfil')
   .add('pictureDetails', '/foto/:username/:postId')
   .add('profile', '/perfil/:username')
-  .add('uploadPicture', '/subir-foto');
+  .add('uploadPicture', '/subir-foto')
+  .add('chat', '/chat')
+  .add('embeddedBrowser', '/browser');
 
 module.exports = routes;

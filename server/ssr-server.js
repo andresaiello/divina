@@ -1,6 +1,9 @@
 const express = require('express');
 const next = require('next');
 const { ApolloServer } = require('apollo-server-express');
+const http = require('http');
+
+
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('connect-flash');
@@ -15,7 +18,9 @@ const userRouter = require('./routes/user');
 const setupPassport = require('./passport');
 const { typeDefs, resolvers } = require('./graphql');
 
-const { PORT, ENV, SEC_COOKIE } = getConfig.serverRuntimeConfig;
+const {
+  PORT, ENV, SEC_COOKIE, SESSION_SECRET,
+} = getConfig.serverRuntimeConfig;
 const dev = ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
@@ -29,7 +34,7 @@ app.prepare()
 
     server.use(cookieParser());
     server.use(session({
-      secret: '@todo CHANGE THIS SECRET',
+      secret: SESSION_SECRET,
       cookie: { secure: SEC_COOKIE },
       resave: false,
       saveUninitialized: true,
@@ -47,11 +52,14 @@ app.prepare()
       resolvers,
       cors: { credentials: 'include' },
       context: ({ req }) => ({
-        loggedUser: req.user,
+        loggedUser: req ? req.user : {},
       }),
     });
 
     apolloServer.applyMiddleware({ app: server });
+
+    const httpServer = http.createServer(server);
+    apolloServer.installSubscriptionHandlers(httpServer);
 
     server.use('/', authRouter);
     server.use('/api/', apiRouter);
@@ -61,11 +69,12 @@ app.prepare()
 
     server.get('*', (req, res) => handle(req, res));
 
-    server.listen(PORT, (err) => {
+    httpServer.listen(PORT, (err) => {
       if (err) throw err;
       console.log(`Running in ${ENV} mode`);
       console.log(`> Server ready on http://localhost:${PORT}`);
       console.log(`> GraphQL server: http://localhost:${PORT}${apolloServer.graphqlPath}`);
+      console.log(`> GraphQL Subscriptions ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`);
     });
   })
   .catch((ex) => {

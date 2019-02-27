@@ -12,6 +12,7 @@ const StyledLanding = styled.article`
   color: white;
   background-image: url("/static/background01.jpg");
   background-size: cover;
+  text-align: center;
 
   video {
     position: fixed;
@@ -19,16 +20,26 @@ const StyledLanding = styled.article`
     min-height: 100%;
   }
 
-  .content {
+
+
+  .first-button {
+    position: fixed;
+    bottom: 14vh;
+    right: 0;
+    left: 0;
+  }
+
+  .second-button {
     position: fixed;
     bottom: 7vh;
-    width: 100%;
-    text-align: center;
-
-    .button {
-      width: 300px;
-    }
+    right: 0;
+    left: 0;
   }
+
+  button {
+    width: 300px;    
+  }
+
 `;
 
 export default function Landing () {
@@ -40,22 +51,31 @@ export default function Landing () {
       <SecContext.Consumer>
         {({ user }) => (!isAuthenticated(user)
           ? (
-            <Link route="/login">
-              <a>
-                <div className="content">
-                  <Button className="button" variant="contained" color="primary">
+            <div className="content">
+              <Link route="/login">
+                <a>
+                  <div className="first-button">
+                    <Button className="button" variant="contained" color="primary">
                     Crear Cuenta
-                  </Button>
-                  <Button className={classNames('button')} variant="outlined" color="primary">
+                    </Button>
+                  </div>
+                </a>
+              </Link>
+              <Link route="/login">
+                <a>
+                  <div className="second-button">
+                    <Button className={classNames('button')} variant="outlined" color="primary">
                     ¿Ya tienes una cuenta? Conectarse
-                  </Button>
-                </div>
-              </a>
-            </Link>
+                    </Button>
+                  </div>
+                </a>
+              </Link>
+
+            </div>
           ) : (
             <Link route="/feed" prefetch>
               <a>
-                <div className="content">
+                <div className="first-button">
                   <Button className={classNames('button')} variant="contained" color="primary">
                 Bienvenido
                     {` ${user.name}`}

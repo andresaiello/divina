@@ -1,4 +1,9 @@
 const { gql } = require('apollo-server-express');
+const { PubSub, withFilter } = require('apollo-server-express');
+
+const menssages = [];
+
+const pubsub = new PubSub();
 
 const Post = require('../models/Post');
 const PostLikes = require('../models/PostLikes');
@@ -6,8 +11,13 @@ const PostComment = require('../models/PostComment');
 const Followers = require('../models/Followers');
 const Following = require('../models/Following');
 const User = require('../models/User');
+const ChatGroup = require('../models/ChatGroup');
+const ChatMessage = require('../models/ChatMessage');
+
 
 const { missing } = require('../util');
+
+const MESSAGE_CREATED = 'MESSAGE_CREATED';
 
 const typeDefs = gql`
   type Comment {
@@ -103,12 +113,48 @@ const typeDefs = gql`
     hasNextPage: Boolean!
   }
 
+
+  type ChatMessage {
+    _id: String
+    author: User
+    content: String
+    chatGroup: String
+    createdAt: String
+  }
+
+  type ChatMessages {
+    nodes: [ChatMessage]
+  }
+
+  type ChatGroup {
+    _id: String
+    author: User
+    picUrl: [String]
+    caption: String
+    chatMessages: ChatMessages
+    createdAt: String
+    updatedAt: String
+  }
+
+  type ChatGroups {
+    nodes: [ChatGroup]
+    pageInfo: PageInfo
+  }
+
+  type Subscription {
+    messageCreated: ChatMessage
+  }
+
   type Query {
     comments (postId: String!): Comments
     post (_id: String!): Post
     posts (startingDate: String, amount: Int, username: String): Posts
     profile (username: String): Profile
     profilePosts (_id: String!): [Post]
+
+    chatGroup (_id: String!): ChatGroup
+    chatGroups (amount: Int, member: String): ChatGroups
+    chatMessages (_id: String!): ChatMessages
   }
 
   type Mutation {
@@ -123,6 +169,8 @@ const typeDefs = gql`
     unlikePost (postId: String!): LikeStatus
     followUser (userToFollow: String!): FollowingStatus
     unfollowUser (userToUnfollow: String!): FollowingStatus
+    createChatGroup (author: String!, caption: String!, picUrl: [String!], members: [String!]): ChatGroup
+    addMessageToChatGroup (chatGroupId: String!, content: String!): ChatMessage
   }
 `;
 
@@ -148,6 +196,17 @@ const resolvers = {
       const { nodes = [] } = await Post.getByAuthor({ author: _id });
       return nodes;
     },
+
+    chatGroup: async (_, { _id }) => ChatGroup.getById(_id) || null,
+    chatGroups: async (_, args) => {
+      const { nodes, lastCursor, hasNextPage } = await ChatGroup.getChatGroups(args);
+      return { nodes, pageInfo: { lastCursor, hasNextPage } };
+    },
+    chatMessages: async (_, { _id }) => {
+      const nodes = await ChatMessage.findByChatGroup({ chatGroupId: _id });
+      return { nodes };
+    },
+
   },
   Mutation: {
     addDot: async (_, { postId, ...dot }, { loggedUser = missing('needLogin') }) => {
@@ -236,7 +295,33 @@ const resolvers = {
         return { _id: userToUnfollow, isFollowing: true };
       }
     },
+
+    createChatGroup: async (_, {
+      author, caption, picUrl, members,
+    }) => {
+      const chatGroup = await ChatGroup.createChatGroup({
+        author, caption, picUrl, members,
+      });
+      return chatGroup;
+    },
+
+    addMessageToChatGroup: async (_, { chatGroupId, content }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
+      const newMessage = await ChatMessage.addNew({ chatGroupId, author, content });
+
+      await pubsub.publish(MESSAGE_CREATED, { messageCreated: newMessage });
+
+      return newMessage;
+    },
+
   },
+
+  Subscription: {
+    messageCreated: {
+      subscribe: () => pubsub.asyncIterator([MESSAGE_CREATED]),
+    },
+  },
+
   Post: {
     comments: async ({ _id }) => {
       const nodes = await PostComment.findByPost({ postId: _id });
