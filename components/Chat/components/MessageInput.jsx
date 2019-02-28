@@ -19,21 +19,14 @@ const Container = styled.div`
     margin-bottom: 5px;
     height: 40px;
     flex-grow: 1;
-  }
-
-  .input label{
-    margin-left: 20px;
-    margin-top: 15px;
-    transform: none;
-  }
-
-  .input input{
-    margin-left: 20px;
-    transform: none;
+    margin-left: 15px;
+    border: 0;
+    outline: none;
   }
 
   svg{
     margin: 0 5px 0 5px;
+    place-self: center; 
   }
 
 `;
@@ -43,12 +36,12 @@ function MessageInput ({
 }) {
   return (
     <Container {...rest}>
-      <TextField
+      <input
         className="input"
+        type="text"
         onChange={editMsg}
         value={currentMsg}
-        label="Enviar mensaje"
-        InputProps={{ disableUnderline: true }}
+        placeholder="Enviar mensaje"
         onKeyUp={e => (e.keyCode === 13 ? sendMsg(currentMsg) : null)}
       />
       <Send
