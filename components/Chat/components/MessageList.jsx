@@ -2,17 +2,39 @@ import React from 'react';
 import styled from 'styled-components';
 import MessageItem from './MessageItem';
 
-const MessageList = class extends React.PureComponent {
+const StyledMessageList = styled.div`
+  && {
+    height: calc(100vh - 156px);
+    padding-top: 20px;
+    overflow-y: scroll;
+  }
+
+`;
+
+const MessageList = class extends React.Component {
   componentDidMount () {
+    this.scrollToBottom();
     this.props.subscribeToMore();
   }
 
+  componentDidUpdate () {
+    this.scrollToBottom();
+  }
+
+  scrollToBottom = () => {
+    this.messagesEnd.scrollIntoView({ behavior: 'smooth' });
+  }
+
   render () {
-    const { allMessages } = this.props;
+    const { messages } = this.props;
     return (
-      <ul style={{ listStyleType: 'none', padding: 0 }}>
-        {allMessages.map(message => <MessageItem key={message.id} message={message} />)}
-      </ul>
+      <StyledMessageList>
+        {messages.map(message => <MessageItem key={message._id} message={message} />)}
+        <div
+          style={{ float: 'left', clear: 'both' }}
+          ref={(el) => { this.messagesEnd = el; }}
+        />
+      </StyledMessageList>
     );
   }
 };

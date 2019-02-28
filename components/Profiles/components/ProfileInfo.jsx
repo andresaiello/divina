@@ -4,11 +4,6 @@ import styled from 'styled-components';
 import { Avatar } from '@material-ui/core';
 import { People, PeopleOutlined, CameraAlt as Camera } from '@material-ui/icons';
 
-import withRouteProgress from '~/HOCs/withRouteProgress';
-import { FullscreenModal } from '~/components/shared/';
-import { Query } from 'react-apollo';
-import { PROFILE_GET_FOLLOWERS, PROFILE_GET_FOLLOWING } from '~/lib/queries';
-import Loader from '~/components/shared/components/Loader';
 import FollowersModal from './FollowersModal';
 import FollowingModal from './FollowingModal';
 
@@ -21,7 +16,7 @@ const StyledProfileInfo = styled.div`
     height: 70px;
     width: 70px;
   }
-  
+
   .follow {
     text-align: center;
 
@@ -35,7 +30,7 @@ const StyledProfileInfo = styled.div`
       font-weight: normal;
     }
   }
-  
+
   .icons {
     margin: 0px auto;
 

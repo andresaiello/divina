@@ -3,7 +3,7 @@ import propTypes from 'prop-types';
 import { Query } from 'react-apollo';
 
 import { FullscreenModal, Loader } from '~/components/shared/';
-import { PROFILE_GET_FOLLOWERS } from '~/lib/queries';
+import { Profile } from '~/lib/graphql';
 
 import FollowList from './FollowList';
 
@@ -15,7 +15,7 @@ export default function FollowersModal ({ isOpen, closeModal, username }) {
       close={() => closeModal('followersModalOpen')}
     >
       <Query
-        query={PROFILE_GET_FOLLOWERS}
+        query={Profile.Queries.GET_FOLLOWERS}
         variables={{ username }}
       >
         {({ data, loading, error }) => {

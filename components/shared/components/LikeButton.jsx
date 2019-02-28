@@ -5,7 +5,7 @@ import { Mutation } from 'react-apollo';
 import { IconButton } from '@material-ui/core';
 import { Favorite } from '@material-ui/icons';
 
-import { UNLIKE_POST, LIKE_POST, FEED_GET_POSTS } from '~/lib/queries';
+import { Feed, Post } from '~/lib/graphql';
 
 const StyledIconButton = styled(IconButton)`
   .liked {
@@ -19,22 +19,7 @@ export default function LikeButton ({ author, postId, liked }) {
   if (liked) {
     return (
       <Mutation
-        mutation={UNLIKE_POST}
-        update={(cache, { data }) => {
-          // @todo pass update function as a prop to decouple from FEED query
-          const prevQuery = cache.readQuery({ query: FEED_GET_POSTS, variables: { amount: 2 } });
-
-          const newNodes = prevQuery.posts.nodes.map((n) => {
-            if (n._id === postId) return { ...n, liked: false, likes: n.likes.filter(l => !(l === data.unlikePost._id)) };
-            return n;
-          });
-
-          cache.writeQuery({
-            query: FEED_GET_POSTS,
-            variables: { amount: 2 },
-            data: { ...prevQuery, posts: { ...prevQuery.posts, nodes: newNodes } },
-          });
-        }}
+        mutation={Post.Mutations.UNLIKE}
       >
         {(unlikePost, { data, loading, error }) => (
           <StyledIconButton
@@ -50,22 +35,7 @@ export default function LikeButton ({ author, postId, liked }) {
 
   return (
     <Mutation
-      mutation={LIKE_POST}
-      update={(cache, { data }) => {
-        // @todo pass update function as a prop to decouple from FEED query
-        const prevQuery = cache.readQuery({ query: FEED_GET_POSTS, variables: { amount: 2 } });
-
-        const newNodes = prevQuery.posts.nodes.map((n) => {
-          if (n._id === postId) return { ...n, liked: true, likes: [...n.likes, data.likePost] };
-          return n;
-        });
-
-        cache.writeQuery({
-          query: FEED_GET_POSTS,
-          variables: { amount: 2 },
-          data: { ...prevQuery, posts: { ...prevQuery.posts, nodes: newNodes } },
-        });
-      }}
+      mutation={Post.Mutations.LIKE}
     >
       {(likePost, { data, loading, error }) => (
         <StyledIconButton

@@ -5,7 +5,7 @@ import { Avatar, TextField, Button } from '@material-ui/core';
 import { Mutation, Query } from 'react-apollo';
 
 import withMainLayout from '~/HOCs/withMainLayout';
-import { EDIT_DESCRIPTION, GET_USER_PROFILE } from '~/lib/queries';
+import { Profile, User } from '~/lib/graphql';
 import { Loader } from '~/components/shared';
 import { Router } from '~/server/routes';
 
@@ -105,7 +105,7 @@ class ProfileDetails extends Component {
           <a>Accion 4</a>
         </div>
         <Mutation
-          mutation={EDIT_DESCRIPTION}
+          mutation={Profile.Mutations.EDIT_DESCRIPTION}
         >
           {editUserDescription => (
             <Button
@@ -135,7 +135,7 @@ class ProfileDetails extends Component {
 function EditProfile () {
   return (
     <Query
-      query={GET_USER_PROFILE}
+      query={User.Queries.GET_PROFILE}
       notifyOnNetworkStatusChange
     >
       {({ data: { profile }, error, loading }) => (loading

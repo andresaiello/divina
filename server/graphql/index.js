@@ -1,22 +1,24 @@
 const { gql } = require('apollo-server-express');
 const { PubSub, withFilter } = require('apollo-server-express');
 
-// const { Message } = require('../models/message');
 const menssages = [];
 
 const pubsub = new PubSub();
 
+const Brand = require('../models/Brand');
 const Post = require('../models/Post');
 const PostLikes = require('../models/PostLikes');
 const PostComment = require('../models/PostComment');
 const Followers = require('../models/Followers');
 const Following = require('../models/Following');
 const User = require('../models/User');
+const ChatGroup = require('../models/ChatGroup');
+const ChatMessage = require('../models/ChatMessage');
+
 
 const { missing } = require('../util');
 
 const MESSAGE_CREATED = 'MESSAGE_CREATED';
-const MESSAGE_UPDATED = 'MESSAGE_UPDATED';
 
 const typeDefs = gql`
   type Comment {
@@ -28,19 +30,55 @@ const typeDefs = gql`
   }
 
   type Comments {
+    _id: String
     nodes: [Comment]
+  }
+
+  type Like {
+    _id: String
+    author: User
+  }
+
+  type Likes {
+    _id: String
+    nodes: [Like]
+  }
+
+  type LikeStatus {
+    _id: String
+    isLiked: Boolean
+  }
+
+  enum Currency {
+    EUR
+  }
+
+  type Dot {
+    _id: String
+    xPosition: Float
+    yPosition: Float
+    title: String
+    brand: Brand
+    price: Int
+    currency: Currency
+  }
+
+  type Dots {
+    _id: String
+    nodes: [Dot]
   }
 
   type Post {
     _id: String
     author: User
-    authorFollowed: Boolean
-    liked: Boolean
-    likes: [User]
-    picUrl: String
+    authorFollowed: FollowingStatus
     caption: String
     comments: Comments
     createdAt: String
+    dots: Dots
+    liked: LikeStatus
+    likes: Likes
+    picUrl: String
   }
 
   type Posts {
@@ -48,7 +86,13 @@ const typeDefs = gql`
     pageInfo: PageInfo
   }
 
+  type FollowingStatus {
+    _id: String
+    isFollowing: Boolean
+  }
+
   type Profile {
+    authorFollowed: FollowingStatus
     followersCount: Int
     followingCount: Int
     postsCount: Int
@@ -70,57 +114,84 @@ const typeDefs = gql`
     hasNextPage: Boolean!
   }
 
-  
+  type Brand {
+    _id: String
+    name: String
+    website: String
+  }
 
+  type Brands {
+    nodes: [Brand]
+  }
 
-  type Message {
-        id: Int!,
-        from: String!,
-        text: String!,
-        isFavorite: Boolean!
-    }
+  type ChatMessage {
+    _id: String
+    author: User
+    content: String
+    chatGroup: String
+    createdAt: String
+  }
 
-    type Subscription {
-      messageCreated: Message
-       messageUpdated(id: Int!): Message
-    }
+  type ChatMessages {
+    nodes: [ChatMessage]
+  }
 
+  type ChatGroup {
+    _id: String
+    author: User
+    picUrl: [String]
+    caption: String
+    chatMessages: ChatMessages
+    createdAt: String
+    updatedAt: String
+  }
 
+  type ChatGroups {
+    nodes: [ChatGroup]
+    pageInfo: PageInfo
+  }
 
+  type Subscription {
+    messageCreated(_id: String!): ChatMessage
+  }
 
   type Query {
+    brands: Brands
     comments (postId: String!): Comments
     post (_id: String!): Post
     posts (startingDate: String, amount: Int, username: String): Posts
     profile (username: String): Profile
     profilePosts (_id: String!): [Post]
-
-    allMessages: [Message]
+    chatGroup (_id: String!): ChatGroup
+    chatGroups (amount: Int, member: String): ChatGroups
+    chatMessages (_id: String!): ChatMessages
   }
 
   type Mutation {
-    createPost (author: String!, caption: String!, picUrl: String!): Post
-    commentPost (postId: String!, author: String!, comment: String!): Comment
+    addDot (
+      postId: String!, xPosition: Float!, yPosition: Float!, title: String!, brand: String!, price: Int!, currency: String!
+    ): Post
+    createPost (author: String!, caption: String!, picUrl: String!, picId: String!): Post
+    commentPost (postId: String!, author: String!, comment: String!): Comments
     editUserDescription (description: String!): User
     editPost (_id: String!, caption: String!): Post
-    likePost (postId: String!): User
-    unlikePost (postId: String!): User
-    followUser (userToFollow: String!): User
-    unfollowUser (userToUnfollow: String!): User
-
-    createMessage (text: String!): Message
+    likePost (postId: String!): LikeStatus
+    unlikePost (postId: String!): LikeStatus
+    followUser (userToFollow: String!): FollowingStatus
+    unfollowUser (userToUnfollow: String!): FollowingStatus
+    createChatGroup (author: String!, caption: String!, picUrl: [String!], members: [String!]): ChatGroup
+    addMessageToChatGroup (chatGroupId: String!, content: String!): ChatMessage
   }
-
-
 `;
 
 const resolvers = {
   Query: {
+    brands: async () => ({ nodes: await Brand.find() }),
     comments: async (_, { postId }) => {
       const nodes = await PostComment.findByPost({ postId });
-      return { nodes };
+      return { _id: postId, nodes };
     },
-    post: async (_, { _id }) => Post.getById(_id) || null,
+    post: async (_, { _id }) => Post.getById(_id),
     posts: async (_, args) => {
       const { nodes, lastCursor, hasNextPage } = await Post.getFeedPosts(args);
       return { nodes, pageInfo: { lastCursor, hasNextPage } };
@@ -136,15 +207,40 @@ const resolvers = {
       const { nodes = [] } = await Post.getByAuthor({ author: _id });
       return nodes;
     },
-    allMessages () {
-      return menssages;
+
+    chatGroup: async (_, { _id }) => ChatGroup.getById(_id) || null,
+    chatGroups: async (_, args, { loggedUser = missing('needLogin') }) => {
+      const member = loggedUser._id;
+      const { nodes, lastCursor, hasNextPage } = await ChatGroup.getChatGroups({ member });
+      return { nodes, pageInfo: { lastCursor, hasNextPage } };
     },
+    chatMessages: async (_, { _id }) => {
+      const nodes = await ChatMessage.findByChatGroup({ chatGroupId: _id });
+      return { nodes };
+    },
+
   },
   Mutation: {
-    createPost: async (_, { author, caption, picUrl }) => {
-      const post = await Post.createPost({ author, caption, picUrl });
+    addDot: async (_, { postId, ...dot }, { loggedUser = missing('needLogin') }) => {
+      const { _id, author } = await Post.getById(postId);
+      const authorId = author._id && author._id.toString();
+      const loggedUserId = loggedUser._id && loggedUser._id.toString();
+      if (!loggedUserId) throw new Error('Authentication needed');
+      if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
+
+      return Post.addDot({ _id, dot });
+    },
+    // @todo: set authorization for this mutation
+    createPost: async (_, {
+      author, caption, picUrl, picId,
+    }) => {
+      const post = await Post.createPost({
+        author, caption, picUrl, picId,
+      });
+
       return post;
     },
+    // @todo: set authorization for this mutation
     editPost: async (_, { _id, caption }) => {
       const post = await Post.editPost({ _id, caption });
       return post;
@@ -153,19 +249,21 @@ const resolvers = {
       const user = await User.editDescription({ _id: loggedUser._id, description });
       return user;
     },
+    // @todo: set authorization for this mutation
     commentPost: async (_, { postId, author, comment }) => {
-      const newComment = await PostComment.addNew({ postId, author, comment });
-      return newComment;
+      await PostComment.addNew({ postId, author, comment });
+      const nodes = await PostComment.findByPost({ postId });
+      return { _id: postId, nodes };
     },
     likePost: async (_, { postId }, { loggedUser = missing('needLogin') }) => {
       const author = loggedUser._id;
 
       try {
         await PostLikes.addLike({ postId, user: author });
-        return { _id: author };
+        return { _id: postId, isLiked: true };
       } catch (e) {
         console.log(e);
-        throw e;
+        return { _id: postId, isLiked: false };
       }
     },
     unlikePost: async (_, { postId }, { loggedUser = missing('needLogin') }) => {
@@ -173,10 +271,10 @@ const resolvers = {
 
       try {
         await PostLikes.removeLike({ postId, user: author });
-        return { _id: author };
+        return { _id: postId, isLiked: false };
       } catch (e) {
         console.log(e);
-        throw e;
+        return { _id: postId, isLiked: true };
       }
     },
     followUser: async (_, { userToFollow }, { loggedUser = missing('needLogin') }) => {
@@ -188,10 +286,10 @@ const resolvers = {
 
       try {
         await Promise.all([addFollower, addFollowing]);
-        return { _id: userToFollow };
+        return { _id: userToFollow, isFollowing: true };
       } catch (e) {
         console.log(e);
-        throw e;
+        return { _id: userToFollow, isFollowing: false };
       }
     },
     unfollowUser: async (_, { userToUnfollow }, { loggedUser = missing('needLogin') }) => {
@@ -203,44 +301,78 @@ const resolvers = {
 
       try {
         await Promise.all([removeFollower, removeFollowing]);
-        return { _id: userToUnfollow };
+        return { _id: userToUnfollow, isFollowing: false };
       } catch (e) {
         console.log(e);
-        throw e;
+        return { _id: userToUnfollow, isFollowing: true };
       }
     },
-    createMessage: async (_, { text }, { loggedUser = missing('needLogin') }) => {
-      const author = loggedUser._id;
-      console.log(loggedUser);
 
-      const message = { id: menssages.length + 1, from: 'andy', text };
-      menssages.push(message);
-      await pubsub.publish(MESSAGE_CREATED, { messageCreated: message });
-      return message;
+    createChatGroup: async (_, {
+      author, caption, picUrl, members,
+    }, { loggedUser = missing('needLogin') }) => {
+      const realAuthor = loggedUser._id;
+      const chatGroup = await ChatGroup.createChatGroup({
+        author: realAuthor, caption, picUrl, members,
+      });
+      return chatGroup;
     },
-  },
 
+    addMessageToChatGroup: async (_, { chatGroupId, content }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
+      const newMessage = await ChatMessage.addNew({ chatGroupId, author, content });
+
+      await pubsub.publish(MESSAGE_CREATED, { messageCreated: newMessage });
+
+      return newMessage;
+    },
+
+  },
   Subscription: {
     messageCreated: {
-      subscribe: () => pubsub.asyncIterator([MESSAGE_CREATED]),
+      subscribe: withFilter(
+        () => pubsub.asyncIterator(['MESSAGE_CREATED']),
+        (payload, variables) => payload.messageCreated.chatGroup.toString() === variables._id.toString(),
+      ),
     },
   },
-
   Post: {
     comments: async ({ _id }) => {
       const nodes = await PostComment.findByPost({ postId: _id });
-      return { nodes };
+      return { _id, nodes };
+    },
+    dots: async (nonFormattedPost) => {
+      const { _id, dots } = nonFormattedPost;
+
+      return { _id, nodes: dots || [] };
     },
     likes: async ({ _id }) => PostLikes.findByPost({ postId: _id }),
-    liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => (
-      PostLikes.isPostLiked({ _id, author: loggedUser._id })
-    ),
-    authorFollowed: async ({ author }, _, { loggedUser = missing('needLogin') }) => Followers.isFollowedBy({
-      owner: author._id,
-      followedBy: loggedUser && loggedUser._id,
+    liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => ({
+      _id,
+      isLiked: await PostLikes.isPostLiked({ _id, author: loggedUser._id }),
     }),
+    authorFollowed: async ({ author }, _, { loggedUser }) => (loggedUser
+      ? {
+        _id: author._id,
+        isFollowing: await Followers.isFollowedBy({
+          owner: author._id,
+          followedBy: loggedUser && loggedUser._id,
+        }),
+      }
+      : { _id: author._id, isFollowing: false }
+    ),
   },
   Profile: {
+    authorFollowed: async ({ user }, _, { loggedUser }) => (loggedUser
+      ? {
+        _id: user._id,
+        isFollowing: await Followers.isFollowedBy({
+          owner: user._id,
+          followedBy: loggedUser && loggedUser._id,
+        }),
+      }
+      : { _id: user._id, isFollowing: false }
+    ),
     followersCount: async ({ user }) => Followers.countFollowers({ owner: user._id }),
     followingCount: async ({ user }) => Following.countFollowing({ owner: user._id }),
     postsCount: async ({ user }) => Post.countDocuments({ author: user._id }),
@@ -249,6 +381,9 @@ const resolvers = {
   User: {
     followers: async ({ _id }) => Followers.findByUserId({ owner: _id }),
     following: async ({ _id }) => Following.findByUserId({ owner: _id }),
+  },
+  Dot: {
+    brand: async ({ brand }) => Brand.getById(brand),
   },
 };
 

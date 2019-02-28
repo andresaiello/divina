@@ -60,12 +60,12 @@ export default class Posts extends PureComponent {
         <InfiniteScroll onScrollBottom={this.fetchMore}>
           <PostsContainer>
             {posts.map(({
-              _id, liked, authorFollowed, author, picUrl, caption, createdAt,
+              _id, liked, authorFollowed, dots, author, picUrl, caption, createdAt,
             }) => (
               <PostCard
                 key={_id}
                 {...{
-                  _id, liked, authorFollowed, author, picUrl, caption, createdAt,
+                  _id, liked, authorFollowed, dots, author, picUrl, caption, createdAt,
                 }}
               />
             ))}
