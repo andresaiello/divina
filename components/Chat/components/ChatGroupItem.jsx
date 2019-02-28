@@ -4,6 +4,7 @@ import Avatar from '@material-ui/core/Avatar';
 import propTypes from 'prop-types';
 import Divider from '@material-ui/core/Divider';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import timeAgo from '~/lib/timeAgo';
 
 const StyledChatGroupItem = styled.div`
   && {
@@ -40,8 +41,8 @@ const StyledChatGroupItem = styled.div`
 
     .updatedAt {
         position: absolute;
-        right: 0;
-        top: 0;
+        right: 25px;
+        top: 10px;
     }
 
     hr{
@@ -58,17 +59,21 @@ const StyledChatGroupItem = styled.div`
 
 const ChatGroupItem = class extends React.PureComponent {
   render () {
-    const { onChatClick, item } = this.props;
+    const {
+      onChatClick, item: {
+        _id, caption, updatedAt, author: { username, profilePic },
+      },
+    } = this.props;
     return (
-      <StyledChatGroupItem onClick={() => onChatClick(item._id)}>
-        <Avatar alt={item.author.username} src={item.author.profilePic} className="avatar" />
+      <StyledChatGroupItem onClick={() => onChatClick(_id)}>
+        <Avatar alt={username} src={profilePic} className="avatar" />
         <div className="content">
-          <div className="caption">{item.caption}</div>
-          <div className="author">{item.author.username}</div>
+          <div className="caption">{caption}</div>
+          <div className="author">{username}</div>
           <Divider />
         </div>
         <div className="updatedAt">
-          {item.updatedAt}
+          {timeAgo.format(parseInt(updatedAt, 10))}
         </div>
         <KeyboardArrowRight />
       </StyledChatGroupItem>
