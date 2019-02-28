@@ -9,8 +9,8 @@ const postSchema = new Schema({
   dots: [{
     xPosition: { type: Number },
     yPosition: { type: Number },
+    brandId: { type: Schema.Types.ObjectId, required: true },
     title: { type: String },
-    brand: { type: String },
     price: { type: Number },
     currency: { type: String },
   }],

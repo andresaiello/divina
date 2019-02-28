@@ -6,8 +6,18 @@ import NumberFormat from 'react-number-format';
 
 import { FullscreenModal, LoadingScreen, Loader } from '~/components/shared';
 import { TextField, Button } from '@material-ui/core';
-import { Mutation } from 'react-apollo';
-import { Post } from '~/lib/graphql';
+import { Mutation, Query } from 'react-apollo';
+import { Post, EditPost } from '~/lib/graphql';
+
+const StyledModal = styled(FullscreenModal)`
+  .content {
+    text-align: center;
+  }
+
+  .brandFilterInput {
+    width: 80%;
+  }
+`;
 
 const FormContainer = styled.form`
   display: grid;
@@ -30,6 +40,7 @@ const FormContainer = styled.form`
 
 const BrandsGrid = styled.div`
   display: grid;
+  width: 100%;
   grid-template-columns: 24vw 24vw 24vw 24vw;
   justify-content: space-between;
   padding-top: 5px;
@@ -37,6 +48,7 @@ const BrandsGrid = styled.div`
   .brand {
     cursor: pointer;
     display: flex;
+    text-align: center;
     align-items: center;
     justify-content: center;
     height: 24vw;
@@ -53,18 +65,6 @@ const BrandsGrid = styled.div`
     }
   }
 `;
-
-const brands = [
-  {
-    name: 'Zara',
-  },
-  {
-    name: 'Gucci',
-  },
-  {
-    name: 'Otra',
-  },
-];
 
 function NumberFormatCustom ({
   name, inputRef, onChange, ...other
@@ -85,6 +85,7 @@ const initialState = {
   selectedBrand: null,
   title: '',
   price: '',
+  brandFilter: '',
 };
 
 export default class DotsModal extends PureComponent {
@@ -119,14 +120,24 @@ export default class DotsModal extends PureComponent {
     this.setState({ [name]: value });
   }
 
+  close = () => {
+    const { close } = this.props;
+
+    this.setState({ ...initialState }, close);
+  }
+
   render () {
-    const { title, selectedBrand, price } = this.state;
-    const { isOpen, close, savingDot } = this.props;
+    const {
+      title, selectedBrand, price, brandFilter,
+    } = this.state;
+    const { isOpen, savingDot } = this.props;
+
+    const lowerCaseBrandFilter = brandFilter.toLowerCase();
 
     return (
-      <FullscreenModal
+      <StyledModal
         isOpen={isOpen}
-        close={close}
+        close={this.close}
         title="Agregar dots!"
         disableBackdropClick
       >
@@ -164,35 +175,59 @@ export default class DotsModal extends PureComponent {
                   variant="contained"
                   onClick={this.saveDot}
                 >
-                    Guardar
+                  Guardar
                 </Button>
               </FormContainer>
             )
             : (
-              <BrandsGrid>
-                <div className="search brand">
-                  <Search
-                    className="icon"
-                    color="primary"
-                    fontSize="large"
-                  />
-                  <div>Buscar</div>
-                </div>
-                {brands.map(brand => (
-                  <div
-                    key={brand.name}
-                    className="brand"
-                    onClick={() => this.selectBrand(brand.name)}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    {brand.name}
-                  </div>
-                ))}
-              </BrandsGrid>
+              <Query
+                query={EditPost.Queries.GET_BRANDS}
+              >
+                {({ data, loading, error }) => (loading
+                  ? <Loader />
+                  : error
+                    ? <div>Error</div> // @todo
+                    : (
+                      <Fragment>
+                        <TextField
+                          label="Filtrar"
+                          name="brandFilter"
+                          className="brandFilterInput"
+                          margin="normal"
+                          value={brandFilter}
+                          onChange={this.updateValue}
+                          variant="outlined"
+                        />
+                        <BrandsGrid>
+                          {/* <div className="search brand">
+                            <Search
+                              className="icon"
+                              color="primary"
+                              fontSize="large"
+                            />
+                            <div>Buscar</div>
+                          </div> */}
+                          {data.brands.nodes
+                            .filter(b => b.name.toLowerCase().indexOf(lowerCaseBrandFilter) !== -1)
+                            .map(brand => (
+                              <div
+                                key={brand.name}
+                                className="brand"
+                                onClick={() => this.selectBrand(brand.name)}
+                                role="button"
+                                tabIndex={0}
+                              >
+                                {brand.name}
+                              </div>
+                            ))}
+                        </BrandsGrid>
+                      </Fragment>
+                    )
+                )}
+              </Query>
             )
         }
-      </FullscreenModal>
+      </StyledModal>
     );
   }
 }

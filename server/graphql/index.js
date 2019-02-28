@@ -5,6 +5,7 @@ const menssages = [];
 
 const pubsub = new PubSub();
 
+const Brand = require('../models/Brand');
 const Post = require('../models/Post');
 const PostLikes = require('../models/PostLikes');
 const PostComment = require('../models/PostComment');
@@ -113,6 +114,15 @@ const typeDefs = gql`
     hasNextPage: Boolean!
   }
 
+  type Brand {
+    _id: String
+    name: String
+    website: String
+  }
+
+  type Brands {
+    nodes: [Brand]
+  }
 
   type ChatMessage {
     _id: String
@@ -146,12 +156,12 @@ const typeDefs = gql`
   }
 
   type Query {
+    brands: Brands
     comments (postId: String!): Comments
     post (_id: String!): Post
     posts (startingDate: String, amount: Int, username: String): Posts
     profile (username: String): Profile
     profilePosts (_id: String!): [Post]
-
     chatGroup (_id: String!): ChatGroup
     chatGroups (amount: Int, member: String): ChatGroups
     chatMessages (_id: String!): ChatMessages
@@ -176,6 +186,7 @@ const typeDefs = gql`
 
 const resolvers = {
   Query: {
+    brands: async () => ({ nodes: await Brand.find() }),
     comments: async (_, { postId }) => {
       const nodes = await PostComment.findByPost({ postId });
       return { _id: postId, nodes };
