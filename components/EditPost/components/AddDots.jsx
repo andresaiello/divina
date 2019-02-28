@@ -19,6 +19,7 @@ export default function AddDots ({
         fitCover
         withLoader
         dots={existentDots}
+        disableTooltip
         // newDot={(imageSizeX && imageSizeY
         //   && (
         //     <Dot

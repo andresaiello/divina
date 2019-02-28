@@ -58,7 +58,7 @@ const typeDefs = gql`
     xPosition: Float
     yPosition: Float
     title: String
-    brand: String
+    brand: Brand
     price: Int
     currency: Currency
   }
@@ -326,7 +326,6 @@ const resolvers = {
     },
 
   },
-
   Subscription: {
     messageCreated: {
       subscribe: withFilter(
@@ -335,7 +334,6 @@ const resolvers = {
       ),
     },
   },
-
   Post: {
     comments: async ({ _id }) => {
       const nodes = await PostComment.findByPost({ postId: _id });
@@ -381,6 +379,9 @@ const resolvers = {
   User: {
     followers: async ({ _id }) => Followers.findByUserId({ owner: _id }),
     following: async ({ _id }) => Following.findByUserId({ owner: _id }),
+  },
+  Dot: {
+    brand: async ({ brand }) => Brand.getById(brand),
   },
 };
 
