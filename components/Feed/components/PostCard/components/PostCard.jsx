@@ -16,12 +16,12 @@ import {
 } from '~/components/shared';
 
 import CommentsModal from './CommentsModal';
+import DotDetailsModal from './DotDetailsModal';
 import ShareModal from './ShareModal';
 
 const StyledCard = styled(Card)`
   margin: 5px auto;
-  max-width: 400px;
-  /* max-height: calc(100vh - 140px); */
+  max-width: 450px;
 
   .profileName {
     display: inline-block;
@@ -42,6 +42,8 @@ class PostCard extends Component {
   state = {
     isCommentsModalOpen: false,
     isShareModalOpen: false,
+    isDotDetailsModalOpen: false,
+    selectedDotData: null,
   }
 
   openCommentsModal = () => {
@@ -60,6 +62,20 @@ class PostCard extends Component {
     this.setState({ isShareModalOpen: false });
   };
 
+  openDotDetailsModal = (dotData) => {
+    this.setState({
+      selectedDotData: dotData,
+      isDotDetailsModalOpen: true,
+    });
+  };
+
+  closeDotDetailsModal = () => {
+    this.setState({
+      selectedDotData: null,
+      isDotDetailsModalOpen: false,
+    });
+  };
+
   render () {
     const {
       _id, liked, authorFollowed, dots, author, picUrl, caption, createdAt,
@@ -69,7 +85,9 @@ class PostCard extends Component {
 
     const { user = {} } = this.context;
 
-    const { isCommentsModalOpen, isShareModalOpen } = this.state;
+    const {
+      isCommentsModalOpen, isShareModalOpen, isDotDetailsModalOpen, selectedDotData,
+    } = this.state;
 
     return (
       <StyledCard>
@@ -102,10 +120,16 @@ class PostCard extends Component {
           className="cardPic"
           height="350"
           fitCover
+          onDotLinkClick={this.openDotDetailsModal}
           src={picUrl}
           withLoader
           dots={dots.nodes}
           alt="Foto"
+        />
+        <DotDetailsModal
+          isOpen={isDotDetailsModalOpen}
+          onClose={this.closeDotDetailsModal}
+          dotData={selectedDotData}
         />
         <CardContent>
           <Typography component="p">

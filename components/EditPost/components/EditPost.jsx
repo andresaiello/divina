@@ -8,7 +8,7 @@ import withMainLayout from '~/HOCs/withMainLayout';
 import AddDots from './AddDots';
 import DotsModal from './DotsModal';
 import { Post, EditPost as EditPostGQL } from '~/lib/graphql';
-import { LoadingScreen } from '~/components/shared';
+import { Loader } from '~/components/shared';
 
 const Container = styled.div`
   text-align: center;
@@ -85,7 +85,7 @@ class EditPost extends Component {
         variables={{ _id: postId }}
       >
         {({ data, loading, error }) => {
-          if (loading) return <LoadingScreen withLayout />;
+          if (loading) return <Loader />;
           if (error) return <div>Error!</div>; // @todo: better error message
           if (!data.post || !data.post.picUrl) return <div>No existe!</div>; // @todo: better error message
 

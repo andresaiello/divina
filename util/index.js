@@ -21,3 +21,12 @@ export const promiseTimeout = ms => new Promise(resolve => setTimeout(resolve, m
 export const isFetchingMore = networkStatus => networkStatus === 3;
 
 export const isRefreshing = networkStatus => networkStatus === 4;
+
+export const formatPrice = (price, currency) => {
+  switch (currency) {
+    case 'EUR':
+      return `€ ${price}`;
+    default:
+      return `€ ${price}`;
+  }
+};

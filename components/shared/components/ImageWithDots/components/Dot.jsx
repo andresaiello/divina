@@ -1,9 +1,10 @@
+import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 
 const dotSize = '20';
 
-const Dot = styled.div`
+const StyledDot = styled.div`
   position: absolute;
   display: ${({ displayDot }) => (displayDot ? 'unset' : 'none')};
   left: ${({ xPosition, containerWidth }) => `calc((${containerWidth}px * ${xPosition}) - ${dotSize}px / 2)`};
@@ -14,6 +15,14 @@ const Dot = styled.div`
   border-radius: 50%;
   border: 1px solid white;
 `;
+
+function Dot (props) {
+  return (
+    <StyledDot
+      {...props}
+    />
+  );
+}
 
 Dot.defaultProps = {
   displayDot: true,
@@ -28,4 +37,3 @@ Dot.propTypes = {
 };
 
 export default Dot;
-

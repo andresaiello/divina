@@ -41,9 +41,7 @@ function Feed () {
               posts={nodes}
               lastCursor={pageInfo.lastCursor}
               hasNextPage={pageInfo.hasNextPage}
-              {...{
-                fetchMore, refetch, pageInfo,
-              }}
+              {...{ fetchMore, refetch, pageInfo }}
             />
             {loader}
             {errorMessage}

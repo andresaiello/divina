@@ -109,7 +109,7 @@ export default class DotsModal extends PureComponent {
 
     this.setState({ ...initialState }, async () => {
       await onSaveDot(persistDot, {
-        title, brand: selectedBrand, price, currency: 'EUR',
+        title, brand: selectedBrand._id, price, currency: 'EUR',
       });
     });
   }
@@ -156,7 +156,7 @@ export default class DotsModal extends PureComponent {
                 <TextField
                   label="Marca"
                   margin="normal"
-                  value={selectedBrand}
+                  value={selectedBrand.name}
                   disabled
                 />
                 <TextField
@@ -213,7 +213,7 @@ export default class DotsModal extends PureComponent {
                               <div
                                 key={brand.name}
                                 className="brand"
-                                onClick={() => this.selectBrand(brand.name)}
+                                onClick={() => this.selectBrand(brand)}
                                 role="button"
                                 tabIndex={0}
                               >

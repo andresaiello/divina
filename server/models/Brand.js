@@ -10,6 +10,14 @@ const brandSchema = new Schema({
 
 let Brand;
 
+brandSchema.statics.getById = async function getById (_id) {
+  const [brand] = await this
+    .find({ _id })
+    .lean();
+
+  return brand;
+};
+
 try {
   Brand = mongoose.model('Brand');
 } catch (e) {
