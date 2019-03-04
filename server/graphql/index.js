@@ -210,8 +210,9 @@ const resolvers = {
     },
 
     chatGroup: async (_, { _id }) => ChatGroup.getById(_id) || null,
-    chatGroups: async (_, args) => {
-      const { nodes, lastCursor, hasNextPage } = await ChatGroup.getChatGroups(args);
+    chatGroups: async (_, args, { loggedUser = missing('needLogin') }) => {
+      const member = loggedUser._id;
+      const { nodes, lastCursor, hasNextPage } = await ChatGroup.getChatGroups({ member });
       return { nodes, pageInfo: { lastCursor, hasNextPage } };
     },
     chatMessages: async (_, { _id }) => {
@@ -319,9 +320,10 @@ const resolvers = {
 
     createChatGroup: async (_, {
       author, caption, picUrl, members,
-    }) => {
+    }, { loggedUser = missing('needLogin') }) => {
+      const realAuthor = loggedUser._id;
       const chatGroup = await ChatGroup.createChatGroup({
-        author, caption, picUrl, members,
+        author: realAuthor, caption, picUrl, members,
       });
       return chatGroup;
     },

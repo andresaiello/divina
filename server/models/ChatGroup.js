@@ -17,7 +17,8 @@ chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, 
   const checkNextPage = amount + 1;
 
   const documents = await this
-    .find()
+    // .find({ author: member })
+    .find({ members: member })
     .populate({ path: 'author', model: User })
     .lean()
     .sort({ createdAt: 'desc' }) // (from startingDate + 1 to X)

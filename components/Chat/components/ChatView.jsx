@@ -10,8 +10,8 @@ const StyledChatView = styled.div`
 
 const ChatView = class extends React.Component {
   state = {
-    // chatGroupId: '5c7686f3da5df77a333fbcf9',
-    chatGroupId: null,
+    chatGroupId: '5c7686f3da5df77a333fbcf9',
+    // chatGroupId: null,
   }
 
   onChatClick = (chatGroupId) => {

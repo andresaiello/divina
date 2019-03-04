@@ -16,14 +16,13 @@ const StyledMessageItem = styled.div`
       position: absolute;
       z-index: 1;
     }
-    
+
     .author {
       background: #fff;
       padding: 0 0 0 35px;
       border-top-left-radius: 7.5px;
       border-top-right-radius: 7.5px;
     }
-
 
     .content{
       flex-grow: 1;
@@ -33,11 +32,31 @@ const StyledMessageItem = styled.div`
       border-radius: 7.5px;
       opacity: 0.8;
     }
-
+    
     .createdAt {
       position: absolute;
       right: 30px;
       top: 0;
+    }
+
+    .self{
+      text-align: right;
+
+      .avatar{
+        right: 0;
+        left: initial;
+      }
+
+      .author {
+        padding: 0 35px 0 0;
+      }
+      .content{
+        background-color: #fff;
+      }
+      .createdAt {
+        right: initial;
+        left: 30px;
+      }
     }
 
   }
@@ -51,13 +70,14 @@ const MessageItem = class extends React.PureComponent {
 
     return (
       <StyledMessageItem>
-        <Avatar alt={username} src={profilePic} className="avatar" />
-        <div className="content">
-          <div className="author">{username}</div>
-          <div className="content">{content}</div>
-          <div className="createdAt">{timeAgo.format(parseInt(createdAt, 10))}</div>
+        <div className={(username === 'aaiello') ? 'self' : null}>
+          <Avatar alt={username} src={profilePic} className="avatar" />
+          <div className="content">
+            <div className="author">{username}</div>
+            <div className="content">{content}</div>
+            <div className="createdAt">{timeAgo.format(parseInt(createdAt, 10))}</div>
+          </div>
         </div>
-
       </StyledMessageItem>
     );
   }
