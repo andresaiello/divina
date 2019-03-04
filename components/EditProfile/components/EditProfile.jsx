@@ -10,8 +10,10 @@ import { Loader } from '~/components/shared';
 import { Router } from '~/server/routes';
 
 const Container = styled.div`
-  margin: 10px 7.5px;
   text-align: center;
+  margin: 0 auto;
+  max-width: 400px;
+  padding: 0px 5%;
 
   .avatarContainer {
     .avatar {
@@ -44,6 +46,22 @@ const Container = styled.div`
   }
 `;
 
+function EditProfile (props) {
+  return (
+    <Query
+      query={User.Queries.GET_PROFILE}
+      notifyOnNetworkStatusChange
+    >
+      {({ data: { profile }, error, loading }) => (loading
+        ? <Loader />
+        : error
+          ? <div>Error!</div> // @todo better msg
+          : <ProfileDetails {...props} user={profile.user} />
+      )}
+    </Query>
+  );
+}
+
 class ProfileDetails extends Component {
   static propTypes = {
     user: propTypes.shape({
@@ -64,13 +82,13 @@ class ProfileDetails extends Component {
   }
 
   render () {
-    const { user } = this.props;
+    const { user, ...rest } = this.props;
     const { description, saving } = this.state;
 
     if (saving) return <Loader />;
 
     return (
-      <Container>
+      <Container {...rest}>
         <div className="avatarContainer">
           <Avatar className="avatar" src={user.profilePic} alt="Foto de perfil" />
           <a>Cambiar foto de perfil</a>
@@ -130,22 +148,6 @@ class ProfileDetails extends Component {
       </Container>
     );
   }
-}
-
-function EditProfile () {
-  return (
-    <Query
-      query={User.Queries.GET_PROFILE}
-      notifyOnNetworkStatusChange
-    >
-      {({ data: { profile }, error, loading }) => (loading
-        ? <Loader />
-        : error
-          ? <div>Error!</div> // @todo better msg
-          : <ProfileDetails user={profile.user} />
-      )}
-    </Query>
-  );
 }
 
 export default withMainLayout(EditProfile);

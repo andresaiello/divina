@@ -171,6 +171,7 @@ const typeDefs = gql`
     addDot (
       postId: String!, xPosition: Float!, yPosition: Float!, title: String!, brand: String!, price: Int!, currency: String!
     ): Post
+    deleteDot (postId: String!, dotId: String!): Post
     createPost (author: String!, caption: String!, picUrl: String!, picId: String!): Post
     commentPost (postId: String!, author: String!, comment: String!): Comments
     editUserDescription (description: String!): User
@@ -228,6 +229,15 @@ const resolvers = {
       if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
 
       return Post.addDot({ _id, dot });
+    },
+    deleteDot: async (_, { postId, dotId }, { loggedUser = missing('needLogin') }) => {
+      const { author } = await Post.getById(postId);
+      const authorId = author._id && author._id.toString();
+      const loggedUserId = loggedUser._id && loggedUser._id.toString();
+      if (!loggedUserId) throw new Error('Authentication needed');
+      if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
+
+      return Post.deleteDot({ postId, dotId });
     },
     // @todo: set authorization for this mutation
     createPost: async (_, {

@@ -22,7 +22,7 @@ export default BaseComponent => ({ hideProgressBar, ...rest }) => {
     <Fragment>
       <GlobalStyle />
       <HeadAppBar />
-      <BaseComponent {...props} />
+      <BaseComponent style={{ marginBottom: '60px' }} {...props} />
       <BottomAppBar />
     </Fragment>
   );

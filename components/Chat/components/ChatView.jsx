@@ -20,8 +20,10 @@ const ChatView = class extends React.Component {
 
   render () {
     const { chatGroupId } = this.state;
-    return (
-      (chatGroupId) ? <Chat chatGroupId={chatGroupId} /> : <ChatList onChatClick={this.onChatClick} />
+
+    return (chatGroupId
+      ? <Chat {...this.props} chatGroupId={chatGroupId} />
+      : <ChatList {...this.props} onChatClick={this.onChatClick} />
     );
   }
 };
