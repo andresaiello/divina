@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
+import { ClickAwayListener } from '@material-ui/core';
 
 import { formatPrice } from '~/util';
 import Image from '../../Image';
@@ -43,15 +44,16 @@ export default function ImageWithDots ({
     setImageSize({ width, height });
   }
 
-  function toggle () {
-    toggleTooltips(!tooltipsVisible);
-    setOpenTooltip('');
+  function openTooltips () {
+    if (!tooltipsVisible) {
+      toggleTooltips(true);
+    }
   }
 
   return (
     <Container
       className={className}
-      onClick={toggle}
+      onClick={openTooltips}
     >
       <StyledImage
         src={src}
@@ -77,29 +79,39 @@ export default function ImageWithDots ({
 
         if (useRemoveDotTooltip) {
           return (
-            <RemoveDotTooltip
+            <ClickAwayListener
               key={dot._id}
-              open={openTooltip === dot._id}
-              dotId={dot._id}
-              postId={postId}
-              dots={dots}
+              onClickAway={() => setOpenTooltip('')}
             >
-              {dotElement}
-            </RemoveDotTooltip>
+              <RemoveDotTooltip
+                key={dot._id}
+                open={openTooltip === dot._id}
+                dotId={dot._id}
+                postId={postId}
+                dots={dots}
+              >
+                {dotElement}
+              </RemoveDotTooltip>
+            </ClickAwayListener>
           );
         }
 
         return (
-          <DotTooltip
+          <ClickAwayListener
             key={dot._id}
-            onClick={() => onDotLinkClick(dot)}
-            brandName={dot.brand.name}
-            brandWebsite={dot.brand.website}
-            price={formatPrice(dot.price, dot.currency)}
-            open={tooltipsVisible}
+            // makes it happen after openTooltips function if the click is inside the image
+            onClickAway={() => (tooltipsVisible ? setTimeout(() => toggleTooltips(false), 10) : null)}
           >
-            {dotElement}
-          </DotTooltip>
+            <DotTooltip
+              onClick={() => onDotLinkClick(dot)}
+              brandName={dot.brand.name}
+              brandWebsite={dot.brand.website}
+              price={formatPrice(dot.price, dot.currency)}
+              open={tooltipsVisible}
+            >
+              {dotElement}
+            </DotTooltip>
+          </ClickAwayListener>
         );
       })}
     </Container>
