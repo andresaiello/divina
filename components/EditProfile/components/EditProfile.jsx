@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Avatar, TextField, Button } from '@material-ui/core';
+import { ChevronRight } from '@material-ui/icons';
 import { Mutation, Query } from 'react-apollo';
 
 import withMainLayout from '~/HOCs/withMainLayout';
@@ -9,13 +10,23 @@ import { Profile, User } from '~/lib/graphql';
 import { Loader } from '~/components/shared';
 import { Router } from '~/server/routes';
 
+const sidesPadding = '5%';
+
 const Container = styled.div`
   text-align: center;
   margin: 0 auto;
   max-width: 400px;
-  padding: 0px 5%;
+
+  a {
+    color: rgb(1, 145, 255);
+  }
 
   .avatarContainer {
+    background-color: rgb(241, 241, 241);
+    border-bottom: 1px solid rgb(218, 218, 219);
+    margin-top: 1px;
+    padding: 10px 0px;
+
     .avatar {
       width: 80px;
       height: 80px;
@@ -24,24 +35,46 @@ const Container = styled.div`
   }
 
   .dataContainer {
+    padding: 10px ${sidesPadding};
+
     .field {
-      display: grid;
-      align-items: flex-start;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+
+      .centered {
+        align-self: center;
+      }
 
       p {
         display: inline;
         margin: 0px 10px 5px 0px;
+      }
+
+      .input {
+        width: 70%;
       }
     }
   }
 
   .actionsContainer {
     text-align: left;
+    background-color: rgb(241, 241, 241);
+    border-top: 1px solid rgb(218, 218, 219);
+    border-bottom: 1px solid rgb(218, 218, 219);
+    margin: 10px 0;
+    padding: 0 ${sidesPadding};
 
     a {
-      display: block;
-      color: #007EC1;
-      margin: 10px 0px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgb(218,218,219);
+      padding: 5px 0px;
+      margin: 5px 0px;
+
+      :last-child {
+        border-bottom: none;
+      }
     }
   }
 `;
@@ -52,11 +85,11 @@ function EditProfile (props) {
       query={User.Queries.GET_PROFILE}
       notifyOnNetworkStatusChange
     >
-      {({ data: { profile }, error, loading }) => (loading
+      {({ data, error, loading }) => (loading
         ? <Loader />
         : error
           ? <div>Error!</div> // @todo better msg
-          : <ProfileDetails {...props} user={profile.user} />
+          : <ProfileDetails {...props} user={data && data.profile.user} />
       )}
     </Query>
   );
@@ -70,22 +103,30 @@ class ProfileDetails extends Component {
     }).isRequired,
   }
 
-  state = {
-    // eslint-disable-next-line
-    description: this.props.user.description,
-    saving: false,
+  constructor (props) {
+    super(props);
+
+    const { user } = props;
+
+    this.state = {
+      description: user.description,
+      username: user.username,
+      saving: false,
+    };
   }
 
-  changeDescription = (e) => {
-    const { value } = e.target;
-    this.setState({ description: value });
+  updateField = (e) => {
+    const { name, value } = e.target;
+    this.setState({ [name]: value });
   }
 
   render () {
     const { user, ...rest } = this.props;
-    const { description, saving } = this.state;
+    const { username, description, saving } = this.state;
 
     if (saving) return <Loader />;
+
+    // console.log(user);
 
     return (
       <Container {...rest}>
@@ -95,32 +136,66 @@ class ProfileDetails extends Component {
         </div>
         <div className="dataContainer">
           <div className="field">
+            <p>Nombre</p>
             <TextField
-              multiline
-              onChange={this.changeDescription}
-              value={description}
-              rows={3}
+              className="input"
             />
-            <p>Descripción</p>
           </div>
           <div className="field">
-            <TextField />
-            <p>Nombre</p>
+            <p>Usuario</p>
+            <TextField
+              className="input"
+              name="username"
+              value={username}
+              disabled
+            />
           </div>
           <div className="field">
-            <TextField />
-            <p>Nombre</p>
+            <p>Web</p>
+            <TextField
+              className="input"
+            />
           </div>
           <div className="field">
-            <TextField />
-            <p>Nombre</p>
+            <p>Instagram</p>
+            <TextField
+              className="input"
+              disabled
+            />
+          </div>
+          <div className="field">
+            <p className="centered">Descripción</p>
+            <TextField
+              className="input"
+              name="description"
+              value={description}
+              multiline
+              onChange={this.updateField}
+              rows={2}
+            />
           </div>
         </div>
         <div className="actionsContainer">
-          <a>Accion 1</a>
-          <a>Accion 2</a>
-          <a>Accion 3</a>
-          <a>Accion 4</a>
+          <a>
+            Mis recompensas
+            {' '}
+            <ChevronRight />
+          </a>
+          <a>
+            Mis prendas
+            {' '}
+            <ChevronRight />
+          </a>
+          <a>
+            Notificaciones
+            {' '}
+            <ChevronRight />
+          </a>
+          <a>
+            Términos y condiciones
+            {' '}
+            <ChevronRight />
+          </a>
         </div>
         <Mutation
           mutation={Profile.Mutations.EDIT_DESCRIPTION}

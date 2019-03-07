@@ -7,10 +7,16 @@ import { Mutation } from 'react-apollo';
 import { User } from '~/lib/graphql';
 
 const StyledButton = styled(Button)`
-  width: 88.75px;
+  && {
+    width: 80px;
+    padding: 1px 16px;
+    text-transform: none;
+  }
 `;
 
-function FollowButton ({ author, receiver, isFollowing }) {
+function FollowButton ({
+  className, author, receiver, isFollowing,
+}) {
   // @todo: bring followers/following with button mutation so the cache gets updated automatically
   if (!author || !receiver) return null;
   if (author === receiver) return null;
@@ -22,8 +28,8 @@ function FollowButton ({ author, receiver, isFollowing }) {
       >
         {(unfollowUser, { data, loading, error }) => (
           <StyledButton
-            variant="contained"
-            color="primary"
+            className={className}
+            variant="outlined"
             onClick={() => unfollowUser({ variables: { userToUnfollow: receiver } })}
           >
             Siguiendo
@@ -39,8 +45,9 @@ function FollowButton ({ author, receiver, isFollowing }) {
     >
       {(followUser, { data, loading, error }) => (
         <StyledButton
-          variant="outlined"
-          color="primary"
+          className={className}
+          variant="contained"
+          color="secondary"
           onClick={() => followUser({ variables: { userToFollow: receiver } })}
         >
           Seguir
@@ -51,11 +58,13 @@ function FollowButton ({ author, receiver, isFollowing }) {
 }
 
 FollowButton.defaultProps = {
+  className: '',
   author: null,
   receiver: null,
 };
 
 FollowButton.propTypes = {
+  className: propTypes.string,
   author: propTypes.string,
   receiver: propTypes.string,
   isFollowing: propTypes.bool.isRequired,

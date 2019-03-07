@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const User = require('./User');
-const Post = require('./Post');
 
 const { Schema } = mongoose;
 
@@ -10,9 +9,12 @@ const postLikesSchema = new Schema({
 }, { timestamps: true });
 
 postLikesSchema.statics.findByPost = async function findByPost ({ _id }) {
-  return this
+  const [data] = await this
     .find({ post: _id })
+    .populate({ path: 'users', model: User })
     .lean();
+
+  return (data && data.users) || [];
 };
 
 postLikesSchema.statics.isPostLiked = async function isPostLiked ({ _id, author }) {

@@ -47,12 +47,12 @@ export default class extends Component {
           query={Post.Queries.GET_COMMENTS}
           variables={{ postId }}
         >
-          {({ data: { comments }, error, loading }) => (error
+          {({ data, error, loading }) => (error
             ? <div>Error obteniendo comentarios</div> // @todo: better error
             : loading
               ? <Loader />
-              : comments && comments.nodes.length
-                ? <CommentsList comments={comments} />
+              : data && data.comments && data.comments.nodes.length
+                ? <CommentsList comments={data.comments} />
                 : <div>Todavía no hay comentarios!</div> // @todo: add screen for empty comments
           )}
         </Query>

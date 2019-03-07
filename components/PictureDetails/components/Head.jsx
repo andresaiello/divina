@@ -11,6 +11,9 @@ import { FollowButton } from '~/components/shared';
 
 const StyledAppBar = styled(AppBar)`
   && {
+    background: white;
+    color: rgb(74, 74, 74);
+
     .toolbar {
       padding: 0px 8px;
       justify-content: space-between;
@@ -21,25 +24,36 @@ const StyledAppBar = styled(AppBar)`
       align-items: center;
     }
 
-    h5 {
-      margin-left: 5px;
+    .avatar {
+      margin: 0 10px 0 2px;
+      border: 2px solid rgb(255, 0, 173);
+    }
+
+    .backIcon {
+      color: rgb(1, 145, 255);
+      width: 2rem;
+      height: 2rem;
+    }
+
+    h4 {
+      font-size: 1.15rem;
+      margin: 0px;
     }
   }
 `;
 
 function Head ({ username, profilePic, ...rest }) {
   return (
-    <StyledAppBar position="static" color="primary" {...rest}>
+    <StyledAppBar position="static" {...rest}>
       <Toolbar className="toolbar">
         <div className="leftContent">
           <Link route="profile" params={{ username }} prefetch>
-            <ChevronLeft />
+            <ChevronLeft className="backIcon" />
           </Link>
           <Avatar className="avatar" src={profilePic} alt="Foto de perfil" />
-          <h5>{username}</h5>
+          <h4>{username}</h4>
         </div>
         <div>
-          <FollowButton isFollowing={Math.random() < 0.5} />
           <IconButton>
             <MoreHoriz />
           </IconButton>

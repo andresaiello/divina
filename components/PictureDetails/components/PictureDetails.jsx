@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 
 import withRouteProgress from '~/HOCs/withRouteProgress';
 import { Image, Comments } from '~/components/shared';
+import SecContext from '~/context/secContext';
 
 import Head from './Head';
 import SubBar from './SubBar';
@@ -17,8 +18,12 @@ const StyledPictureDetails = styled.article`
 `;
 
 function PictureDetails ({
-  postId, author, comments, picUrl, caption, ...rest
+  postId, author, comments, picUrl, caption, likes, liked, ...rest
 }) {
+  const context = useContext(SecContext);
+
+  const loggedUserId = context.user && context.user._id;
+
   return (
     <StyledPictureDetails {...rest}>
       <Head {...{ ...author }} />
@@ -29,7 +34,13 @@ function PictureDetails ({
         src={picUrl}
         alt="Post"
       />
-      <SubBar caption={caption} />
+      <SubBar
+        caption={caption}
+        likes={likes}
+        postId={postId}
+        loggedUserId={loggedUserId}
+        liked={liked.isLiked}
+      />
       <Comments postId={postId} />
     </StyledPictureDetails>
   );
@@ -43,6 +54,17 @@ PictureDetails.propTypes = {
   }).isRequired,
   picUrl: propTypes.string.isRequired,
   caption: propTypes.string.isRequired,
+  liked: propTypes.shape({
+    _id: propTypes.string.isRequired,
+    isLiked: propTypes.bool.isRequired,
+  }).isRequired,
+  likes: propTypes.shape({
+    _id: propTypes.string.isRequired,
+    nodes: propTypes.arrayOf(propTypes.shape({
+      username: propTypes.string,
+      profilePic: propTypes.string,
+    })).isRequired,
+  }).isRequired,
 };
 
 export default withRouteProgress(PictureDetails);

@@ -5,7 +5,7 @@ import {
   Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton,
 } from '@material-ui/core';
 import {
-  Comment, Share, MoreVert,
+  Comment, Share, MoreHoriz as More,
 } from '@material-ui/icons';
 
 import SecContext from '~/context/secContext';
@@ -20,11 +20,42 @@ import DotDetailsModal from './DotDetailsModal';
 import ShareModal from './ShareModal';
 
 const StyledCard = styled(Card)`
-  margin: 5px auto;
+  margin: 0px auto;
+  border-bottom: 1px solid #9B9B9B;
+  box-shadow: none;
   max-width: 450px;
+
+  :first-child {
+    border-top: 1px solid #9B9B9B;
+  }
+
+  .header {
+    padding: 4px 16px 0px;
+  }
 
   .profileName {
     display: inline-block;
+  }
+
+  h6 {
+    font-size: 1rem;
+  }
+
+  .follow {
+    margin-bottom: 6px;
+  }
+
+  .avatar {
+    .avatarPic {
+      position: absolute;
+      z-index: 100;
+      border: 1px solid white;
+    }
+  }
+
+  .title {
+    margin-left: 27px;
+    margin-top: 15px;
   }
 
   .actions {
@@ -33,6 +64,16 @@ const StyledCard = styled(Card)`
 
   .cardPic{
     height: 100vw;
+  }
+
+  .followMore {
+    align-self: flex-end;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .moreButton {
+    padding: 24px 12px 0px 12px;
   }
 `;
 
@@ -92,29 +133,35 @@ class PostCard extends Component {
     return (
       <StyledCard>
         <CardHeader
+          className="header"
+          classes={{
+            action: 'followMore',
+            avatar: 'avatar',
+            title: 'title',
+          }}
           avatar={(
             <Link route="profile" params={{ username }} prefetch>
-              <Avatar alt="avatar" src={profilePic} />
+              <Avatar className="avatarPic" alt="avatar" src={profilePic} />
+            </Link>
+          )}
+          title={(
+            <Link route="profile" params={{ username }} prefetch>
+              <Typography variant="h6" className="profileName">{username}</Typography>
             </Link>
           )}
           action={(
             <Fragment>
               <FollowButton
+                className="follow"
                 author={user && user._id}
                 receiver={author._id}
                 isFollowing={authorFollowed.isFollowing}
               />
-              <IconButton>
-                <MoreVert />
+              <IconButton className="moreButton">
+                <More />
               </IconButton>
             </Fragment>
           )}
-          title={(
-            <Link route="profile" params={{ username }} prefetch>
-              <div className="profileName">{username}</div>
-            </Link>
-          )}
-          subheader={timeAgo.format(parseInt(createdAt, 10))}
         />
         <ImageWithDots
           className="cardPic"
