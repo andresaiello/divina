@@ -33,11 +33,15 @@ const StyledProfileInfo = styled.div`
 
   .icons {
     margin: 0px auto;
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    width: 100%;
+    font-size: .8rem;
 
     .icon {
       display: inline-block;
       text-align: center;
-      margin: 4px 7px;
+      margin: 4px 7px 0px;
 
       &.action {
         cursor: pointer;

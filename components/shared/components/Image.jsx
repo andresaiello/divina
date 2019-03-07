@@ -28,14 +28,14 @@ Image.propTypes = {
   withLoader: propTypes.bool,
   height: ({ withLoader, ...rest }, propName) => {
     if (withLoader) {
-      return propName in rest
+      return rest[propName]
         ? null : new Error(`The prop ${propName} is required when using withLoader`);
     }
     return null;
   },
   width: ({ withLoader, ...rest }, propName) => {
     if (withLoader) {
-      return propName in rest
+      return rest[propName]
         ? null : new Error(`The prop ${propName} is required when using withLoader`);
     }
     return null;

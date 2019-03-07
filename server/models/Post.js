@@ -93,6 +93,18 @@ postSchema.statics.addDot = async function addDot ({ _id, dot }) {
   return post.toObject();
 };
 
+postSchema.statics.deleteDot = async function addDot ({ postId, dotId }) {
+  const post = await this
+    .findOneAndUpdate(
+      { _id: postId },
+      // @todo: maybe generate an unique id based on dot position to avoid two dots in the same position
+      { $pull: { dots: { _id: dotId } } },
+      { new: true },
+    );
+
+  return post.toObject();
+};
+
 let Post;
 
 try {

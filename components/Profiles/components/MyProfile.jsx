@@ -14,11 +14,7 @@ const StyledProfile = styled.article`
 
 `;
 
-function MyProfile (props) {
-  const {
-    profile,
-  } = props;
-
+function MyProfile ({ profile, ...rest }) {
   const editProfile = (
     <Link route="editProfile" prefetch>
       <Button>Editar</Button>
@@ -26,7 +22,7 @@ function MyProfile (props) {
   );
 
   return (
-    <StyledProfile>
+    <StyledProfile {...rest}>
       <ProfileInfo
         action={editProfile}
         followersCount={profile.followersCount}

@@ -1,0 +1,201 @@
+const { gql } = require('apollo-server-express');
+
+const Post = require('../models/Post');
+const PostComment = require('../models/PostComment');
+const PostLikes = require('../models/PostLikes');
+const Followers = require('../models/Followers');
+const Brand = require('../models/Brand');
+
+const { missing } = require('../util');
+
+const typeDefs = gql`
+  extend type Query {
+    comments (postId: String!): Comments
+    post (_id: String!): Post
+    posts (startingDate: String, amount: Int, username: String): Posts
+  }
+
+  extend type Mutation {
+    addDot (
+      postId: String!, xPosition: Float!, yPosition: Float!, title: String!, brand: String!, price: Int!, currency: String!
+    ): Post
+    deleteDot (postId: String!, dotId: String!): Post
+    createPost (author: String!, caption: String!, picUrl: String!, picId: String!): Post
+    commentPost (postId: String!, author: String!, comment: String!): Comments
+    editPost (_id: String!, caption: String!): Post
+    likePost (postId: String!): LikeStatus
+    unlikePost (postId: String!): LikeStatus
+  }
+
+  type Comment {
+    _id: String
+    author: User
+    content: String
+    post: String
+    createdAt: String
+  }
+
+  type Comments {
+    _id: String
+    nodes: [Comment]
+  }
+
+  type Like {
+    _id: String
+    author: User
+  }
+
+  type Likes {
+    _id: String
+    nodes: [Like]
+  }
+
+  type LikeStatus {
+    _id: String
+    isLiked: Boolean
+  }
+
+  type Dot {
+    _id: String
+    xPosition: Float
+    yPosition: Float
+    title: String
+    brand: Brand
+    price: Int
+    currency: Currency
+  }
+
+  type Dots {
+    _id: String
+    nodes: [Dot]
+  }
+
+  type Post {
+    _id: String
+    author: User
+    authorFollowed: FollowingStatus
+    caption: String
+    comments: Comments
+    createdAt: String
+    dots: Dots
+    liked: LikeStatus
+    likes: Likes
+    picUrl: String
+  }
+
+  type Posts {
+    nodes: [Post]
+    pageInfo: PageInfo
+  }
+`;
+
+const resolvers = {
+  Query: {
+    comments: async (_, { postId }) => {
+      const nodes = await PostComment.findByPost({ postId });
+      return { _id: postId, nodes };
+    },
+    post: async (_, { _id }) => Post.getById(_id),
+    posts: async (_, args) => {
+      const { nodes, lastCursor, hasNextPage } = await Post.getFeedPosts(args);
+      return { nodes, pageInfo: { lastCursor, hasNextPage } };
+    },
+  },
+  Mutation: {
+    addDot: async (_, { postId, ...dot }, { loggedUser = missing('needLogin') }) => {
+      const { _id, author } = await Post.getById(postId);
+      const authorId = author._id && author._id.toString();
+      const loggedUserId = loggedUser._id && loggedUser._id.toString();
+      if (!loggedUserId) throw new Error('Authentication needed');
+      if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
+
+      return Post.addDot({ _id, dot });
+    },
+    deleteDot: async (_, { postId, dotId }, { loggedUser = missing('needLogin') }) => {
+      const { author } = await Post.getById(postId);
+      const authorId = author._id && author._id.toString();
+      const loggedUserId = loggedUser._id && loggedUser._id.toString();
+      if (!loggedUserId) throw new Error('Authentication needed');
+      if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
+
+      return Post.deleteDot({ postId, dotId });
+    },
+    // @todo: set authorization for this mutation
+    createPost: async (_, {
+      author, caption, picUrl, picId,
+    }) => {
+      const post = await Post.createPost({
+        author, caption, picUrl, picId,
+      });
+
+      return post;
+    },
+    // @todo: set authorization for this mutation
+    editPost: async (_, { _id, caption }) => {
+      const post = await Post.editPost({ _id, caption });
+      return post;
+    },
+    // @todo: set authorization for this mutation
+    commentPost: async (_, { postId, author, comment }) => {
+      await PostComment.addNew({ postId, author, comment });
+      const nodes = await PostComment.findByPost({ postId });
+      return { _id: postId, nodes };
+    },
+    likePost: async (_, { postId }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
+
+      try {
+        await PostLikes.addLike({ postId, user: author });
+        return { _id: postId, isLiked: true };
+      } catch (e) {
+        console.log(e);
+        return { _id: postId, isLiked: false };
+      }
+    },
+    unlikePost: async (_, { postId }, { loggedUser = missing('needLogin') }) => {
+      const author = loggedUser._id;
+
+      try {
+        await PostLikes.removeLike({ postId, user: author });
+        return { _id: postId, isLiked: false };
+      } catch (e) {
+        console.log(e);
+        return { _id: postId, isLiked: true };
+      }
+    },
+  },
+  Post: {
+    comments: async ({ _id }) => {
+      const nodes = await PostComment.findByPost({ postId: _id });
+      return { _id, nodes };
+    },
+    dots: async (nonFormattedPost) => {
+      const { _id, dots } = nonFormattedPost;
+
+      return { _id, nodes: dots || [] };
+    },
+    likes: async ({ _id }) => PostLikes.findByPost({ postId: _id }),
+    liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => ({
+      _id,
+      isLiked: await PostLikes.isPostLiked({ _id, author: loggedUser._id }),
+    }),
+    authorFollowed: async ({ author }, _, { loggedUser }) => (loggedUser
+      ? {
+        _id: author._id,
+        isFollowing: await Followers.isFollowedBy({
+          owner: author._id,
+          followedBy: loggedUser && loggedUser._id,
+        }),
+      }
+      : { _id: author._id, isFollowing: false }
+    ),
+  },
+  Dot: {
+    brand: async ({ brand }) => Brand.getById(brand),
+  },
+};
+
+module.exports = {
+  typeDefs,
+  resolvers,
+};

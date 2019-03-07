@@ -12,14 +12,14 @@ import ProfileInfo from './ProfileInfo';
 const StyledProfile = styled.article`
 `;
 
-function Profile ({ profile = {} }) {
+function Profile ({ profile = {}, ...rest }) {
   if (!profile.user) return <div>El perfil no existe!</div>; // @todo set better error
   const secContext = useContext(SecContext);
 
   // @todo: set max length for user name, and adapt design for long usernames
 
   return (
-    <StyledProfile>
+    <StyledProfile {...rest}>
       <ProfileInfo
         action={(
           <FollowButton

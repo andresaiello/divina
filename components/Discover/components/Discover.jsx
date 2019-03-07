@@ -12,18 +12,18 @@ const DiscoverGrid = styled.div`
   grid-template-columns: 32.5% 32.5% 32.5%;
   grid-row-gap: 5px;
   justify-content: space-between;
-  
+
   .third {
     grid-row: 1 / span 2;
     grid-column: 2 / span 2;
   }
 `;
 
-function Discover () {
+function Discover (props) {
   return (
     <Fragment>
       <SearchBar />
-      <DiscoverGrid>
+      <DiscoverGrid {...props}>
         {[...Array(10).keys()].map((k, i) => (
           // <Link route="pictureDetails" params={{ postId: 1 }} prefetch key={k}>
           <Image

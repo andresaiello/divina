@@ -122,6 +122,7 @@ class PostCard extends Component {
           fitCover
           onDotLinkClick={this.openDotDetailsModal}
           src={picUrl}
+          postId={_id}
           withLoader
           dots={dots.nodes}
           alt="Foto"
