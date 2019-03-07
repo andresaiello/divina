@@ -6,7 +6,8 @@
     ["babel-plugin-root-import", { "rootPathPrefix": "~", "rootPathSuffix": "./" }],
     ["styled-components", { "ssr": true } ],
     ["import", { "libraryName": "@material-ui/core", "libraryDirectory": "", "camel2DashComponentName": false }, "import/core"],
-    ["import", { "libraryName": "@material-ui/icons", "libraryDirectory": "", "camel2DashComponentName": false }, "import/icons"]
+    ["import", { "libraryName": "@material-ui/icons", "libraryDirectory": "", "camel2DashComponentName": false }, "import/icons"],
+    ["import", { "libraryName": "@material-ui/styles", "libraryDirectory": "", "camel2DashComponentName": false }, "import/styles"]
   ],
   "env": {
     "test": {

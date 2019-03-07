@@ -124,9 +124,14 @@ class BottomAppBar extends Component {
                     )
                             }
                 </Fab>
-                <IconButton color="inherit">
-                  <Chat />
-                </IconButton>
+
+                <Link route="chat" prefetch>
+                  <a>
+                    <IconButton color="inherit">
+                      <Chat />
+                    </IconButton>
+                  </a>
+                </Link>
                 <Link route="myProfile" prefetch>
                   <a>
                     <IconButton color="inherit">

@@ -6,7 +6,11 @@ import MessageInput from './MessageInput';
 import SecContext from '~/context/secContext';
 
 const StyledInputText = styled.div`
-
+  && {
+    position: absolute;
+    width: 100%;
+    bottom: 56px; /* footer */
+  }
 `;
 
 const InputText = class extends React.Component {

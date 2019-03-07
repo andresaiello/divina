@@ -5,10 +5,12 @@ import { Button } from '@material-ui/core';
 import { Mutation, Query } from 'react-apollo';
 
 import withMainLayout from '~/HOCs/withMainLayout';
-import AddDots from './AddDots';
-import DotsModal from './DotsModal';
+import { Router } from '~/server/routes';
 import { Post, EditPost as EditPostGQL } from '~/lib/graphql';
 import { Loader } from '~/components/shared';
+
+import EditDots from './EditDots';
+import DotsModal from './DotsModal';
 
 const Container = styled.div`
   text-align: center;
@@ -91,7 +93,7 @@ class EditPost extends Component {
 
           return (
             <Container {...rest}>
-              <AddDots
+              <EditDots
                 selectDotPlace={this.selectDotPlace}
                 existentDots={data.post.dots && data.post.dots.nodes}
                 imageSizeX={xLength}
@@ -101,6 +103,7 @@ class EditPost extends Component {
                 displayDot={xPosition + yPosition !== 0}
                 getImageSize={this.getImageSize}
                 picUrl={data.post.picUrl}
+                postId={postId}
               />
               <p>¡Toca sobre la imagen para empezar a agregar tus dots!</p>
               <Mutation
@@ -120,8 +123,9 @@ class EditPost extends Component {
                 className="save"
                 color="primary"
                 variant="contained"
+                onClick={() => Router.pushRoute('feed')}
               >
-              Guardar
+                Guardar
               </Button>
             </Container>
           );

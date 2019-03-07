@@ -16,14 +16,15 @@ const FullScreenLoader = styled.div`
 `;
 
 export default function LoadingScreen ({ withLayout }) {
-  const loader = (
-    <FullScreenLoader>
+  const EnhancedLoader = props => (
+    <FullScreenLoader {...props}>
       <Loader />
     </FullScreenLoader>
   );
+
   const Loading = withLayout
-    ? withMainLayout(() => loader)
-    : () => loader;
+    ? withMainLayout(EnhancedLoader)
+    : EnhancedLoader;
 
   return <Loading />;
 }

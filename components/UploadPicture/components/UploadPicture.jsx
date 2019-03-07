@@ -21,7 +21,7 @@ const Container = styled.div`
   .save {
     width: 50%;
     max-width: 200px;
-    margin: 50px auto;
+    margin: 20px auto;
   }
 `;
 
@@ -78,7 +78,9 @@ class UploadPicture extends Component {
 
   render () {
     const { user } = this.context;
-    const { src, width, height } = this.props;
+    const {
+      src, width, height, ...rest
+    } = this.props;
     const { caption, uploading } = this.state;
 
     if (uploading) return <LoadingScreen />;
@@ -88,7 +90,7 @@ class UploadPicture extends Component {
         mutation={Post.Mutations.CREATE}
       >
         {(createPost, { data }) => (
-          <Container>
+          <Container {...rest}>
             {height === width
               ? <Image src={src} alt="Post" />
               : <PictureCrop updatePicture={this.updatePicture} {...{ src, width, height }} />

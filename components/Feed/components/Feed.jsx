@@ -13,7 +13,7 @@ const StyledFeed = styled.div`
 
 `;
 
-function Feed () {
+function Feed (props) {
   return (
     <Query
       query={FeedGQL.Queries.GET_POSTS}
@@ -35,7 +35,7 @@ function Feed () {
         // @todo add timeout and no connection error message to refetch and fetch more
 
         return (
-          <StyledFeed>
+          <StyledFeed {...props}>
             <Posts
               fetchingMore={isFetchingMore(networkStatus)}
               posts={nodes}
