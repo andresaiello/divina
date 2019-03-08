@@ -27,7 +27,7 @@ const StyledAppBar = styled(AppBar)`
     bottom: 0;
     background-color: white;
     color: black;
-    @media screen and (min-aspect-ratio: 13/9) { 
+    @media screen and (max-height: 350px) { 
       .toolbar {
         display: none;
       }

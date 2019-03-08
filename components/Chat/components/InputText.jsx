@@ -8,7 +8,7 @@ import SecContext from '~/context/secContext';
 const StyledInputText = styled.div`
   && {
     width: 100%;
-    bottom: 0; 
+    /* bottom: 0;  */
     z-index: 2;
   }
 `;
