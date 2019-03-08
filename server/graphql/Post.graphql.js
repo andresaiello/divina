@@ -1,6 +1,7 @@
 const { gql } = require('apollo-server-express');
 
 const Post = require('../models/Post');
+const User = require('../models/User');
 const PostComment = require('../models/PostComment');
 const PostLikes = require('../models/PostLikes');
 const Followers = require('../models/Followers');
@@ -40,14 +41,9 @@ const typeDefs = gql`
     nodes: [Comment]
   }
 
-  type Like {
-    _id: String
-    author: User
-  }
-
   type Likes {
     _id: String
-    nodes: [Like]
+    nodes: [User]
   }
 
   type LikeStatus {
@@ -174,7 +170,10 @@ const resolvers = {
 
       return { _id, nodes: dots || [] };
     },
-    likes: async ({ _id }) => PostLikes.findByPost({ postId: _id }),
+    likes: async ({ _id }) => ({
+      _id,
+      nodes: await PostLikes.findByPost({ _id }),
+    }),
     liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => ({
       _id,
       isLiked: await PostLikes.isPostLiked({ _id, author: loggedUser._id }),

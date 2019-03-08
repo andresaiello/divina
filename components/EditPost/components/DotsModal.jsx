@@ -1,13 +1,11 @@
 import React, { PureComponent, Fragment } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import { Search } from '@material-ui/icons';
-import NumberFormat from 'react-number-format';
+import { TextField, Button, InputAdornment } from '@material-ui/core';
 
-import { FullscreenModal, LoadingScreen, Loader } from '~/components/shared';
-import { TextField, Button } from '@material-ui/core';
-import { Mutation, Query } from 'react-apollo';
-import { Post, EditPost } from '~/lib/graphql';
+import { FullscreenModal, Loader } from '~/components/shared';
+import { Query } from 'react-apollo';
+import { EditPost } from '~/lib/graphql';
 
 const StyledModal = styled(FullscreenModal)`
   .content {
@@ -65,21 +63,6 @@ const BrandsGrid = styled.div`
     }
   }
 `;
-
-function NumberFormatCustom ({
-  name, inputRef, onChange, ...other
-}) {
-  return (
-    <NumberFormat
-      name={name}
-      getInputRef={inputRef}
-      onValueChange={(values) => { onChange({ target: { name, value: parseInt(values.value, 10) } }); }}
-      thousandSeparator
-      prefix="€"
-      {...other}
-    />
-  );
-}
 
 const initialState = {
   selectedBrand: null,
@@ -161,12 +144,13 @@ export default class DotsModal extends PureComponent {
                 />
                 <TextField
                   label="Precio"
+                  name="price"
                   id="formatted-numberformat-input"
+                  type="number"
+                  onChange={this.updateValue}
+                  value={price}
                   InputProps={{
-                    inputComponent: NumberFormatCustom,
-                    name: 'price',
-                    onChange: this.updateValue,
-                    value: price,
+                    startAdornment: <InputAdornment position="start">€</InputAdornment>,
                   }}
                 />
                 <Button
