@@ -6,15 +6,20 @@ import {
 } from '@material-ui/core';
 
 import SecContext from '~/context/secContext';
+import { Link } from '~/server/routes';
 import { FollowButton } from '~/components/shared';
 
 const StyledList = styled(List)`
   .item {
-    padding-left: 0px;
-    padding-right: 0px;
-    border-bottom: 1px solid #9B9B9B;
+    padding: 8px 0px 12px 0px;
     margin: 0px auto;
     width: 90%;
+    border-top: 1px solid #9B9B9B;
+
+    :first-child {
+      border: none;
+    }
+
   }
 
   .avatar {
@@ -48,14 +53,18 @@ export default function FollowList ({ elements }) {
       }) => (
         <ListItem key={_id} className="item" alignItems="flex-start">
           <ListItemAvatar>
-            <Avatar className="avatar" alt="avatar" src={profilePic} />
+            <Link route="profile" params={{ username }} prefetch>
+              <Avatar className="avatar" alt="avatar" src={profilePic} />
+            </Link>
           </ListItemAvatar>
           <ListItemText
             className="textContainer"
             primary={(
-              <Typography className="text" component="p" color="textPrimary">
-                {username}
-              </Typography>
+              <Link route="profile" params={{ username }} prefetch>
+                <Typography className="text" component="p" color="textPrimary">
+                  {username}
+                </Typography>
+              </Link>
             )}
           />
           <FollowButton
