@@ -18,7 +18,8 @@ const StyledChat = styled.div`
     flex-direction: column;
     /* header + footer */
     height: calc(100vh - 112px);
-    @media screen and (min-aspect-ratio: 13/9) { 
+    margin-bottom: 56px;
+    @media screen and (max-height: 350px) { 
       /* header */
       height: calc(100vh - 56px);
     }
