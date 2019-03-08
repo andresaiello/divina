@@ -14,7 +14,14 @@ const StyledChat = styled.div`
   && {
     background-image: url("/static/chat-background.jpg");
     background-size: cover;
-    height: calc(100vh - 110px); /* header + footer */
+    display: flex;
+    flex-direction: column;
+    /* header + footer */
+    height: calc(100vh - 112px);
+    @media screen and (min-aspect-ratio: 13/9) { 
+      /* header */
+      height: calc(100vh - 56px);
+    }
   }
 `;
 

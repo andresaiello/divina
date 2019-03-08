@@ -32,7 +32,7 @@ function HeadAppBar (props) {
   return (
     <StyledAppBar position="static" {...props}>
       <Toolbar className="toolbar">
-        <Typography variant="h6" color="inherit" className="disable-select">
+        <Typography variant="h5" color="inherit" className="disable-select">
           <Link route="/feed" prefetch><a>Divina</a></Link>
         </Typography>
       </Toolbar>

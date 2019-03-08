@@ -10,6 +10,7 @@ const StyledChatGroupItem = styled.div`
   && {
     width: 100%;
     height: 72px;
+    min-height: 72px;
     display: flex;
     flex-direction: row;
     align-items: center;

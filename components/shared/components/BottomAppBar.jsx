@@ -9,11 +9,11 @@ import {
   IconButton,
 } from '@material-ui/core';
 import {
-  Chat,
-  CameraAlt as CameraIcon,
+  ChatBubbleOutline as Chat,
   Search as SearchIcon,
-  HomeOutlined as HomeIcon,
+  Home as HomeIcon,
   Person as ProfileIcon,
+  AddCircleOutline as AddIcon,
 } from '@material-ui/icons';
 import Dropzone from 'react-dropzone';
 
@@ -27,6 +27,11 @@ const StyledAppBar = styled(AppBar)`
     bottom: 0;
     background-color: white;
     color: black;
+    @media screen and (min-aspect-ratio: 13/9) { 
+      .toolbar {
+        display: none;
+      }
+    }
 
     .toolbar {
       justify-content: space-between;
@@ -40,9 +45,16 @@ const StyledAppBar = styled(AppBar)`
       display: none;
     }
 
+    .upload {
+      height: 2.5rem;
+      width: 2.5rem;
+    }
+
     .camera {
       margin-top: 5px;
     }
+
+
   }
 `;
 
@@ -106,25 +118,22 @@ class BottomAppBar extends Component {
                     </IconButton>
                   </a>
                 </Link>
-                <Fab className="fab upload" aria-label="Add">
-                  {uploading
-                    ? <CircularProgress />
-                    : (
-                      <Dropzone
-                        onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected, uploadPicture); }}
-                        className="drop-zone"
-                      >
-                        {({ getRootProps, getInputProps }) => (
-                          <div {...getRootProps()} className="button-small">
-                            <input {...getInputProps()} />
-                            <CameraIcon className="camera" color="primary" />
-                          </div>
-                        )}
-                      </Dropzone>
-                    )
-                            }
-                </Fab>
-
+                {uploading
+                  ? <CircularProgress />
+                  : (
+                    <Dropzone
+                      onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected, uploadPicture); }}
+                      className="drop-zone"
+                    >
+                      {({ getRootProps, getInputProps }) => (
+                        <div {...getRootProps()} className="button-small">
+                          <input {...getInputProps()} />
+                          <AddIcon className="fab upload" color="primary" aria-label="Add" />
+                        </div>
+                      )}
+                    </Dropzone>
+                  )
+                }
                 <Link route="chat" prefetch>
                   <a>
                     <IconButton color="inherit">

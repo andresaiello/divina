@@ -18,6 +18,7 @@ const typeDefs = gql`
 
   type User {
     _id: String
+    followedByLoggedUser: FollowingStatus
     username: String
     description: String
     profilePic: String
@@ -61,6 +62,16 @@ const resolvers = {
     },
   },
   User: {
+    followedByLoggedUser: async ({ _id }, _, { loggedUser }) => (loggedUser
+      ? {
+        _id,
+        isFollowing: await Followers.isFollowedBy({
+          owner: _id,
+          followedBy: loggedUser && loggedUser._id,
+        }),
+      }
+      : { _id, isFollowing: false }
+    ),
     followers: async ({ _id }) => Followers.findByUserId({ owner: _id }),
     following: async ({ _id }) => Following.findByUserId({ owner: _id }),
   },

@@ -3,7 +3,7 @@ import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Mutation } from 'react-apollo';
 import { IconButton } from '@material-ui/core';
-import { Favorite } from '@material-ui/icons';
+import { Favorite as Liked, FavoriteBorder as NonLiked } from '@material-ui/icons';
 
 import { Feed, Post } from '~/lib/graphql';
 
@@ -13,8 +13,10 @@ const StyledIconButton = styled(IconButton)`
   }
 `;
 
-export default function LikeButton ({ author, postId, liked }) {
-  if (!author) return <Favorite className="liked" />;
+export default function LikeButton ({
+  className, author, postId, liked,
+}) {
+  if (!author) return <NonLiked />;
 
   if (liked) {
     return (
@@ -23,10 +25,11 @@ export default function LikeButton ({ author, postId, liked }) {
       >
         {(unlikePost, { data, loading, error }) => (
           <StyledIconButton
+            className={className}
             aria-label="Like"
             onClick={() => unlikePost({ variables: { postId } })}
           >
-            <Favorite className="liked" />
+            <Liked className="liked" />
           </StyledIconButton>
         )}
       </Mutation>
@@ -39,10 +42,11 @@ export default function LikeButton ({ author, postId, liked }) {
     >
       {(likePost, { data, loading, error }) => (
         <StyledIconButton
+          className={className}
           aria-label="Like"
           onClick={() => likePost({ variables: { postId } })}
         >
-          <Favorite />
+          <NonLiked />
         </StyledIconButton>
       )}
     </Mutation>
@@ -51,9 +55,11 @@ export default function LikeButton ({ author, postId, liked }) {
 
 LikeButton.defaultProps = {
   author: null,
+  className: null,
 };
 
 LikeButton.propTypes = {
+  className: propTypes.string,
   author: propTypes.string,
   postId: propTypes.string.isRequired,
   liked: propTypes.bool.isRequired,

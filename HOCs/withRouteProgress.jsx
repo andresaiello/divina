@@ -3,6 +3,8 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 
 import { Router } from '../server/routes';
 
+// @todo make it permanently fixed to the top independently of the vertical position
+
 export default BaseComponent => class extends Component {
   state = {
     showBar: false,

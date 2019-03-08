@@ -32,7 +32,7 @@ export default function FullscreenModal ({
           <IconButton color="inherit" onClick={close} aria-label="Close">
             <Close />
           </IconButton>
-          <Typography variant="h6" color="inherit" className="flex">
+          <Typography variant="h5" color="inherit" className="flex">
             {title}
           </Typography>
         </Toolbar>
