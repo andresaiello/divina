@@ -9,6 +9,7 @@ import { User } from '~/lib/graphql';
 const StyledButton = styled(Button)`
   && {
     width: 80px;
+    height: 28px;
     padding: 1px 16px;
     text-transform: none;
   }
