@@ -27,6 +27,11 @@ const StyledAppBar = styled(AppBar)`
     bottom: 0;
     background-color: white;
     color: black;
+    @media screen and (max-height: 350px) { 
+      .toolbar {
+        display: none;
+      }
+    }
 
     .toolbar {
       justify-content: space-between;
@@ -48,6 +53,8 @@ const StyledAppBar = styled(AppBar)`
     .camera {
       margin-top: 5px;
     }
+
+
   }
 `;
 

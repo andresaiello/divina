@@ -4,8 +4,8 @@ import MessageItem from './MessageItem';
 
 const StyledMessageList = styled.div`
   && {
-    height: calc(100vh - 157px); /* header + footer + input */
     padding-top: 20px;
+    flex: 1;
     overflow-y: scroll;
   }
 
