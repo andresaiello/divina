@@ -18,6 +18,7 @@ const typeDefs = gql`
 
   type User {
     _id: String
+    name: String
     followedByLoggedUser: FollowingStatus
     username: String
     description: String
