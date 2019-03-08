@@ -14,7 +14,7 @@ const StyledChat = styled.div`
   && {
     background-image: url("/static/chat-background.jpg");
     background-size: cover;
-    height: calc(100vh - 110px);
+    height: calc(100vh - 110px); /* header + footer */
   }
 `;
 
