@@ -15,6 +15,9 @@ const StyledChatList = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
+    /* header + footer */
+    height: calc(100vh - 112px);
+    overflow-y: scroll;
 
   }
 

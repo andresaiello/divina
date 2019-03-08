@@ -5,6 +5,7 @@ import MessageItem from './MessageItem';
 const StyledMessageList = styled.div`
   && {
     padding-top: 20px;
+    flex: 1;
     overflow-y: scroll;
   }
 
