@@ -24,6 +24,7 @@ const StyledCard = styled(Card)`
   border-bottom: 1px solid #9B9B9B;
   box-shadow: none;
   max-width: 450px;
+  border-radius: 0;
 
   :first-child {
     border-top: 1px solid #9B9B9B;
@@ -53,6 +54,10 @@ const StyledCard = styled(Card)`
     }
   }
 
+  .caption {
+    padding: 4px 16px 0px;
+  }
+
   .title {
     margin-left: 27px;
     margin-top: 15px;
@@ -60,10 +65,7 @@ const StyledCard = styled(Card)`
 
   .actions {
     justify-content: space-between;
-  }
-
-  .cardPic{
-    height: 100vw;
+    padding: 0;
   }
 
   .followMore {
@@ -165,7 +167,6 @@ class PostCard extends Component {
         />
         <ImageWithDots
           className="cardPic"
-          height="350"
           fitCover
           onDotLinkClick={this.openDotDetailsModal}
           src={picUrl}
@@ -179,7 +180,7 @@ class PostCard extends Component {
           onClose={this.closeDotDetailsModal}
           dotData={selectedDotData}
         />
-        <CardContent>
+        <CardContent className="caption">
           <Typography component="p">
             {caption}
           </Typography>

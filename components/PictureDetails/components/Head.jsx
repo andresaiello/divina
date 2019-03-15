@@ -2,7 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  AppBar, Toolbar, Avatar, IconButton,
+  AppBar, Toolbar, Avatar, IconButton, Typography,
 } from '@material-ui/core';
 import { ChevronLeft, MoreHoriz } from '@material-ui/icons';
 
@@ -51,7 +51,7 @@ function Head ({ username, profilePic, ...rest }) {
             <ChevronLeft className="backIcon" />
           </Link>
           <Avatar className="avatar" src={profilePic} alt="Foto de perfil" />
-          <h4>{username}</h4>
+          <Typography component="h4">{username}</Typography>
         </div>
         <div>
           <IconButton>

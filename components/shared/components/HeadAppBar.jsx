@@ -11,9 +11,13 @@ const StyledAppBar = styled(AppBar)`
   && {
     background-color: white;
     color: black;
+    border-bottom: 1px solid rgb(216, 216, 216);
+    box-shadow: none;
+    padding: 0;
 
     .toolbar {
-      justify-content: center;
+      min-height: 40px;
+      justify-content: space-between;
     }
 
     h6 {
@@ -32,9 +36,11 @@ function HeadAppBar (props) {
   return (
     <StyledAppBar position="static" {...props}>
       <Toolbar className="toolbar">
+        <img width="32" src="/static/pinkBlackLogo.png" alt="Cámara" />
         <Typography variant="h5" color="inherit" className="disable-select">
           <Link route="/feed" prefetch><a>Divina</a></Link>
         </Typography>
+        <img width="32" src="/static/dot.png" alt="Dot" />
       </Toolbar>
     </StyledAppBar>
   );

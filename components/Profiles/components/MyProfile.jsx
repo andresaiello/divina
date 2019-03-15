@@ -11,13 +11,17 @@ import ProfileInfo from './ProfileInfo';
 import PhotoGrid from './PhotoGrid';
 
 const StyledProfile = styled.article`
-
+  button {
+    text-transform: none;
+    border-radius: 0;
+    padding: 0 16px;
+  }
 `;
 
 function MyProfile ({ profile, ...rest }) {
   const editProfile = (
     <Link route="editProfile" prefetch>
-      <Button>Editar</Button>
+      <Button variant="outlined">editar</Button>
     </Link>
   );
 

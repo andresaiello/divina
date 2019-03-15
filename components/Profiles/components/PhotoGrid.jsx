@@ -16,9 +16,11 @@ const StyledPhotoGrid = styled.div`
   grid-row-gap: 5px;
   justify-content: space-between;
 
-  .cardPic{
-    width: calc(100vw / 3 - 8px);
-    height: calc(100vw / 3 - 8px);
+  .cardPic {
+    max-width: 300px;
+    max-height: 300px;
+    width: calc(100vw / 3 - 1px);
+    height: calc(100vw / 3 - 1px);
   }
 `;
 

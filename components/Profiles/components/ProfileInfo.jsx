@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import { Avatar } from '@material-ui/core';
-import { People, PeopleOutlined, CameraAlt as Camera } from '@material-ui/icons';
+import { Avatar, Typography } from '@material-ui/core';
+import { People, PeopleOutlined, ChatBubbleOutline as Chat } from '@material-ui/icons';
 
 import FollowersModal from './FollowersModal';
 import FollowingModal from './FollowingModal';
@@ -11,6 +11,10 @@ const StyledProfileInfo = styled.div`
   display: grid;
   grid-template-columns: 25% 75%;
   margin: 10px;
+
+  h2 {
+    word-break: break-all;
+  }
 
   .avatar {
     height: 70px;
@@ -84,9 +88,8 @@ class ProfileInfo extends Component {
 
   render () {
     const {
-      action, username, description, profilePic, followersCount, followingCount, postsCount, ...rest
+      action, username, name, description, profilePic, followersCount, followingCount, postsCount, ...rest
     } = this.props;
-
 
     const { followersModalOpen, followingModalOpen } = this.state;
 
@@ -113,7 +116,7 @@ class ProfileInfo extends Component {
             role="button"
             tabIndex={0}
           >
-            <Camera />
+            <img width="32" src="/static/pinkBlackLogo.png" alt="Cámara" />
             <p>{postsCount === 1 ? '1 foto' : `${postsCount} fotos` }</p>
           </div>
           <div
@@ -134,9 +137,28 @@ class ProfileInfo extends Component {
             <PeopleOutlined />
             <p>{followingCount === 1 ? '1 seguido' : `${followingCount} seguidos` }</p>
           </div>
+          <div
+            className="icon action"
+            // onClick={() => this.openModal('followingModalOpen')}
+            role="button"
+            tabIndex={0}
+          >
+            <img width="30" src="/static/chat.png" alt="chat" />
+            <p>{followingCount === 1 ? '1 chat' : `${followingCount} chats` }</p>
+          </div>
+          <div
+            className="icon action"
+            // onClick={() => this.openModal('followingModalOpen')}
+            role="button"
+            tabIndex={0}
+          >
+            <img width="32" src="/static/dot.png" alt="Dot" />
+            <p>{followingCount === 1 ? '1 dot' : `${followingCount} dots` }</p>
+          </div>
         </div>
         <div className="details">
-          <div>{description}</div>
+          <Typography component="p">{name}</Typography>
+          <Typography component="p">{description}</Typography>
         </div>
       </StyledProfileInfo>
     );
