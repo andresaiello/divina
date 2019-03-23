@@ -9,11 +9,8 @@ import {
 } from '@material-ui/icons';
 
 import SecContext from '~/context/secContext';
-import timeAgo from '~/lib/timeAgo';
 import { Link } from '~/server/routes';
-import {
-  Image, FollowButton, LikeButton, ImageWithDots,
-} from '~/components/shared';
+import { FollowButton, LikeButton, ImageWithDots } from '~/components/shared';
 
 import CommentsModal from './CommentsModal';
 import DotDetailsModal from './DotDetailsModal';
