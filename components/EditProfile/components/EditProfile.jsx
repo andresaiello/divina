@@ -126,7 +126,7 @@ class ProfileDetails extends Component {
 
     if (saving) return <Loader />;
 
-    // console.log(user);
+    // @todo: update cache on save changes
 
     return (
       <Container {...rest}>

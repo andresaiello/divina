@@ -8,13 +8,15 @@ import Image from '../../Image';
 import Dot from './Dot';
 import DotTooltip from './DotTooltip';
 import RemoveDotTooltip from './RemoveDotTooltip';
+import { POST_MAX_WIDTH } from '~/constants';
 
 const Container = styled.div`
   position: relative;
   height: 100vw;
-  max-height: 450px;
   width: 100vw;
-  max-width: 450px;
+  max-height: ${POST_MAX_WIDTH}px;
+  max-width: ${POST_MAX_WIDTH}px;
+  margin: 0 auto;
 `;
 
 const StyledImage = styled(Image)`

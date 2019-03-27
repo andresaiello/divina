@@ -15,12 +15,13 @@ import { FollowButton, LikeButton, ImageWithDots } from '~/components/shared';
 import CommentsModal from './CommentsModal';
 import DotDetailsModal from './DotDetailsModal';
 import ShareModal from './ShareModal';
+import { POST_MAX_WIDTH } from '~/constants';
 
 const StyledCard = styled(Card)`
   margin: 0px auto;
   border-bottom: 1px solid #9B9B9B;
   box-shadow: none;
-  max-width: 450px;
+  max-width: ${POST_MAX_WIDTH}px;
   border-radius: 0;
 
   :first-child {
@@ -129,6 +130,8 @@ class PostCard extends Component {
       isCommentsModalOpen, isShareModalOpen, isDotDetailsModalOpen, selectedDotData,
     } = this.state;
 
+    const screenWidth = process.browser ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : 450;
+
     return (
       <StyledCard>
         <CardHeader
@@ -167,6 +170,7 @@ class PostCard extends Component {
           fitCover
           onDotLinkClick={this.openDotDetailsModal}
           src={picUrl}
+          height={screenWidth <= POST_MAX_WIDTH ? '100vw' : `${POST_MAX_WIDTH}px`}
           postId={_id}
           withLoader
           dots={dots.nodes}

@@ -160,6 +160,7 @@ export default class DotsModal extends PureComponent {
                   color="primary"
                   variant="contained"
                   onClick={this.saveDot}
+                  disabled={!title.length || price.toString ? !price.toString().length : price.length}
                 >
                   Guardar
                 </Button>
