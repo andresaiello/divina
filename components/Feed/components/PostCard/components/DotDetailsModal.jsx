@@ -5,6 +5,7 @@ import {
   Typography, Modal, Button,
 } from '@material-ui/core';
 import { formatPrice } from '~/util';
+import { POST_MAX_WIDTH } from '~/constants';
 
 function getModalStyle () {
   const top = 63;
@@ -29,7 +30,7 @@ const StyledModal = styled(Modal)`
       position: absolute;
       border-radius: 3px;
       width: 80vw;
-      max-width: 450px;
+      max-width: ${POST_MAX_WIDTH}px;
       background-color: white;
       padding: 10px;
       box-shadow: 0px 3px 5px -1px rgba(0,0,0,.2), 0px 5px 8px 0px rgba(0,0,0,.14), 0px 1px 14px 0px rgba(0,0,0,.12);

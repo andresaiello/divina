@@ -7,6 +7,7 @@ export default function CommentsModal ({ postId, isOpen, close }) {
   return (
     <FullscreenModal
       title="Comentarios"
+      transitionDirection="left"
       {...{ isOpen, close }}
     >
       <Comments postId={postId} />

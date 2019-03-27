@@ -6,13 +6,16 @@ import {
 } from '@material-ui/core';
 import { ChevronLeft, MoreHoriz } from '@material-ui/icons';
 
-import { Link } from '~/server/routes';
+import { Link, Router } from '~/server/routes';
 import { FollowButton } from '~/components/shared';
 
 const StyledAppBar = styled(AppBar)`
   && {
     background: white;
     color: rgb(74, 74, 74);
+    box-shadow: none;
+    border-bottom: 1px solid rgb(218,218,219);
+    margin-bottom: 2px;
 
     .toolbar {
       padding: 0px 8px;
@@ -47,9 +50,10 @@ function Head ({ username, profilePic, ...rest }) {
     <StyledAppBar position="static" {...rest}>
       <Toolbar className="toolbar">
         <div className="leftContent">
-          <Link route="profile" params={{ username }} prefetch>
-            <ChevronLeft className="backIcon" />
-          </Link>
+          <ChevronLeft
+            className="backIcon"
+            onClick={() => Router.back()}
+          />
           <Avatar className="avatar" src={profilePic} alt="Foto de perfil" />
           <Typography component="h4">{username}</Typography>
         </div>

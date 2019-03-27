@@ -92,7 +92,7 @@ export default class DotsModal extends PureComponent {
 
     this.setState({ ...initialState }, async () => {
       await onSaveDot(persistDot, {
-        title, brand: selectedBrand._id, price, currency: 'EUR',
+        title, brand: selectedBrand._id, price: parseInt(price, 10), currency: 'EUR',
       });
     });
   }
@@ -116,6 +116,8 @@ export default class DotsModal extends PureComponent {
     const { isOpen, savingDot } = this.props;
 
     const lowerCaseBrandFilter = brandFilter.toLowerCase();
+
+    // @todo: validate dot form, don't allow null title - price.
 
     return (
       <StyledModal
@@ -158,6 +160,7 @@ export default class DotsModal extends PureComponent {
                   color="primary"
                   variant="contained"
                   onClick={this.saveDot}
+                  disabled={!title.length || price.toString ? !price.toString().length : price.length}
                 >
                   Guardar
                 </Button>
