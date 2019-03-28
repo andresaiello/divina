@@ -18,6 +18,7 @@ const StyledAppBar = styled(AppBar)`
     margin-bottom: 2px;
 
     .toolbar {
+      min-height: 45px;
       padding: 0px 8px;
       justify-content: space-between;
     }

@@ -20,6 +20,7 @@ import Dropzone from 'react-dropzone';
 import SecContext from '~/context/secContext';
 import PictureUploadContext from '~/context/PictureUploadContext';
 import { Link, Router } from '~/server/routes';
+import { readImageAsBase64 } from '~/util';
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -27,7 +28,8 @@ const StyledAppBar = styled(AppBar)`
     bottom: 0;
     background-color: white;
     color: black;
-    @media screen and (max-height: 350px) { 
+
+    @media screen and (max-height: 350px) {
       .toolbar {
         display: none;
       }
@@ -53,8 +55,6 @@ const StyledAppBar = styled(AppBar)`
     .camera {
       margin-top: 5px;
     }
-
-
   }
 `;
 
@@ -65,34 +65,15 @@ class BottomAppBar extends Component {
     uploading: false,
   };
 
-  onDropImage = (acceptedFiles, rejectedFiles, uploadPicture) => {
+  onDropImage = async (acceptedFiles, rejectedFiles, uploadPicture) => {
     this.setState({ uploading: true });
 
     let fileToSend = null;
-    Array.from(acceptedFiles).forEach((file) => { fileToSend = file; });
+    acceptedFiles.forEach((file) => { fileToSend = file; });
 
-    const reader = new FileReader();
+    const { base64Img, width, height } = await readImageAsBase64(fileToSend);
 
-    reader.onload = () => {
-      const img = new Image();
-      img.onload = () => {
-        uploadPicture({ src: reader.result, width: img.width, height: img.height }, () => Router.pushRoute('uploadPicture'));
-      };
-      img.src = reader.result;
-    };
-
-    if (fileToSend) {
-      reader.readAsDataURL(fileToSend);
-    }
-  }
-
-  // onPhotoUploadProgress (id, response) {
-  //   console.log(id);
-  //   console.log(response);
-  // }
-
-  onPhotoUploaded = (_, response) => {
-    Router.pushRoute('uploadPicture');
+    uploadPicture({ src: base64Img, width, height }, () => Router.pushRoute('uploadPicture'));
   }
 
   render () {

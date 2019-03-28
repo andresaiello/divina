@@ -3,17 +3,15 @@ import styled from 'styled-components';
 import propTypes from 'prop-types';
 import { Mutation } from 'react-apollo';
 import { Button } from '@material-ui/core';
-import getConfig from 'next/config';
 
 import { Post } from '~/lib/graphql';
 import withMainLayout from '~/HOCs/withMainLayout';
 import { Image, Input, LoadingScreen } from '~/components/shared';
 import secContext from '~/context/secContext';
 import { Router } from '~/server/routes';
-import PictureCrop from './PictureCrop';
+import { base64ToCloudinary } from '~/util';
 
-const { publicRuntimeConfig } = getConfig();
-const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
+import PictureCrop from './PictureCrop';
 
 const Container = styled.div`
   display: grid;
@@ -49,31 +47,11 @@ class UploadPicture extends Component {
     this.setState({ caption: value });
   }
 
-  base64ToFile = async base64Img => fetch(base64Img)
-    .then(res => res.blob())
-    .then(blob => new File([blob], 'image'));
-
   uploadToImageServer = async () => {
     const { user } = this.context;
     const { base64Img } = this.state;
 
-    const file = await this.base64ToFile(base64Img);
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('upload_preset', CLOUDINARY_PRESET); // se configura en cloudinary
-    formData.append('multiple', true);
-    formData.append('tags', `${user._id}, ${user.name}, ${user.username}`);
-    formData.append('context', '');
-
-    return fetch(CLOUDINARY_UPLOAD_URL, {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.json())
-      // eslint-disable-next-line
-      .then(({ public_id, secure_url }) => ({ public_id, secure_url }));
-    // @todo: do something when the upload fails
+    return base64ToCloudinary(base64Img, [user._id, user.name, user.username]);
   }
 
   render () {
@@ -89,7 +67,7 @@ class UploadPicture extends Component {
       <Mutation
         mutation={Post.Mutations.CREATE}
       >
-        {(createPost, { data }) => (
+        {createPost => (
           <Container {...rest}>
             {height === width
               ? <Image src={src} alt="Post" />

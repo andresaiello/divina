@@ -18,7 +18,7 @@ const postSchema = new Schema({
   picUrl: { type: String, required: true },
 }, { timestamps: true });
 
-postSchema.statics.getFeedPosts = async function getFeedPosts ({ startingDate = Date.now(), amount = 5 }) {
+postSchema.statics.getPaginatedPosts = async function getPaginatedPosts ({ startingDate = Date.now(), amount = 5 }) {
   // ask for 1 document more to check if there is another page
   // (the other option is to perform 2 queries)
   const checkNextPage = amount + 1;

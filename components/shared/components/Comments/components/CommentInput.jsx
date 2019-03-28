@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import {
-  Avatar, TextField, Grid, Button, InputAdornment, Typography,
+  Avatar, TextField, Grid, InputAdornment,
 } from '@material-ui/core';
 
 const Container = styled(Grid)`
@@ -18,7 +18,7 @@ const Container = styled(Grid)`
     align-items: center;
 
     .avatar {
-      margin-right: 7.5px;
+      margin-right: 25px;
     }
   }
 `;
