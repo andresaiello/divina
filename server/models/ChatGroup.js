@@ -20,6 +20,7 @@ chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, 
     // .find({ author: member })
     .find({ members: member })
     .populate({ path: 'author', model: User })
+    .populate({ path: 'members', model: User })
     .lean()
     .sort({ createdAt: 'desc' }) // (from startingDate + 1 to X)
     .limit(checkNextPage);
@@ -34,6 +35,7 @@ chatGroupSchema.statics.getById = async function getById (_id) {
   const [chatGroup] = await this
     .find({ _id })
     .populate({ path: 'author', model: User })
+    .populate({ path: 'members', model: User })
     .lean();
   return chatGroup;
 };
@@ -41,6 +43,8 @@ chatGroupSchema.statics.getById = async function getById (_id) {
 chatGroupSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
   const nodes = await this
     .find({ author })
+    .populate({ path: 'author', model: User })
+    .populate({ path: 'members', model: User })
     .lean()
     .sort({ createdAt: 'desc' });
 

@@ -1,3 +1,8 @@
+import getConfig from 'next/config';
+
+const { publicRuntimeConfig } = getConfig();
+const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
+
 export const fetchWrapper = async (url, options = { headers: {} }) => fetch(url, {
   ...options,
   headers: { ...options.headers, 'Access-Control-Allow-Origin': '*' },
@@ -30,3 +35,49 @@ export const formatPrice = (price, currency) => {
       return `€ ${price}`;
   }
 };
+
+const base64ToFile = async base64Img => fetch(base64Img)
+  .then(res => res.blob())
+  .then(blob => new File([blob], 'image'));
+
+const createCloudinaryForm = (file, tags = []) => {
+  const formData = new FormData();
+
+  formData.append('file', file);
+  formData.append('upload_preset', CLOUDINARY_PRESET); // se configura en cloudinary
+  formData.append('multiple', true);
+  formData.append('tags', tags.join(', '));
+  formData.append('context', '');
+
+  return formData;
+};
+
+const uploadToCloudinary = async formData => fetch(CLOUDINARY_UPLOAD_URL, {
+  method: 'POST',
+  body: formData,
+})
+  .then(response => response.json())
+  // eslint-disable-next-line
+  .then(({ public_id, secure_url }) => ({ public_id, secure_url }));
+  // @todo: do something when the upload fails
+
+export const base64ToCloudinary = async (base64Img, tags) => {
+  const file = await base64ToFile(base64Img);
+  const formData = createCloudinaryForm(file, tags);
+  return uploadToCloudinary(formData);
+};
+
+export const readImageAsBase64 = async image => new Promise((resolve, reject) => {
+  const reader = new FileReader();
+
+  reader.onload = () => {
+    const img = new Image();
+    img.src = reader.result;
+    img.onload = async () => {
+      resolve({ base64Img: img.src, width: img.width, height: img.height });
+    };
+  };
+
+  if (image) reader.readAsDataURL(image);
+  else reject(new Error('No image provided'));
+});

@@ -93,7 +93,7 @@ const resolvers = {
     },
     post: async (_, { _id }) => Post.getById(_id),
     posts: async (_, args) => {
-      const { nodes, lastCursor, hasNextPage } = await Post.getFeedPosts(args);
+      const { nodes, lastCursor, hasNextPage } = await Post.getPaginatedPosts(args);
       return { nodes, pageInfo: { lastCursor, hasNextPage } };
     },
   },

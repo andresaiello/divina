@@ -34,11 +34,13 @@ const typeDefs = gql`
 
   type ChatMessages {
     nodes: [ChatMessage]
+    chatGroup: ChatGroup
   }
 
   type ChatGroup {
     _id: String
     author: User
+    members: [User]
     picUrl: [String]
     caption: String
     chatMessages: ChatMessages
@@ -62,7 +64,8 @@ const resolvers = {
     },
     chatMessages: async (_, { _id }) => {
       const nodes = await ChatMessage.findByChatGroup({ chatGroupId: _id });
-      return { nodes };
+      const chatGroup = await ChatGroup.getById(_id);
+      return { nodes, chatGroup };
     },
   },
   Mutation: {

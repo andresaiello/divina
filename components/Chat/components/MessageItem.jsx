@@ -1,21 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from './Avatar';
 import timeAgo from '~/lib/timeAgo';
+import SecContext from '~/context/secContext';
 
 const StyledMessageItem = styled.div`
   && {
     width: 100%;
     position: relative;
-
-    .avatar{
-      width: 30px;
-      height: 30px;
-      margin: 0 19px 0 19px;
-      top: -10px;
-      position: absolute;
-      z-index: 1;
-    }
 
     .author {
       background: #fff;
@@ -37,6 +29,14 @@ const StyledMessageItem = styled.div`
       position: absolute;
       right: 30px;
       top: 0;
+    }
+
+    .avatar{
+      width: 30px;
+      height: 30px;
+      top: -10px;
+      position: absolute;
+      z-index: 1;
     }
 
     .self{
@@ -65,13 +65,21 @@ const StyledMessageItem = styled.div`
 
 
 const MessageItem = class extends React.PureComponent {
+  static contextType = SecContext;
+
   render () {
-    const { message: { createdAt, content, author: { username, profilePic } } } = this.props;
+    const { user } = this.context;
+
+    const {
+      message: {
+        createdAt, content, author, author: { username },
+      },
+    } = this.props;
 
     return (
       <StyledMessageItem>
-        <div className={(username === 'aaiello') ? 'self' : null}>
-          <Avatar alt={username} src={profilePic} className="avatar" />
+        <div className={(username === user.username) ? 'self' : null}>
+          <Avatar user={author} />
           <div className="content">
             <div className="author">{username}</div>
             <div className="content">{content}</div>

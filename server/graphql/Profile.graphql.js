@@ -13,10 +13,6 @@ const typeDefs = gql`
     profilePosts (_id: String!): [Post]
   }
 
-  extend type Mutation {
-    editUserDescription (description: String!): User
-  }
-
   type Profile {
     authorFollowed: FollowingStatus
     followersCount: Int
@@ -39,12 +35,6 @@ const resolvers = {
     profilePosts: async (_, { _id }) => {
       const { nodes = [] } = await Post.getByAuthor({ author: _id });
       return nodes;
-    },
-  },
-  Mutation: {
-    editUserDescription: async (_, { description }, { loggedUser = missing('needLogin') }) => {
-      const user = await User.editDescription({ _id: loggedUser._id, description });
-      return user;
     },
   },
   Profile: {
