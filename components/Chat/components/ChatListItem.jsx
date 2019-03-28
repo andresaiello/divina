@@ -20,21 +20,15 @@ const StyledChatListItem = styled.div`
     position: relative;
     color: rgb(74, 74, 74);
 
-<<<<<<< HEAD:components/Chat/components/ChatListItem.jsx
     .avatar{
         width: 55px;
         height: 55px;
-=======
-    .avatar {
-      width: 55px;
-      height: 55px;
-      margin: 0 19px 0 19px;
->>>>>>> develop:components/Chat/components/ChatGroupItem.jsx
     }
 
     .content{
       flex-grow: 1;
       height: 100%;
+      margin: 0 25px 0 0;
     }
 
     .caption{
@@ -51,8 +45,9 @@ const StyledChatListItem = styled.div`
 
     .updatedAt {
       position: absolute;
-      right: 25px;
+      right: 40px;
       top: 10px;
+      font-size: 14px;
     }
 
     hr {
@@ -61,6 +56,8 @@ const StyledChatListItem = styled.div`
 
     svg {
       color: rgb(155, 155, 155);
+      position: absolute;
+      right: 20px;
     }
 
   }
