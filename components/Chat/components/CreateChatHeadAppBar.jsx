@@ -34,20 +34,21 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
-function ChatListHeadAppBar (props) {
+function CreateChatHeadAppBar (props) {
   return (
     <StyledAppBar position="static" {...props}>
       <Toolbar className="toolbar">
-        <Link route="/feed" prefetch><KeyboardArrowLeft /></Link>
+        <Link route="/chat" prefetch><KeyboardArrowLeft /></Link>
 
-        <Typography variant="h5" color="inherit" className="disable-select">
-          {/* <Link route="/feed" prefetch><a>Divina</a></Link> */}
-          Chats
+        <Typography variant="p" color="inherit" className="disable-select">
+          Nueva conversación
         </Typography>
-        <Link route="/chat/new" prefetch><Add /></Link>
+        <Typography variant="p" color="inherit" className="disable-select" onClick={() => props.onNext()}>
+          {props.stepNumber === 0 ? 'Siguiente' : 'Crear'}
+        </Typography>
       </Toolbar>
     </StyledAppBar>
   );
 }
 
-export default ChatListHeadAppBar;
+export default CreateChatHeadAppBar;

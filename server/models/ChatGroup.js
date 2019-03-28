@@ -11,7 +11,7 @@ const chatGroupSchema = new Schema({
 
 }, { timestamps: true });
 
-chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, amount = 5 }) {
+chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, amount = 500 }) {
   // ask for 1 document more to check if there is another page
   // (the other option is to perform 2 queries)
   const checkNextPage = amount + 1;
