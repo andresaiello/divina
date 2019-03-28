@@ -8,7 +8,8 @@ import PageVisibility from 'react-page-visibility';
 import { Loader } from '../../shared';
 
 import { CHAT_GET_CHAT_GROUPS } from '~/lib/graphql/Chat';
-import ChatGroupItem from './ChatGroupItem';
+import ChatListItem from './ChatListItem';
+import ChatListHeadAppBar from './ChatListHeadAppBar';
 
 const StyledChatList = styled.div`
   && {
@@ -16,7 +17,7 @@ const StyledChatList = styled.div`
     align-items: center;
     flex-direction: column;
     /* header + footer */
-    height: calc(100vh - 112px);
+    /* height: calc(100vh - 112px); */
     overflow-y: scroll;
 
   }
@@ -25,7 +26,6 @@ const StyledChatList = styled.div`
 
 const ChatList = class extends React.PureComponent {
   render () {
-    const { onChatClick } = this.props;
     return (
       <Query query={CHAT_GET_CHAT_GROUPS}>
         {({
@@ -44,8 +44,9 @@ const ChatList = class extends React.PureComponent {
           return (
             <PageVisibility onChange={isVisible => (isVisible && refetch())}>
               <StyledChatList>
+                <ChatListHeadAppBar />
                 {nodes.map((elem, index) => (
-                  <ChatGroupItem onChatClick={onChatClick} item={elem} key={index} />
+                  <ChatListItem item={elem} key={index} />
                 ))}
               </StyledChatList>
             </PageVisibility>);
@@ -54,10 +55,6 @@ const ChatList = class extends React.PureComponent {
 
     );
   }
-};
-
-ChatList.propTypes = {
-  onChatClick: propTypes.func.isRequired,
 };
 
 export default ChatList;

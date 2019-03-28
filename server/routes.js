@@ -12,7 +12,8 @@ routes
   .add('pictureDetails', '/foto/:username/:postId')
   .add('profile', '/perfil/:username')
   .add('uploadPicture', '/subir-foto')
-  .add('chat', '/chat')
+  .add('chatList', '/chat')
+  .add('chat', '/chat/:chatGroupId')
   .add('embeddedBrowser', '/browser');
 
 module.exports = routes;

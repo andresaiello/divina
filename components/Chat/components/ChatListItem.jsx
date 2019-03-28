@@ -1,13 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
-import Avatar from '@material-ui/core/Avatar';
+import { Link } from '~/server/routes';
+import Avatar from './Avatar';
 import propTypes from 'prop-types';
 import Divider from '@material-ui/core/Divider';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import timeAgo from '~/lib/timeAgo';
 
-const StyledChatGroupItem = styled.div`
+const StyledChatListItem = styled.div`
   && {
+
+    
     width: 100%;
     height: 72px;
     min-height: 72px;
@@ -20,7 +23,6 @@ const StyledChatGroupItem = styled.div`
     .avatar{
         width: 55px;
         height: 55px;
-        margin: 0 19px 0 19px;
     }
 
     .content{
@@ -58,33 +60,36 @@ const StyledChatGroupItem = styled.div`
 
 `;
 
-const ChatGroupItem = class extends React.PureComponent {
+const ChatListItem = class extends React.PureComponent {
   render () {
     const {
-      onChatClick, item: {
-        _id, caption, updatedAt, author: { username, profilePic },
+      item: {
+        _id, caption, updatedAt, author, author: { username, profilePic },
       },
     } = this.props;
+
     return (
-      <StyledChatGroupItem onClick={() => onChatClick(_id)}>
-        <Avatar alt={username} src={profilePic} className="avatar" />
-        <div className="content">
-          <div className="caption">{caption}</div>
-          <div className="author">{username}</div>
-          <Divider />
-        </div>
-        <div className="updatedAt">
-          {timeAgo.format(parseInt(updatedAt, 10))}
-        </div>
-        <KeyboardArrowRight />
-      </StyledChatGroupItem>
+      <Link route="chat" params={{ chatGroupId: _id }}>
+        <StyledChatListItem>
+          <Avatar user={author} />
+          <div className="content">
+            <div className="caption">{caption}</div>
+            <div className="author">{username}</div>
+            <Divider />
+          </div>
+          <div className="updatedAt">
+            {timeAgo.format(parseInt(updatedAt, 10))}
+          </div>
+          <KeyboardArrowRight />
+        </StyledChatListItem>
+      </Link>
+
 
     );
   }
 };
 
-ChatGroupItem.propTypes = {
-  onChatClick: propTypes.func.isRequired,
+ChatListItem.propTypes = {
 };
 
-export default ChatGroupItem;
+export default ChatListItem;
