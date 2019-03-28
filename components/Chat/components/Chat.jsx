@@ -65,7 +65,7 @@ const Chat = class extends React.PureComponent {
           return (
             <PageVisibility onChange={isVisible => (isVisible && refetch())}>
               <StyledChat>
-                <ChatHeadAppBar chatGroup={chatGroup} />
+                <ChatHeadAppBar chatGroup={console.log(chatGroup) || chatGroup} />
                 <MessageList messages={messages || []} subscribeToMore={more} />
                 <InputText chatGroupId={chatGroupId} />
               </StyledChat>

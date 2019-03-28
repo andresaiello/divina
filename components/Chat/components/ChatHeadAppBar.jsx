@@ -49,7 +49,7 @@ function ChatHeadAppBar (props) {
         <Avatar user={user} border />
 
         <Typography variant="h6" color="inherit" className="disable-select">
-          {chatGroup.members.map(member => member.username).join(', ')}
+          {chatGroup && chatGroup.members.map(member => member.username).join(', ')}
         </Typography>
         {/* <Link route="/feed" prefetch><Add /></Link> */}
       </Toolbar>
