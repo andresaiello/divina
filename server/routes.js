@@ -13,6 +13,7 @@ routes
   .add('profile', '/perfil/:username')
   .add('uploadPicture', '/subir-foto')
   .add('chatList', '/chat')
+  .add('createChat', '/chat/new')
   .add('chat', '/chat/:chatGroupId')
   .add('embeddedBrowser', '/browser');
 
