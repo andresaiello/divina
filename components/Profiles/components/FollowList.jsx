@@ -6,7 +6,7 @@ import {
 } from '@material-ui/core';
 
 import SecContext from '~/context/secContext';
-import { Link } from '~/server/routes';
+import { Link, Router } from '~/server/routes';
 import { FollowButton } from '~/components/shared';
 
 const StyledList = styled(List)`
@@ -53,9 +53,12 @@ export default function FollowList ({ elements }) {
       }) => (
         <ListItem key={_id} className="item" alignItems="flex-start">
           <ListItemAvatar>
-            <Link route="profile" params={{ username }} prefetch>
-              <Avatar className="avatar" alt="avatar" src={profilePic} />
-            </Link>
+            <Avatar
+              className="avatar"
+              alt="avatar"
+              src={profilePic}
+              onClick={() => Router.pushRoute('profile', { username })}
+            />
           </ListItemAvatar>
           <ListItemText
             className="textContainer"

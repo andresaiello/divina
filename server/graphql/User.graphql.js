@@ -2,6 +2,7 @@ const { gql } = require('apollo-server-express');
 
 const Following = require('../models/Following');
 const Followers = require('../models/Followers');
+const User = require('../models/User');
 
 const { missing } = require('../util');
 
@@ -9,6 +10,8 @@ const typeDefs = gql`
   extend type Mutation {
     followUser (userToFollow: String!): FollowingStatus
     unfollowUser (userToUnfollow: String!): FollowingStatus
+    editUserDescription (description: String!): User
+    updateProfilePic (newUrl: String!): User
   }
 
   type FollowingStatus {
@@ -61,6 +64,14 @@ const resolvers = {
         return { _id: userToUnfollow, isFollowing: true };
       }
     },
+    editUserDescription: async (_, { description }, { loggedUser = missing('needLogin') }) => User.editDescription({
+      _id: loggedUser._id,
+      description,
+    }),
+    updateProfilePic: async (_, { newUrl }, { loggedUser = missing('needLogin') }) => User.updateProfilePic({
+      _id: loggedUser._id,
+      newUrl,
+    }),
   },
   User: {
     followedByLoggedUser: async ({ _id }, _, { loggedUser }) => (loggedUser

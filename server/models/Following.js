@@ -33,7 +33,7 @@ followingSchema.statics.removeFollowing = async function removeFollowing ({ owne
   );
 };
 
-followingSchema.statics.findByUserId = async function getFeedPosts ({ owner }) {
+followingSchema.statics.findByUserId = async function findByUserId ({ owner }) {
   const [result = {}] = await this
     .find({ owner })
     .populate({ path: 'ids', model: User })

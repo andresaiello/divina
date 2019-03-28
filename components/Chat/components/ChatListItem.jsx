@@ -20,40 +20,47 @@ const StyledChatListItem = styled.div`
     position: relative;
     color: rgb(74, 74, 74);
 
+<<<<<<< HEAD:components/Chat/components/ChatListItem.jsx
     .avatar{
         width: 55px;
         height: 55px;
+=======
+    .avatar {
+      width: 55px;
+      height: 55px;
+      margin: 0 19px 0 19px;
+>>>>>>> develop:components/Chat/components/ChatGroupItem.jsx
     }
 
     .content{
-        flex-grow: 1;
-        height: 100%;
+      flex-grow: 1;
+      height: 100%;
     }
 
     .caption{
-        color: rgb(1, 145, 255);
-        font-size: 16px;
-        font-weight: 600;
-        margin-top: 15px;
+      color: rgb(1, 145, 255);
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 15px;
     }
 
-    .author{
-        font-size: 14px;
-        font-weight: 400;
+    .author {
+      font-size: 14px;
+      font-weight: 400;
     }
 
     .updatedAt {
-        position: absolute;
-        right: 25px;
-        top: 10px;
+      position: absolute;
+      right: 25px;
+      top: 10px;
     }
 
-    hr{
-        margin-top: 15px;
+    hr {
+      margin-top: 15px;
     }
 
     svg {
-        color: rgb(155, 155, 155);
+      color: rgb(155, 155, 155);
     }
 
   }
