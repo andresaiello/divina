@@ -16,10 +16,18 @@ const StyledChatList = styled.div`
     display: flex;
     align-items: center;
     flex-direction: column;
-    /* header + footer */
-    /* height: calc(100vh - 112px); */
-    overflow-y: scroll;
+    height: 100vh;
+  }
 
+`;
+
+const ChatListWrapper = styled.div`
+  && {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: scroll;
+    width: 100%;
   }
 
 `;
@@ -45,9 +53,11 @@ const ChatList = class extends React.PureComponent {
             <PageVisibility onChange={isVisible => (isVisible && refetch())}>
               <StyledChatList>
                 <ChatListHeadAppBar />
-                {nodes.map((elem, index) => (
-                  <ChatListItem item={elem} key={index} />
-                ))}
+                <ChatListWrapper>
+                  {nodes.map((elem, index) => (
+                    <ChatListItem item={elem} key={index} />
+                  ))}
+                </ChatListWrapper>
               </StyledChatList>
             </PageVisibility>);
         }}
