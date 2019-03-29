@@ -46,17 +46,20 @@ const InputChatDescription = class extends React.Component {
         <Mutation
           mutation={CHAT_NEW_CHAT}
         >
-          {(send, { data, loading, error }) => (
-            <div>
-              <MessageInput
-                editMsg={this.editMsg}
-                currentMsg={currentMsg}
-                sendMsg={this.sendMsg(send)}
-              />
-              {loading && (<p>Creando chat...</p>)}
-              {data && Router.pushRoute(`/chat/${data.createChatGroup._id}`)}
-            </div>
-          )}
+          {(send, { data, loading, error }) => {
+            if (loading) return (<p>Creando chat...</p>);
+            if (data) { Router.pushRoute(`/chat/${data.createChatGroup._id}`); return (<p>Redirigiendo...</p>); }
+
+            return (
+              <div>
+                <MessageInput
+                  editMsg={this.editMsg}
+                  currentMsg={currentMsg}
+                  sendMsg={this.sendMsg(send)}
+                />
+              </div>
+            );
+          }}
         </Mutation>
 
 
