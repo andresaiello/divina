@@ -17,8 +17,8 @@ const StyledChat = styled.div`
     background-size: cover;
     display: flex;
     flex-direction: column;
-    /* height: 100vh; */
-    min-height: -webkit-fill-available;
+    height: 100vh;
+    /* min-height: -webkit-fill-available; */
     max-height: -webkit-fill-available;
   }
 `;
