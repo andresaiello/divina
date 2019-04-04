@@ -23,6 +23,52 @@ const StyledChat = styled.div`
   }
 `;
 
+
+const StyledChat1 = styled.div`
+  && {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1300;
+    position: fixed;
+  }
+`;
+
+const StyledChat2 = styled.div`
+  && {
+    height: 100%;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const StyledChat3 = styled.div`
+  && {
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    max-width: 100%;
+    max-height: none;
+    border-radius: 0;
+    flex: 0 1 auto;
+    display: flex;
+    position: relative;
+    overflow-y: auto;
+    flex-direction: column;
+  }
+`;
+
+const StyledChat4 = styled.div`
+  && {
+    background-image: url("/static/chat-background.jpg");
+    background-size: cover;
+  }
+`;
+
+
 const Chat = class extends React.PureComponent {
   render () {
     const { chatGroupId } = this.props;
@@ -66,11 +112,18 @@ const Chat = class extends React.PureComponent {
           });
           return (
             <PageVisibility onChange={isVisible => (isVisible && refetch())}>
-              <StyledChat>
-                <ChatHeadAppBar chatGroup={chatGroup} />
-                <MessageList messages={messages || []} subscribeToMore={more} />
-                <InputText chatGroupId={chatGroupId} />
-              </StyledChat>
+              <StyledChat1>
+                <StyledChat2>
+                  <StyledChat3>
+                    <ChatHeadAppBar chatGroup={chatGroup} />
+                    <StyledChat4>
+                      <MessageList messages={messages || []} subscribeToMore={more} />
+
+                      <InputText chatGroupId={chatGroupId} />
+                    </StyledChat4>
+                  </StyledChat3>
+                </StyledChat2>
+              </StyledChat1>
             </PageVisibility>);
         }}
       </Query>

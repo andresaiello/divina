@@ -4,10 +4,13 @@ import Avatar from './Avatar';
 import timeAgo from '~/lib/timeAgo';
 import SecContext from '~/context/secContext';
 
-const StyledMessageItem = styled.div`
+const StyledMessageItem = styled.li`
   && {
     width: 100%;
     position: relative;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    list-style: none;
 
     .author {
       background: #fff;
