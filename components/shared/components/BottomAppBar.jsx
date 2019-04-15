@@ -115,7 +115,7 @@ class BottomAppBar extends Component {
                     </Dropzone>
                   )
                 }
-                <Link route="chat" prefetch>
+                <Link route="chatList" prefetch>
                   <a>
                     <IconButton color="inherit">
                       <Chat />

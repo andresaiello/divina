@@ -9,6 +9,7 @@ import { Loader } from '../../shared';
 import MessageList from './MessageList';
 import InputText from './InputText';
 import { CHAT_GET_MESSAGES, CHAT_SUB_NEW_MSG } from '~/lib/graphql/Chat';
+import ChatHeadAppBar from './ChatHeadAppBar';
 
 const StyledChat = styled.div`
   && {
@@ -16,15 +17,57 @@ const StyledChat = styled.div`
     background-size: cover;
     display: flex;
     flex-direction: column;
-    /* header + footer */
-    height: calc(100vh - 112px);
-    margin-bottom: 56px;
-    @media screen and (max-height: 350px) { 
-      /* header */
-      height: calc(100vh - 56px);
-    }
+    height: 100vh;
+    /* min-height: -webkit-fill-available; */
+    max-height: -webkit-fill-available;
   }
 `;
+
+
+const StyledChat1 = styled.div`
+  && {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1300;
+    position: fixed;
+  }
+`;
+
+const StyledChat2 = styled.div`
+  && {
+    height: 100%;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const StyledChat3 = styled.div`
+  && {
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    max-width: 100%;
+    max-height: none;
+    border-radius: 0;
+    flex: 0 1 auto;
+    display: flex;
+    position: relative;
+    overflow-y: auto;
+    flex-direction: column;
+  }
+`;
+
+const StyledChat4 = styled.div`
+  && {
+    background-image: url("/static/chat-background.jpg");
+    background-size: cover;
+  }
+`;
+
 
 const Chat = class extends React.PureComponent {
   render () {
@@ -42,7 +85,7 @@ const Chat = class extends React.PureComponent {
           let errorMessage = null;
 
           const { chatMessages } = data || { chatMessages: null };
-          const { nodes } = chatMessages || { nodes: [] };
+          const { nodes, chatGroup } = chatMessages || { nodes: [], chatGroup: null };
           const messages = nodes;
           // shows the loader only if the user is fetching more content (scrolling) and not refreshing (pull up)
           if (loading && !isRefreshing(networkStatus)) loader = <Loader height="150" />;
@@ -69,10 +112,18 @@ const Chat = class extends React.PureComponent {
           });
           return (
             <PageVisibility onChange={isVisible => (isVisible && refetch())}>
-              <StyledChat>
-                <MessageList messages={messages || []} subscribeToMore={more} />
-                <InputText chatGroupId={chatGroupId} />
-              </StyledChat>
+              <StyledChat1>
+                <StyledChat2>
+                  <StyledChat3>
+                    <ChatHeadAppBar chatGroup={chatGroup} />
+                    <StyledChat4>
+                      <MessageList messages={messages || []} subscribeToMore={more} />
+
+                      <InputText chatGroupId={chatGroupId} />
+                    </StyledChat4>
+                  </StyledChat3>
+                </StyledChat2>
+              </StyledChat1>
             </PageVisibility>);
         }}
       </Query>

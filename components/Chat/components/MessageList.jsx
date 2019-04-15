@@ -2,11 +2,13 @@ import React from 'react';
 import styled from 'styled-components';
 import MessageItem from './MessageItem';
 
-const StyledMessageList = styled.div`
+const StyledMessageList = styled.ul`
   && {
     padding-top: 20px;
+    margin-bottom: 40px;
     flex: 1;
     overflow-y: scroll;
+    padding: 8px 0 8px 0;
   }
 
 `;

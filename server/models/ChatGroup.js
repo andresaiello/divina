@@ -11,7 +11,7 @@ const chatGroupSchema = new Schema({
 
 }, { timestamps: true });
 
-chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, amount = 5 }) {
+chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, amount = 500 }) {
   // ask for 1 document more to check if there is another page
   // (the other option is to perform 2 queries)
   const checkNextPage = amount + 1;
@@ -20,6 +20,7 @@ chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, 
     // .find({ author: member })
     .find({ members: member })
     .populate({ path: 'author', model: User })
+    .populate({ path: 'members', model: User })
     .lean()
     .sort({ createdAt: 'desc' }) // (from startingDate + 1 to X)
     .limit(checkNextPage);
@@ -34,6 +35,7 @@ chatGroupSchema.statics.getById = async function getById (_id) {
   const [chatGroup] = await this
     .find({ _id })
     .populate({ path: 'author', model: User })
+    .populate({ path: 'members', model: User })
     .lean();
   return chatGroup;
 };
@@ -41,6 +43,8 @@ chatGroupSchema.statics.getById = async function getById (_id) {
 chatGroupSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
   const nodes = await this
     .find({ author })
+    .populate({ path: 'author', model: User })
+    .populate({ path: 'members', model: User })
     .lean()
     .sort({ createdAt: 'desc' });
 

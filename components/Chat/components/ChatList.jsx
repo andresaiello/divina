@@ -8,24 +8,32 @@ import PageVisibility from 'react-page-visibility';
 import { Loader } from '../../shared';
 
 import { CHAT_GET_CHAT_GROUPS } from '~/lib/graphql/Chat';
-import ChatGroupItem from './ChatGroupItem';
+import ChatListItem from './ChatListItem';
+import ChatListHeadAppBar from './ChatListHeadAppBar';
 
 const StyledChatList = styled.div`
   && {
     display: flex;
     align-items: center;
     flex-direction: column;
-    /* header + footer */
-    height: calc(100vh - 112px);
-    overflow-y: scroll;
+    height: 100vh;
+  }
 
+`;
+
+const ChatListWrapper = styled.div`
+  && {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: scroll;
+    width: 100%;
   }
 
 `;
 
 const ChatList = class extends React.PureComponent {
   render () {
-    const { onChatClick } = this.props;
     return (
       <Query query={CHAT_GET_CHAT_GROUPS}>
         {({
@@ -44,9 +52,12 @@ const ChatList = class extends React.PureComponent {
           return (
             <PageVisibility onChange={isVisible => (isVisible && refetch())}>
               <StyledChatList>
-                {nodes.map((elem, index) => (
-                  <ChatGroupItem onChatClick={onChatClick} item={elem} key={index} />
-                ))}
+                <ChatListHeadAppBar />
+                <ChatListWrapper>
+                  {nodes.map((elem, index) => (
+                    <ChatListItem item={elem} key={index} />
+                  ))}
+                </ChatListWrapper>
               </StyledChatList>
             </PageVisibility>);
         }}
@@ -54,10 +65,6 @@ const ChatList = class extends React.PureComponent {
 
     );
   }
-};
-
-ChatList.propTypes = {
-  onChatClick: propTypes.func.isRequired,
 };
 
 export default ChatList;

@@ -9,7 +9,11 @@ const StyledInputText = styled.div`
   && {
     width: 100%;
     /* bottom: 0;  */
-    z-index: 2;
+    bottom: 0px;
+    height: 45px;
+    padding-bottom: 10px;
+    position: fixed;
+    z-index: 20;
   }
 `;
 

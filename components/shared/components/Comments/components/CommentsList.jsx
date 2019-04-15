@@ -4,11 +4,18 @@ import styled from 'styled-components';
 import {
   ListItemAvatar, Avatar, List, Typography, ListItem, ListItemText,
 } from '@material-ui/core';
+import Divider from '@material-ui/core/Divider';
 
 const StyledList = styled(List)`
   && {
     overflow-y: scroll;
     margin-bottom: 60px;
+
+    .userName {
+      word-wrap: break-word;
+      font-size: 16px;
+      font-weight: 600;
+    }
 
     .commentText {
       word-wrap: break-word;
@@ -17,9 +24,22 @@ const StyledList = styled(List)`
 `;
 
 export default function CommentsList ({ comments }) {
+  const newList = comments.nodes.reduce(
+    (acum, value) => {
+      const lastAuthor = (acum.slice(-1)[0]) ? acum.slice(-1)[0].author.username : null;
+
+      if (acum.slice(-1)[0] && lastAuthor === value.author.username) {
+        const lastItem = acum.slice(-1)[0];
+
+        return [...acum.slice(0, -1), { ...lastItem, content: [...lastItem.content, value.content] }];
+      }
+      return [...acum, { ...value, content: [value.content] }];
+    },
+    [],
+  );
   return (
     <StyledList>
-      {comments.nodes.map(({ _id, content, author: { username, profilePic } }) => (
+      {newList.map(({ _id, content, author: { username, profilePic } }) => (
         <ListItem key={_id} alignItems="flex-start">
           <ListItemAvatar>
             <Avatar alt="avatar" src={profilePic} />
@@ -27,15 +47,24 @@ export default function CommentsList ({ comments }) {
           <ListItemText
             primary={(
               <Fragment>
-                <Typography className="commentText" component="p" color="textPrimary">
-                  {content}
+                <Typography className="userName" component="p" color="textPrimary">
+                  {`${username}`}
                 </Typography>
-                {`- ${username}`}
+
+                {content.map(singleContent => (
+                  <Typography className="commentText" component="p" color="textPrimary">
+                    {singleContent}
+                  </Typography>
+                ))
+                }
+                <Divider />
               </Fragment>
             )}
           />
+
         </ListItem>
       ))}
+
     </StyledList>
   );
 }
