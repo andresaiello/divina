@@ -1,4 +1,5 @@
 import getConfig from 'next/config';
+import router, { Router } from '~/server/routes';
 
 const { publicRuntimeConfig } = getConfig();
 const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
@@ -81,3 +82,14 @@ export const readImageAsBase64 = async image => new Promise((resolve, reject) =>
   if (image) reader.readAsDataURL(image);
   else reject(new Error('No image provided'));
 });
+
+export const serverRedirect = routeName => (res) => {
+  res.writeHead(302, { Location: router.findByName(routeName).toPath() });
+  res.end();
+};
+
+export const clientRedirect = (routeName) => { Router.pushRoute(routeName); };
+
+export const isServer = () => !process.browser;
+
+export const isLoggedIn = user => !!(user && user.username);

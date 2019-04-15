@@ -174,11 +174,14 @@ const resolvers = {
       _id,
       nodes: await PostLikes.findByPost({ _id }),
     }),
-    liked: async ({ _id }, _, { loggedUser = missing('needLogin') }) => ({
-      _id,
-      isLiked: await PostLikes.isPostLiked({ _id, author: loggedUser._id }),
-    }),
-    authorFollowed: async ({ author }, _, { loggedUser }) => (loggedUser
+    liked: async ({ _id }, _, { loggedUser }) => (loggedUser && loggedUser._id
+      ? {
+        _id,
+        isLiked: await PostLikes.isPostLiked({ _id, author: loggedUser._id }),
+      }
+      : { _id: null, isLiked: false }
+    ),
+    authorFollowed: async ({ author }, _, { loggedUser }) => (loggedUser && loggedUser._id
       ? {
         _id: author._id,
         isFollowing: await Followers.isFollowedBy({

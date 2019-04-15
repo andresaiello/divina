@@ -2,7 +2,7 @@ const express = require('express');
 const next = require('next');
 const { ApolloServer } = require('apollo-server-express');
 const http = require('http');
-
+const path = require('path');
 
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
@@ -61,6 +61,15 @@ app.prepare()
 
     const httpServer = http.createServer(server);
     apolloServer.installSubscriptionHandlers(httpServer);
+
+    const options = {
+      root: path.join(__dirname, '../static'),
+      headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+    };
+
+    server.get('/robots.txt', (req, res) => (
+      res.status(200).sendFile('robots.txt', options)
+    ));
 
     server.use('/', authRouter);
     server.use('/api/', apiRouter);

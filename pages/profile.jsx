@@ -6,7 +6,8 @@ import SecContext from '~/context/secContext';
 import { User } from '~/lib/graphql';
 import { Profile } from '~/components/Profiles';
 import { LoadingScreen } from '~/components/shared';
-import router, { Router } from '~/server/routes';
+import { Router } from '~/server/routes';
+import { isServer, serverRedirect, clientRedirect } from '~/util';
 
 export default class extends React.Component {
   static contextType = SecContext;
@@ -16,9 +17,9 @@ export default class extends React.Component {
   };
 
   static async getInitialProps ({ query, req, res }) {
-    if (req && res && req.user && req.user.username === query.username) {
-      res.writeHead(302, { Location: router.findByName('myProfile').toPath() });
-      res.end();
+    if (isServer()) {
+      const isLoggedUserProfile = req.user && req.user.username === query.username;
+      if (isLoggedUserProfile) serverRedirect('myProfile')(res);
     }
 
     return { ...query };
@@ -31,11 +32,11 @@ export default class extends React.Component {
   componentDidMount () {
     const { user } = this.context || {};
     const { username } = user || {};
-    if (process.browser && username && window.location.pathname.indexOf(username) > -1) {
-      Router.pushRoute('myProfile');
-    } else {
-      this.setState({ loadingProfile: false });
-    }
+
+    const isLoggedUserProfile = username && window.location.pathname.indexOf(username) > -1;
+
+    if (process.browser && isLoggedUserProfile) clientRedirect('myProfile');
+    else this.setState({ loadingProfile: false });
   }
 
   render () {

@@ -5,13 +5,17 @@ import { Query } from 'react-apollo';
 import { User } from '~/lib/graphql';
 import { LoadingScreen } from '~/components/shared';
 import SecContext from '~/context/secContext';
+import withRequiredLogin from '~/HOCs/withRequiredLogin';
 
-export default class extends React.Component {
+class MyProfilePage extends React.Component {
+  static async getInitialProps ({ query }) {
+    return { ...query };
+  }
+
   static contextType = SecContext;
 
   render () {
     const { user } = this.context;
-    if (!user || !user.username) return <div>Necesitás estar logueado</div>; // @todo: set better error
 
     return (
       <Query
@@ -31,3 +35,5 @@ export default class extends React.Component {
     );
   }
 }
+
+export default withRequiredLogin(MyProfilePage);

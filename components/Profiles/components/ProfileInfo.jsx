@@ -155,6 +155,15 @@ class ProfileInfo extends Component {
             <img width="32" src="/static/dot.png" alt="Dot" />
             <p>{followingCount === 1 ? '1 dot' : `${followingCount} dots` }</p>
           </div>
+          <div
+            className="icon action"
+            // onClick={() => this.openModal('followingModalOpen')}
+            role="button"
+            tabIndex={0}
+          >
+            <img width="32" src="/static/closet.png" alt="Dot" />
+            <p>{followingCount === 1 ? '1 estilo' : `${followingCount} estilos` }</p>
+          </div>
         </div>
         <div className="details">
           <Typography component="p">{name}</Typography>

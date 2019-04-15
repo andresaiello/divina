@@ -23,12 +23,12 @@ const StyledChatGroupItem = styled.div`
       margin: 0 19px 0 19px;
     }
 
-    .content{
+    .content {
       flex-grow: 1;
       height: 100%;
     }
 
-    .caption{
+    .caption {
       color: rgb(1, 145, 255);
       font-size: 16px;
       font-weight: 600;

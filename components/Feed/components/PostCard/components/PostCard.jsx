@@ -212,7 +212,7 @@ PostCard.propTypes = {
   _id: propTypes.string.isRequired,
   picUrl: propTypes.string.isRequired,
   liked: propTypes.shape({
-    _id: propTypes.string.isRequired,
+    _id: propTypes.string,
     isLiked: propTypes.bool.isRequired,
   }).isRequired,
   authorFollowed: propTypes.shape({

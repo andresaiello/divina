@@ -21,6 +21,7 @@ module.exports = {
     CLOUDINARY_PRESET: process.env.CLOUDINARY_PRESET || 'ov3f36hw',
     NPM_VERSION: process.env.npm_package_version || '---',
     SERVER_URL: process.env.server_url || 'https://app.divinaapp.com',
+    ANALYTICS_TRACKING_ID: process.env.ANALYTICS_TRACKING_ID || 'UA-137727478-2',
     FB_APP_ID: process.env.fb_app_id || '1217981644879628',
   },
 };

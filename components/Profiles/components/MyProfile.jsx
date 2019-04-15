@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 
 import withMainLayout from '~/HOCs/withMainLayout';
-import loginRequired from '~/HOCs/loginRequired';
 import { Link } from '~/server/routes';
 
 import ProfileInfo from './ProfileInfo';
 import PhotoGrid from './PhotoGrid';
+import { ClothingStylesModal } from '~/components/shared';
 
 const StyledProfile = styled.article`
   button {
@@ -19,6 +19,8 @@ const StyledProfile = styled.article`
 `;
 
 function MyProfile ({ profile, ...rest }) {
+  const [isClothingStylesModalOpen, toggleClothingStylesModal] = useState(false);
+
   const editProfile = (
     <Link route="editProfile" prefetch>
       <Button variant="outlined">editar</Button>
@@ -27,6 +29,10 @@ function MyProfile ({ profile, ...rest }) {
 
   return (
     <StyledProfile {...rest}>
+      <ClothingStylesModal
+        isOpen={isClothingStylesModalOpen}
+        close={() => toggleClothingStylesModal(false)}
+      />
       <ProfileInfo
         action={editProfile}
         followersCount={profile.followersCount}
@@ -50,4 +56,4 @@ MyProfile.propTypes = {
   }).isRequired,
 };
 
-export default loginRequired(withMainLayout(MyProfile));
+export default withMainLayout(MyProfile);

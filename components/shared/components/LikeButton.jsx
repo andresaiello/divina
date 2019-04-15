@@ -16,7 +16,7 @@ const StyledIconButton = styled(IconButton)`
 export default function LikeButton ({
   className, author, postId, liked,
 }) {
-  if (!author) return <NonLiked />;
+  if (!author) return null;
 
   if (liked) {
     return (

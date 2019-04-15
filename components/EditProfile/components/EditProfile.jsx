@@ -37,6 +37,10 @@ const Container = styled.div`
       height: 80px;
       margin: 10px auto;
     }
+
+    .profilePicInput {
+      display: inline-block;
+    }
   }
 
   .dataContainer {
@@ -102,8 +106,9 @@ function EditProfile (props) {
 
 function ProfileDetails ({ user, ...rest }) {
   const [state, setState] = useState({
-    description: user.description,
+    name: user.name,
     username: user.username,
+    description: user.description,
     saving: false,
   });
 
@@ -132,7 +137,9 @@ function ProfileDetails ({ user, ...rest }) {
     setState(prevState => ({ ...prevState, [name]: value }));
   }
 
-  const { username, description, saving } = state;
+  const {
+    name, username, description, saving,
+  } = state;
 
   if (saving) return <Loader />;
 
@@ -147,26 +154,32 @@ function ProfileDetails ({ user, ...rest }) {
           <div className="avatarContainer">
             {uploadingProfilePic
               ? <CircularProgress className="avatar" />
-              : <Avatar className="avatar" src={user.profilePic} alt="Foto de perfil" />
-                }
-            <Dropzone
-              onDrop={(accepted, rejected) => { onDropImage(accepted, rejected, updateDb); }}
-              className="dropZone"
-            >
-              {({ getRootProps, getInputProps }) => (
-                <div {...getRootProps()} className="smallButton">
-                  <input {...getInputProps()} />
-                  <a>Cambiar foto de perfil</a>
-                </div>
-              )}
-            </Dropzone>
+              : (
+                <Dropzone
+                  onDrop={(accepted, rejected) => { onDropImage(accepted, rejected, updateDb); }}
+                  className="dropZone"
+                >
+                  {({ getRootProps, getInputProps }) => (
+                    <div {...getRootProps()} className="profilePicInput">
+                      <Avatar className="avatar" src={user.profilePic} alt="Foto de perfil" />
+                      <input {...getInputProps()} />
+                      <a>Cambiar foto de perfil</a>
+                    </div>
+                  )}
+                </Dropzone>
+              )
+            }
           </div>
         )}
       </Mutation>
       <div className="dataContainer">
         <div className="field">
           <p>Nombre</p>
-          <TextField className="input" />
+          <TextField
+            className="input"
+            value={name}
+            disabled
+          />
         </div>
         <div className="field">
           <p>Usuario</p>

@@ -25,7 +25,6 @@ const Container = styled.div`
     object-fit: cover;
     border-radius: 15px;
     filter: saturate(2) brightness(100%) contrast(44%);
-    -webkit-filter: saturate(2) brightness(100%) contrast(44%);
 
     margin: 0px 2.5px;
 

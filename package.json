@@ -53,6 +53,7 @@
     "react-apollo": "^2.4.0",
     "react-dom": "^16.8.2",
     "react-dropzone": "8.0.3",
+    "react-ga": "^2.5.7",
     "react-icons": "3.4.0",
     "react-iframe": "1.4.0",
     "react-image": "^2.0.0",

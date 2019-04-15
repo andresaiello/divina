@@ -31,7 +31,7 @@ function Discover (props) {
         query={DiscoverGQL.Queries.GET_POSTS}
         variables={{ amount: 20 }}
       >
-        {({ data, loading, error }) => console.log(data, loading, error) || (
+        {({ data, loading, error }) => (
           loading
             ? <Loader />
             : error
