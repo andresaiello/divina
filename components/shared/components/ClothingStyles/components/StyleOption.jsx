@@ -9,6 +9,7 @@ const Option = styled.div`
 
   img {
     border-radius: 5px;
+    filter: ${({ selected }) => (selected ? 'saturate(2) brightness(100%) contrast(44%)' : '')};
   }
 
   p {
@@ -18,6 +19,7 @@ const Option = styled.div`
     left: 27%;
     font-weight: bold;
     margin: 0;
+    padding-bottom: 2px;
 
     &.background {
       bottom: 7.5%;
@@ -31,9 +33,14 @@ const Option = styled.div`
   }
 `;
 
-export default function StyleOption ({ imgSrc, styleName }) {
+export default function StyleOption ({
+  imgSrc, styleName, selected, ...rest
+}) {
   return (
-    <Option>
+    <Option
+      selected={selected}
+      {...rest}
+    >
       <img
         src={imgSrc}
         width="100%"
@@ -44,7 +51,12 @@ export default function StyleOption ({ imgSrc, styleName }) {
   );
 }
 
+StyleOption.defaultProps = {
+  selected: false,
+};
+
 StyleOption.propTypes = {
   imgSrc: propTypes.string.isRequired,
   styleName: propTypes.string.isRequired,
+  selected: propTypes.bool,
 };

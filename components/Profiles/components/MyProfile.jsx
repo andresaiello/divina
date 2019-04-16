@@ -30,7 +30,8 @@ function MyProfile ({ profile, ...rest }) {
   return (
     <StyledProfile {...rest}>
       <ClothingStylesModal
-        isOpen={isClothingStylesModalOpen}
+        // isOpen={isClothingStylesModalOpen}
+        isOpen
         close={() => toggleClothingStylesModal(false)}
       />
       <ProfileInfo

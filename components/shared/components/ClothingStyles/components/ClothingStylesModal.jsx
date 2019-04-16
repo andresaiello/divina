@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
+import cloneDeep from 'lodash/cloneDeep';
 
 import { FullscreenModal } from '~/components/shared';
 import StyleOption from './StyleOption';
+import { clothingStyles as baseClothingStyles } from '~/constants';
 
 const ModalContent = styled.div`
   display: grid;
@@ -13,18 +15,34 @@ const ModalContent = styled.div`
   grid-row-gap: .25%;
 `;
 
+const localClothingStyles = cloneDeep(baseClothingStyles);
+
 export default function ClothingStylesModal ({ ...rest }) {
+  const [clothingStyles, setClothingStyles] = useState(localClothingStyles);
+
+  function changeStyleSelection (styleName) {
+    setClothingStyles(prev => ({
+      ...prev,
+      [styleName]: {
+        ...prev[styleName],
+        selected: !prev[styleName].selected,
+      },
+    }));
+  }
+
   return (
     <FullscreenModal
       title="Estilos"
       {...rest}
     >
       <ModalContent>
-        {[...new Array(10).fill(0)].map((data, i) => (
+        {Object.keys(clothingStyles).map(key => (
           <StyleOption
-            key={i}
-            imgSrc="/static/girl.jpeg"
-            styleName="Prueba"
+            key={clothingStyles[key].name}
+            imgSrc={clothingStyles[key].imgUrl}
+            styleName={clothingStyles[key].name}
+            selected={clothingStyles[key].selected}
+            onClick={() => changeStyleSelection(clothingStyles[key].name)}
           />
         ))}
       </ModalContent>

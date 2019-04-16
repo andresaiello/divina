@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const User = require('./User');
 
+const { clothingStyles } = require('../constants');
+
 const { Schema } = mongoose;
+
+const clothingStylesNames = Object.keys(clothingStyles);
 
 const postSchema = new Schema({
   author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
@@ -17,6 +21,10 @@ const postSchema = new Schema({
   }],
   picId: { type: String, required: true },
   picUrl: { type: String, required: true },
+  clothingStyles: [{
+    type: String,
+    enum: clothingStylesNames,
+  }],
 }, { timestamps: true });
 
 postSchema.statics.getPaginatedPosts = async function getPaginatedPosts ({ startingDate = Date.now(), amount = 5 }) {
