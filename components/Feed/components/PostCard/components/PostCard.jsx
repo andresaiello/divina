@@ -10,11 +10,12 @@ import {
 
 import SecContext from '~/context/secContext';
 import { Link } from '~/server/routes';
-import { FollowButton, LikeButton, ImageWithDots } from '~/components/shared';
+import {
+  FollowButton, LikeButton, ImageWithDots, ShareModal,
+} from '~/components/shared';
 
 import CommentsModal from './CommentsModal';
 import DotDetailsModal from './DotDetailsModal';
-import ShareModal from './ShareModal';
 import { POST_MAX_WIDTH } from '~/constants';
 
 const StyledCard = styled(Card)`

@@ -1,9 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 
 import withRouteProgress from '~/HOCs/withRouteProgress';
-import { Image, Comments } from '~/components/shared';
+import { Image, Comments, ShareModal } from '~/components/shared';
 import SecContext from '~/context/secContext';
 
 import Head from './Head';
@@ -21,6 +21,10 @@ function PictureDetails ({
   postId, author, comments, picUrl, caption, likes, liked, ...rest
 }) {
   const context = useContext(SecContext);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  const openShareModal = () => { setIsShareModalOpen(true); };
+  const closeShareModal = () => { setIsShareModalOpen(false); };
 
   const loggedUserId = context.user && context.user._id;
 
@@ -40,8 +44,15 @@ function PictureDetails ({
         postId={postId}
         loggedUserId={loggedUserId}
         liked={liked.isLiked}
+        openShareModal={openShareModal}
       />
       <Comments postId={postId} />
+      <ShareModal
+        username={author.username}
+        postId={postId}
+        isOpen={isShareModalOpen}
+        close={closeShareModal}
+      />
     </StyledPictureDetails>
   );
 }

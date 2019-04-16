@@ -20,7 +20,7 @@ const sidesPadding = '5%';
 const Container = styled.div`
   text-align: center;
   margin: 0 auto;
-  max-width: 400px;
+  max-width: 500px;
 
   a {
     color: rgb(1, 145, 255);
@@ -109,6 +109,8 @@ function ProfileDetails ({ user, ...rest }) {
     name: user.name,
     username: user.username,
     description: user.description,
+    website: user.website || '',
+    instagram: user.instagram || '',
     saving: false,
   });
 
@@ -138,7 +140,7 @@ function ProfileDetails ({ user, ...rest }) {
   }
 
   const {
-    name, username, description, saving,
+    name, username, description, saving, website, instagram,
   } = state;
 
   if (saving) return <Loader />;
@@ -194,13 +196,18 @@ function ProfileDetails ({ user, ...rest }) {
           <p>Web</p>
           <TextField
             className="input"
+            name="website"
+            value={website}
+            onChange={updateField}
           />
         </div>
         <div className="field">
           <p>Instagram</p>
           <TextField
             className="input"
-            disabled
+            name="instagram"
+            value={instagram}
+            onChange={updateField}
           />
         </div>
         <div className="field">
@@ -239,7 +246,7 @@ function ProfileDetails ({ user, ...rest }) {
         </a>
       </div>
       <Mutation
-        mutation={User.Mutations.EDIT_DESCRIPTION}
+        mutation={User.Mutations.EDIT_PROFILE}
       >
         {editUserDescription => (
           <Button
@@ -249,7 +256,12 @@ function ProfileDetails ({ user, ...rest }) {
               try {
                 // @todo: update cache after this
                 setState(prevState => ({ ...prevState, saving: true }));
-                await editUserDescription({ variables: { description } });
+
+                const { saving: _, ...updatedProfileData } = state;
+
+                console.log(updatedProfileData);
+
+                await editUserDescription({ variables: { ...updatedProfileData } });
                 Router.pushRoute('myProfile');
               } catch (e) {
                 console.log(e);

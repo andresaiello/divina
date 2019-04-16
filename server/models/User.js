@@ -55,13 +55,13 @@ userSchema.statics.updateProfilePic = async function updateProfilePic ({ _id, ne
   }
 };
 
-userSchema.statics.editDescription = async function editDescription ({ _id, description }) {
+userSchema.statics.editProfile = async function editProfile ({ _id, profileInfo }) {
   try {
     const user = await this.findOneAndUpdate(
       { _id },
       {
         $set: {
-          description,
+          ...profileInfo,
         },
       },
       { new: true },

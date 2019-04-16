@@ -10,7 +10,7 @@ const typeDefs = gql`
   extend type Mutation {
     followUser (userToFollow: String!): FollowingStatus
     unfollowUser (userToUnfollow: String!): FollowingStatus
-    editUserDescription (description: String!): User
+    editProfile (description: String!, website: String!, instagram: String!): User
     updateProfilePic (newUrl: String!): User
   }
 
@@ -25,6 +25,8 @@ const typeDefs = gql`
     followedByLoggedUser: FollowingStatus
     username: String
     description: String
+    website: String
+    instagram: String
     profilePic: String
     followers: [User]
     following: [User]
@@ -64,9 +66,9 @@ const resolvers = {
         return { _id: userToUnfollow, isFollowing: true };
       }
     },
-    editUserDescription: async (_, { description }, { loggedUser = missing('needLogin') }) => User.editDescription({
+    editProfile: async (_, profileInfo, { loggedUser = missing('needLogin') }) => User.editProfile({
       _id: loggedUser._id,
-      description,
+      profileInfo,
     }),
     updateProfilePic: async (_, { newUrl }, { loggedUser = missing('needLogin') }) => User.updateProfilePic({
       _id: loggedUser._id,

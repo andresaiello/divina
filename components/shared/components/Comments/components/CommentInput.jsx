@@ -71,7 +71,7 @@ function CommentInput ({
             value={currentComment}
             variant="outlined"
             placeholder="Añade un comentario"
-            onKeyUp={e => (e.keyCode === 13 ? sendComment(currentComment) : null)}
+            onKeyUp={e => (e.keyCode === 13 && isEnabled ? sendComment(currentComment) : null)}
             InputProps={{
               endAdornment: (
                 <StyledAdornment

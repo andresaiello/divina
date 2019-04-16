@@ -4,6 +4,7 @@ export { default as Loader } from './components/Loader';
 export { default as Image } from './components/Image';
 export { default as HeadAppBar } from './components/HeadAppBar';
 export { default as BottomAppBar } from './components/BottomAppBar';
+export { default as ShareModal } from './components/ShareModal';
 export { default as NonAllowedOrientation } from './components/NonAllowedOrientation';
 export { default as SearchBar } from './components/SearchBar';
 export { default as FollowButton } from './components/FollowButton';

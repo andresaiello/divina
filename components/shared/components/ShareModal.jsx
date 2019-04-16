@@ -98,7 +98,6 @@ class ShareModal extends Component {
     const shareText = `Ver esta foto de Divina de ${username}`;
     const sharedLongTextEncoded = `${shareText} ${url}`;
 
-
     return (
       <StyledDialog open={isOpen} onClose={close} aria-labelledby="share-title">
         <DialogTitle id="share-title">Compartir</DialogTitle>
