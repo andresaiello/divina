@@ -56,9 +56,9 @@ const StyledAdornment = styled(InputAdornment)`
 `;
 
 function CommentInput ({
-  currentComment, editComment, sendComment, userAvatar, ...rest
+  currentComment, editComment, savingComment, sendComment, userAvatar, ...rest
 }) {
-  const isEnabled = currentComment.length > 0;
+  const isEnabled = currentComment.length > 0 && !savingComment;
 
   return (
     <Container container spacing={8} alignItems="flex-end" {...rest}>
@@ -90,7 +90,12 @@ function CommentInput ({
   );
 }
 
+CommentInput.defaultProps = {
+  savingComment: false,
+};
+
 CommentInput.propTypes = {
+  savingComment: propTypes.bool,
   currentComment: propTypes.string.isRequired,
   editComment: propTypes.func.isRequired,
   sendComment: propTypes.func.isRequired,

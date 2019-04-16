@@ -12,7 +12,7 @@ const Container = styled.div`
 export default function NonAllowedOrientation () {
   return (
     <Container>
-      Por favor, rotá tu móvil para una mejor experiencia usando la app.
+      Por favor, rota tu móvil para una mejor experiencia usando la app.
     </Container>
   );
 }

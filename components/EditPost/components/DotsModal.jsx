@@ -2,10 +2,14 @@ import React, { PureComponent, Fragment } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField, Button, InputAdornment } from '@material-ui/core';
+import { CirclePicker } from 'react-color';
+import { Query } from 'react-apollo';
 
 import { FullscreenModal, Loader } from '~/components/shared';
-import { Query } from 'react-apollo';
 import { EditPost } from '~/lib/graphql';
+import { DOT_DEFAULT_COLOR } from '~/constants';
+
+const colors = [DOT_DEFAULT_COLOR, '#e91e63', '#9c27b0', '#673ab7', '#4caf50', '#00bcd4'];
 
 const StyledModal = styled(FullscreenModal)`
   .content {
@@ -33,6 +37,17 @@ const FormContainer = styled.form`
 
   .save {
     margin-top: 25px;
+  }
+
+  .colorTitle {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .colorPicker {
+    margin-left: auto;
+    margin-right: auto !important;
   }
 `;
 
@@ -69,6 +84,7 @@ const initialState = {
   title: '',
   price: '',
   brandFilter: '',
+  color: colors[0],
 };
 
 export default class DotsModal extends PureComponent {
@@ -88,11 +104,17 @@ export default class DotsModal extends PureComponent {
 
   saveDot = async () => {
     const { onSaveDot, persistDot } = this.props;
-    const { title, selectedBrand, price } = this.state;
+    const {
+      title, selectedBrand, price, color,
+    } = this.state;
 
     this.setState({ ...initialState }, async () => {
       await onSaveDot(persistDot, {
-        title, brand: selectedBrand._id, price: parseInt(price, 10), currency: 'EUR',
+        title,
+        brand: selectedBrand._id,
+        price: parseInt(price, 10),
+        currency: 'EUR',
+        color: color.hex,
       });
     });
   }
@@ -111,7 +133,7 @@ export default class DotsModal extends PureComponent {
 
   render () {
     const {
-      title, selectedBrand, price, brandFilter,
+      title, selectedBrand, price, brandFilter, color,
     } = this.state;
     const { isOpen, savingDot } = this.props;
 
@@ -123,7 +145,7 @@ export default class DotsModal extends PureComponent {
       <StyledModal
         isOpen={isOpen}
         close={this.close}
-        title="Agregar dots!"
+        title="Agregar prendas!"
         disableBackdropClick
       >
         {savingDot
@@ -155,6 +177,15 @@ export default class DotsModal extends PureComponent {
                     startAdornment: <InputAdornment position="start">€</InputAdornment>,
                   }}
                 />
+                <div>
+                  <div className="colorTitle">Color</div>
+                  <CirclePicker
+                    className="colorPicker"
+                    colors={colors}
+                    color={color}
+                    onChange={updatedColor => this.setState({ color: updatedColor })}
+                  />
+                </div>
                 <Button
                   className="save"
                   color="primary"

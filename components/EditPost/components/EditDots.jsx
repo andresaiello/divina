@@ -27,7 +27,7 @@ export default function EditDots ({
         fitCover
         withLoader
         dots={existentDots}
-        useRemoveDotTooltip
+        isUserEditing
         openTooltip={openTooltip}
         setOpenTooltip={setOpenTooltip}
         postId={postId}

@@ -61,8 +61,9 @@ export default class extends Component {
             <Mutation
               mutation={Post.Mutations.COMMENT}
             >
-              {(send, { data, loading, error }) => (
+              {(send, { loading }) => (
                 <CommentInput
+                  savingComment={loading}
                   editComment={this.editComment}
                   currentComment={currentComment}
                   sendComment={this.sendComment(send)}

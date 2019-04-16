@@ -35,6 +35,14 @@ const StyledProfileInfo = styled.div`
     }
   }
 
+  .details {
+    grid-column-start: span 2;
+
+    p {
+      word-break: break-all;
+    }
+  }
+
   .icons {
     margin: 0px auto;
     display: grid;
@@ -56,10 +64,6 @@ const StyledProfileInfo = styled.div`
         margin: 0;
       }
     }
-  }
-
-  .details {
-    grid-column-start: span 2;
   }
 `;
 
@@ -143,8 +147,8 @@ class ProfileInfo extends Component {
             role="button"
             tabIndex={0}
           >
-            <img width="30" src="/static/chat.png" alt="chat" />
-            <p>{followingCount === 1 ? '1 chat' : `${followingCount} chats` }</p>
+            <img width="32" src="/static/ShopBag.svg" alt="ShopBag" />
+            <p>{followingCount === 1 ? '1 prenda' : `${followingCount} prendas` }</p>
           </div>
           <div
             className="icon action"
@@ -152,16 +156,7 @@ class ProfileInfo extends Component {
             role="button"
             tabIndex={0}
           >
-            <img width="32" src="/static/dot.png" alt="Dot" />
-            <p>{followingCount === 1 ? '1 dot' : `${followingCount} dots` }</p>
-          </div>
-          <div
-            className="icon action"
-            // onClick={() => this.openModal('followingModalOpen')}
-            role="button"
-            tabIndex={0}
-          >
-            <img width="32" src="/static/closet.png" alt="Dot" />
+            <img width="32" src="/static/closet.png" alt="Closet" />
             <p>{followingCount === 1 ? '1 estilo' : `${followingCount} estilos` }</p>
           </div>
         </div>

@@ -10,6 +10,7 @@ const postSchema = new Schema({
     xPosition: { type: Number },
     yPosition: { type: Number },
     brand: { type: Schema.Types.ObjectId, required: true },
+    color: { type: String },
     title: { type: String },
     price: { type: Number },
     currency: { type: String },

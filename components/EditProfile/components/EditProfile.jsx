@@ -210,8 +210,9 @@ function ProfileDetails ({ user, ...rest }) {
             name="description"
             value={description}
             multiline
+            inputProps={{ maxLength: 100 }}
             onChange={updateField}
-            rows={2}
+            rows={3}
           />
         </div>
       </div>

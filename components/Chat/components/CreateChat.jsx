@@ -34,7 +34,7 @@ export default class CreateChat extends React.PureComponent {
   }
 
   handleNextStep = () => {
-    this.setState({ stepNumber: this.state.stepNumber + 1 });
+    this.setState(({ stepNumber }) => ({ stepNumber: stepNumber + 1 }));
   }
 
 

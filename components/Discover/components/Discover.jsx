@@ -17,7 +17,12 @@ const DiscoverGrid = styled.div`
   justify-content: space-between;
 
   .img {
+    width: calc(100vw / 3 - 5px);
+    height: calc(100vw / 3 - 5px);
+
     :nth-child(4) {
+      width: 100%;
+      height: 100%;
       grid-row: 1 / span 2;
       grid-column: 2 / span 2;
     }

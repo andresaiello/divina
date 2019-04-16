@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener, Fade } from '@material-ui/core';
 
 import { formatPrice } from '~/util';
 import Image from '../../Image';
@@ -17,6 +17,33 @@ const Container = styled.div`
   max-height: ${POST_MAX_WIDTH}px;
   max-width: ${POST_MAX_WIDTH}px;
   margin: 0 auto;
+
+  .bagText,
+  .bag {
+    position: absolute;
+  }
+
+  .bag {
+    left: 17.5px;
+    bottom: 17.5px;
+  }
+
+  .bagText {
+    left: 10px;
+    bottom: 10px;
+    width: 80%;
+    height: 33px;
+    background: black;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+
+    p {
+      display: inline-block;
+      color: white;
+      margin: 0 auto;
+    }
+  }
 `;
 
 const StyledImage = styled(Image)`
@@ -26,19 +53,26 @@ const StyledImage = styled(Image)`
 
 // @todo: maybe update dot position on resize..
 
-export default function ImageWithDots ({
+const ImageWithDots = React.memo(({
   className,
   dots,
   onImageLoad,
   src,
   postId,
   disableTooltip,
-  useRemoveDotTooltip,
+  isUserEditing,
   openTooltip, setOpenTooltip,
   onDotClick, onDotLinkClick, ...rest
-}) {
+}) => {
+  const [tapToWatchVisible, setTapToWatchVisible] = useState(true);
   const [imageSize, setImageSize] = useState({ width: null, height: null });
   const [tooltipsVisible, toggleTooltips] = useState(false);
+
+  useEffect(() => {
+    const tapToWatchTimeout = setTimeout(() => setTapToWatchVisible(false), 5000);
+
+    return () => { clearTimeout(tapToWatchTimeout); };
+  }, []);
 
   function handleImageLoad (e) {
     if (onImageLoad) onImageLoad(e);
@@ -47,39 +81,60 @@ export default function ImageWithDots ({
   }
 
   function openTooltips () {
+    setTapToWatchVisible(false);
+
     if (!tooltipsVisible) {
       toggleTooltips(true);
     }
   }
+
+  const shouldDisplayDots = !tapToWatchVisible || isUserEditing;
 
   return (
     <Container
       className={className}
       onClick={openTooltips}
     >
+      {!isUserEditing && dots.length > 0
+        && (
+          <>
+            <Fade in={tapToWatchVisible}>
+              <div className="bagText">
+                <p>Toca para ver las prendas</p>
+              </div>
+            </Fade>
+            <Fade in={!tooltipsVisible}>
+              <img className="bag" width="20" src="/static/WhiteShopBag.svg" alt="bag" />
+            </Fade>
+          </>
+        )
+      }
       <StyledImage
         src={src}
         onLoad={handleImageLoad}
         {...rest}
       />
-      {imageSize.height && imageSize.width && dots && dots.map((dot) => {
+      {shouldDisplayDots && imageSize.height && imageSize.width && dots.map((dot) => {
         const dotElement = (
-          <Dot
-            key={dot._id}
-            displayDot
-            onClick={e => onDotClick(e, dot)}
-            xPosition={dot.xPosition}
-            containerWidth={imageSize.width}
-            yPosition={dot.yPosition}
-            containerHeight={imageSize.height}
-          />
+          <Fade in={shouldDisplayDots}>
+            <Dot
+              key={dot._id}
+              displayDot
+              onClick={e => onDotClick(e, dot)}
+              color={dot.color}
+              xPosition={dot.xPosition}
+              yPosition={dot.yPosition}
+              containerWidth={imageSize.width}
+              containerHeight={imageSize.height}
+            />
+          </Fade>
         );
 
         if (disableTooltip) {
           return dotElement;
         }
 
-        if (useRemoveDotTooltip) {
+        if (isUserEditing) {
           return (
             <ClickAwayListener
               key={dot._id}
@@ -118,13 +173,13 @@ export default function ImageWithDots ({
       })}
     </Container>
   );
-}
+});
 
 ImageWithDots.defaultProps = {
   className: '',
   dots: [],
   onImageLoad: null,
-  useRemoveDotTooltip: false,
+  isUserEditing: false,
   onDotClick: () => {},
   onDotLinkClick: () => {},
   setOpenTooltip: () => {},
@@ -137,11 +192,11 @@ ImageWithDots.propTypes = {
   onDotClick: propTypes.func,
   onDotLinkClick: propTypes.func,
   setOpenTooltip: propTypes.func,
-  useRemoveDotTooltip: propTypes.bool,
-  postId: ({ useRemoveDotTooltip, ...rest }, propName) => {
-    if (useRemoveDotTooltip) {
+  isUserEditing: propTypes.bool,
+  postId: ({ isUserEditing, ...rest }, propName) => {
+    if (isUserEditing) {
       return rest[propName]
-        ? null : new Error(`The prop ${propName} is required when using useRemoveDotTooltip`);
+        ? null : new Error(`The prop ${propName} is required when using isUserEditing`);
     }
     return null;
   },
@@ -152,3 +207,5 @@ ImageWithDots.propTypes = {
     yPosition: propTypes.number.isRequired,
   })),
 };
+
+export default ImageWithDots;

@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import {
@@ -77,7 +77,7 @@ const StyledCard = styled(Card)`
   }
 `;
 
-class PostCard extends Component {
+class PostCard extends PureComponent {
   static contextType = SecContext;
 
   state = {
@@ -131,6 +131,7 @@ class PostCard extends Component {
     } = this.state;
 
     const screenWidth = process.browser ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : 450;
+    const postHeight = screenWidth <= POST_MAX_WIDTH ? '100vw' : `${POST_MAX_WIDTH}px`;
 
     return (
       <StyledCard>
@@ -170,7 +171,7 @@ class PostCard extends Component {
           fitCover
           onDotLinkClick={this.openDotDetailsModal}
           src={picUrl}
-          height={screenWidth <= POST_MAX_WIDTH ? '100vw' : `${POST_MAX_WIDTH}px`}
+          height={postHeight}
           postId={_id}
           withLoader
           dots={dots.nodes}

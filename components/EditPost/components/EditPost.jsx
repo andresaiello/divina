@@ -44,15 +44,15 @@ class EditPost extends Component {
     } = this.state;
     const { postId } = this.props;
 
+    const variables = {
+      postId,
+      xPosition: xPosition / xLength,
+      yPosition: yPosition / yLength,
+      ...dotData,
+    };
+
     this.setState({ savingDot: true }, async () => {
-      await persistDot({
-        variables: {
-          postId,
-          xPosition: xPosition / xLength,
-          yPosition: yPosition / yLength,
-          ...dotData,
-        },
-      });
+      await persistDot({ variables });
 
       this.setState({
         xPosition: 0,

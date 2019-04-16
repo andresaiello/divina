@@ -18,7 +18,14 @@ const typeDefs = gql`
 
   extend type Mutation {
     addDot (
-      postId: String!, xPosition: Float!, yPosition: Float!, title: String!, brand: String!, price: Int!, currency: String!
+      postId: String!,
+      xPosition: Float!,
+      yPosition: Float!,
+      title: String!,
+      brand: String!,
+      price: Int!,
+      currency: String!,
+      color: String!,
     ): Post
     deleteDot (postId: String!, dotId: String!): Post
     createPost (author: String!, caption: String!, picUrl: String!, picId: String!): Post
@@ -58,6 +65,7 @@ const typeDefs = gql`
     title: String
     brand: Brand
     price: Int
+    color: String
     currency: Currency
   }
 

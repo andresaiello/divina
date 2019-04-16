@@ -1,5 +1,6 @@
 import getConfig from 'next/config';
 import router, { Router } from '~/server/routes';
+import * as loadImage from 'blueimp-load-image/js/load-image.all.min';
 
 const { publicRuntimeConfig } = getConfig();
 const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;

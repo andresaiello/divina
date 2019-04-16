@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
+import { DOT_DEFAULT_COLOR } from '~/constants';
 
 const dotSize = '20';
 
@@ -11,9 +12,8 @@ const StyledDot = styled.div`
   top: ${({ yPosition, containerHeight }) => `calc((${containerHeight}px * ${yPosition}) - ${dotSize}px / 2)`};
   height: ${dotSize}px;
   width: ${dotSize}px;
-  background-color: rgba(0, 0, 0, .58);
+  background-color: ${({ color }) => color || DOT_DEFAULT_COLOR};
   border-radius: 50%;
-  border: 1px solid white;
 `;
 
 function Dot (props) {
@@ -26,10 +26,12 @@ function Dot (props) {
 
 Dot.defaultProps = {
   displayDot: true,
+  color: DOT_DEFAULT_COLOR,
 };
 
 Dot.propTypes = {
   displayDot: propTypes.bool,
+  color: propTypes.string,
   xPosition: propTypes.number.isRequired,
   containerWidth: propTypes.number.isRequired,
   yPosition: propTypes.number.isRequired,

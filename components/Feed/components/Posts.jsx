@@ -47,6 +47,7 @@ export default class Posts extends PureComponent {
         resolve();
       } catch (e) {
         console.log(e);
+        this.setState({ isRefetching: false });
         reject();
       }
     });

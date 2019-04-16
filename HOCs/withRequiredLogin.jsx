@@ -8,7 +8,6 @@ import {
 
 /**
  * warning: this HOC works only for pages, (it implements getInitialProps)
- * @see: line before return
  */
 export default function withRequiredLogin (BaseComponent) {
   class Enhancer extends Component {
@@ -46,6 +45,5 @@ export default function withRequiredLogin (BaseComponent) {
     }
   }
 
-  Enhancer.getInitialProps = BaseComponent.getInitialProps;
   return Enhancer;
 }
