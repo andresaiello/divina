@@ -17,6 +17,7 @@ import {
 import CommentsModal from './CommentsModal';
 import DotDetailsModal from './DotDetailsModal';
 import { POST_MAX_WIDTH } from '~/constants';
+import MoreOptionsModal from './MoreOptionsModal';
 
 const StyledCard = styled(Card)`
   margin: 0px auto;
@@ -85,8 +86,17 @@ class PostCard extends PureComponent {
     isCommentsModalOpen: false,
     isShareModalOpen: false,
     isDotDetailsModalOpen: false,
+    isMoreOptionsModalOpen: false,
     selectedDotData: null,
   }
+
+  openMoreOptionsModal = () => {
+    this.setState({ isMoreOptionsModalOpen: true });
+  };
+
+  closeMoreOptionsModal = () => {
+    this.setState({ isMoreOptionsModalOpen: false });
+  };
 
   openCommentsModal = () => {
     this.setState({ isCommentsModalOpen: true });
@@ -128,7 +138,7 @@ class PostCard extends PureComponent {
     const { user = {} } = this.context;
 
     const {
-      isCommentsModalOpen, isShareModalOpen, isDotDetailsModalOpen, selectedDotData,
+      isCommentsModalOpen, isShareModalOpen, isDotDetailsModalOpen, selectedDotData, isMoreOptionsModalOpen,
     } = this.state;
 
     const screenWidth = process.browser ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : 450;
@@ -161,7 +171,10 @@ class PostCard extends PureComponent {
                 receiver={author._id}
                 isFollowing={authorFollowed.isFollowing}
               />
-              <IconButton className="moreButton">
+              <IconButton
+                className="moreButton"
+                onClick={this.openMoreOptionsModal}
+              >
                 <More />
               </IconButton>
             </Fragment>
@@ -205,6 +218,7 @@ class PostCard extends PureComponent {
         </CardActions>
         <CommentsModal postId={_id} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
         <ShareModal username={username} postId={_id} isOpen={isShareModalOpen} close={this.closeShareModal} />
+        <MoreOptionsModal postId={_id} isOpen={isMoreOptionsModalOpen} close={this.closeMoreOptionsModal} />
       </StyledCard>
     );
   }

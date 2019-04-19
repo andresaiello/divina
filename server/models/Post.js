@@ -28,6 +28,9 @@ const postSchema = new Schema({
     enum: clothingStylesNames,
     index: true,
   }],
+  reports: [{
+    type: Schema.Types.ObjectId, ref: 'User',
+  }],
 }, { timestamps: true });
 
 postSchema.statics.getPaginatedPosts = async function getPaginatedPosts ({
@@ -131,6 +134,17 @@ postSchema.statics.deleteDot = async function addDot ({ postId, dotId }) {
       { _id: postId },
       // @todo: maybe generate an unique id based on dot position to avoid two dots in the same position
       { $pull: { dots: { _id: dotId } } },
+      { new: true },
+    );
+
+  return post.toObject();
+};
+
+postSchema.statics.report = async function report ({ postId, reporterId }) {
+  const post = await this
+    .findOneAndUpdate(
+      { _id: postId },
+      { $addToSet: { reports: { _id: reporterId } } },
       { new: true },
     );
 

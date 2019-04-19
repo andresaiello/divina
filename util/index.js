@@ -1,6 +1,6 @@
 import getConfig from 'next/config';
 import router, { Router } from '~/server/routes';
-import * as loadImage from 'blueimp-load-image/js/load-image.all.min';
+import imageFileToBase64 from 'image-file-to-base64-exif';
 
 const { publicRuntimeConfig } = getConfig();
 const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
@@ -69,19 +69,15 @@ export const base64ToCloudinary = async (base64Img, tags) => {
   return uploadToCloudinary(formData);
 };
 
-export const readImageAsBase64 = async image => new Promise((resolve, reject) => {
-  const reader = new FileReader();
-
-  reader.onload = () => {
-    const img = new Image();
-    img.src = reader.result;
-    img.onload = async () => {
-      resolve({ base64Img: img.src, width: img.width, height: img.height });
-    };
+export const readImageAsBase64 = async image => new Promise(async (resolve, reject) => {
+  const base64Img = await imageFileToBase64(image);
+  const img = new Image();
+  img.src = base64Img;
+  img.onload = async () => {
+    resolve({ base64Img: img.src, width: img.width, height: img.height });
   };
 
-  if (image) reader.readAsDataURL(image);
-  else reject(new Error('No image provided'));
+  if (!image) reject(new Error('No image provided'));
 });
 
 export const serverRedirect = routeName => (res) => {

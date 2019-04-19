@@ -66,17 +66,6 @@ class BottomAppBar extends Component {
     uploading: false,
   };
 
-  onDropImage = async (acceptedFiles, rejectedFiles, uploadPicture) => {
-    this.setState({ uploading: true });
-
-    let fileToSend = null;
-    acceptedFiles.forEach((file) => { fileToSend = file; });
-
-    const { base64Img, width, height } = await readImageAsBase64(fileToSend);
-
-    uploadPicture({ src: base64Img, width, height }, () => Router.pushRoute('uploadPicture'));
-  }
-
   render () {
     const { uploading } = this.state;
 

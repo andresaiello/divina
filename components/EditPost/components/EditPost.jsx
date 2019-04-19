@@ -79,7 +79,7 @@ class EditPost extends Component {
   }
 
   getImageSize = (e) => {
-    this.setState({ xLength: e.target.width, yLength: e.target.height });
+    this.setState({ xLength: e.target.clientWidth, yLength: e.target.clientHeight });
   }
 
   persistAndRedirect = async (setClothingStyles) => {

@@ -19,7 +19,9 @@ export default function UploadImageContainer ({ icon }) {
 
     const { base64Img, width, height } = await readImageAsBase64(fileToSend);
 
-    uploadPicture({ src: base64Img, width, height }, () => Router.pushRoute('uploadPicture'));
+    uploadPicture({
+      src: base64Img, width, height,
+    }, () => Router.pushRoute('uploadPicture'));
   }
 
   if (uploading) return <CircularProgress />;

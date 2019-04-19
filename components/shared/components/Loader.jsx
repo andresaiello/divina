@@ -2,6 +2,7 @@ import React from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { Typography } from '@material-ui/core';
 
 // check if it's a number
 const formatSize = size => (/^\d+$/.test(size) ? `${size}px` : size);
@@ -29,20 +30,31 @@ const StyledLoader = styled.span`
     width: inherit;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
   }
 
   .progress {
     color: rgba(0, 0, 0, .54);
     margin-top: ${({ height, size }) => (height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`)};
+    margin-bottom: ${({ height, size, text }) => (text
+    ? null
+    : height
+      ? `calc(${half(height)} - ${half(size)})`
+      : `calc(50% - ${half(size)})`)};
+  }
+
+  .text {
+    margin-top: 7.5px;
     margin-bottom: ${({ height, size }) => (height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`)};
   }
 `;
 
-export default function Loader ({ size, ...rest }) {
+export default function Loader ({ size, text, ...rest }) {
   return (
-    <StyledLoader {...{ size, ...rest }}>
+    <StyledLoader {...{ size, text, ...rest }}>
       <div className="container">
         <CircularProgress className="progress" {...{ size }} />
+        {text && <Typography className="text">{text}</Typography>}
       </div>
     </StyledLoader>
   );
@@ -50,8 +62,10 @@ export default function Loader ({ size, ...rest }) {
 
 Loader.defaultProps = {
   size: '30px',
+  text: null,
 };
 
 Loader.propTypes = {
+  text: propTypes.string,
   size: propTypes.oneOfType([propTypes.string, propTypes.number]),
 };

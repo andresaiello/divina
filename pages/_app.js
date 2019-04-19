@@ -49,10 +49,10 @@ class MyApp extends App {
 
   pageContext = getPageContext();
 
-  uploadPicture = ({ src, width, height }, callback) => {
+  uploadPicture = (data, callback) => {
     this.setState(({ pictureUploadContext }) => ({
       pictureUploadContext: {
-        ...pictureUploadContext, src, width, height,
+        ...pictureUploadContext, ...data,
       },
     }), callback);
   }

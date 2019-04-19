@@ -25,10 +25,8 @@ export default class extends React.Component {
   }
 
   render () {
-    const { src, width, height } = this.context;
+    if (!this.context.src) return null;
 
-    if (!src) return null;
-
-    return <UploadPicture {...{ src, width, height }} />;
+    return <UploadPicture {...{ ...this.context }} />;
   }
 }

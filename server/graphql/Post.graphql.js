@@ -33,6 +33,7 @@ const typeDefs = gql`
     commentPost (postId: String!, author: String!, comment: String!): Comments
     editPost (_id: String!, caption: String!): Post
     likePost (postId: String!): LikeStatus
+    reportPost (postId: String!): Post
     unlikePost (postId: String!): LikeStatus
   }
 
@@ -135,6 +136,10 @@ const resolvers = {
 
       return Post.deleteDot({ postId, dotId });
     },
+    reportPost: async (_, { postId }, { loggedUser = missing('needLogin') }) => Post.report({
+      postId,
+      reporterId: loggedUser._id,
+    }),
     createPost: async (_, { caption, picUrl, picId }, { loggedUser = missing('needLogin') }) => Post.createPost({
       author: loggedUser._id, caption, picUrl, picId,
     }),
