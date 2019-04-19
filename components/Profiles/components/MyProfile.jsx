@@ -8,7 +8,6 @@ import { Link } from '~/server/routes';
 
 import ProfileInfo from './ProfileInfo';
 import PhotoGrid from './PhotoGrid';
-import { ClothingStylesModal } from '~/components/shared';
 
 const StyledProfile = styled.article`
   button {
@@ -19,8 +18,6 @@ const StyledProfile = styled.article`
 `;
 
 function MyProfile ({ profile, ...rest }) {
-  const [isClothingStylesModalOpen, toggleClothingStylesModal] = useState(false);
-
   const editProfile = (
     <Link route="editProfile" prefetch>
       <Button variant="outlined">editar</Button>
@@ -29,11 +26,6 @@ function MyProfile ({ profile, ...rest }) {
 
   return (
     <StyledProfile {...rest}>
-      <ClothingStylesModal
-        // isOpen={isClothingStylesModalOpen}
-        isOpen
-        close={() => toggleClothingStylesModal(false)}
-      />
       <ProfileInfo
         action={editProfile}
         followersCount={profile.followersCount}

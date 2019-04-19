@@ -1,76 +1,76 @@
 module.exports = {
-  clothingStyles: {
-    Artsy: {
-      name: 'Artsy',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Boho: {
-      name: 'Boho',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Casual: {
-      name: 'Casual',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Chic: {
-      name: 'Chic',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Clásico: {
-      name: 'Clásico',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Deportivo: {
-      name: 'Deportivo',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Exótico: {
-      name: 'Exótico',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Gótico: {
-      name: 'Gótico',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Hípster: {
-      name: 'Hípster',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Playa: {
-      name: 'Playa',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Punk: {
-      name: 'Punk',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Rocker: {
-      name: 'Rocker',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Sexy: {
-      name: 'Sexy',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Sofisticado: {
-      name: 'Sofisticado',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Streetwear: {
-      name: 'Streetwear',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Trabajo: {
-      name: 'Trabajo',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Trendy: {
-      name: 'Trendy',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
-    },
-    Accesorios: {
+  clothingStyles: [
+    {
       name: 'Accesorios',
-      imgUrl: 'https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg',
+      imgUrl: '/static/clothingStyles/Accesorios_2.jpeg',
     },
-  },
+    {
+      name: 'Artsy',
+      imgUrl: '/static/clothingStyles/Artsy.jpeg',
+    },
+    {
+      name: 'Boho',
+      imgUrl: '/static/clothingStyles/Boho.JPG',
+    },
+    {
+      name: 'Casual',
+      imgUrl: '/static/clothingStyles/Casual.jpeg',
+    },
+    {
+      name: 'Chic',
+      imgUrl: '/static/clothingStyles/Chic.jpeg',
+    },
+    {
+      name: 'Clásico',
+      imgUrl: '/static/clothingStyles/Clasico.jpeg',
+    },
+    {
+      name: 'Deportivo',
+      imgUrl: '/static/clothingStyles/Deportivo.jpeg',
+    },
+    {
+      name: 'Exótico',
+      imgUrl: '/static/clothingStyles/Exotico.jpeg',
+    },
+    {
+      name: 'Gótico',
+      imgUrl: '/static/clothingStyles/Gotico.jpeg',
+    },
+    {
+      name: 'Hípster',
+      imgUrl: '/static/clothingStyles/Hipster.jpeg',
+    },
+    {
+      name: 'Playa',
+      imgUrl: '/static/clothingStyles/Playa.jpeg',
+    },
+    {
+      name: 'Punk',
+      imgUrl: '/static/clothingStyles/Punk.jpeg',
+    },
+    {
+      name: 'Rocker',
+      imgUrl: '/static/clothingStyles/Rocker.jpg',
+    },
+    {
+      name: 'Sexy',
+      imgUrl: '/static/clothingStyles/Sexy.jpeg',
+    },
+    {
+      name: 'Sofisticado',
+      imgUrl: '/static/clothingStyles/Sofisticado.jpg',
+    },
+    {
+      name: 'Streetwear',
+      imgUrl: '/static/clothingStyles/Streetwear.jpeg',
+    },
+    {
+      name: 'Trabajo',
+      imgUrl: '/static/clothingStyles/Trabajo.jpg',
+    },
+    {
+      name: 'Trendy',
+      imgUrl: '/static/clothingStyles/Trendy.jpeg',
+    },
+  ],
 };

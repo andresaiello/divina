@@ -12,4 +12,5 @@ export { default as LikeButton } from './components/LikeButton';
 export { default as FullscreenModal } from './components/FullscreenModal';
 export { default as LoadingScreen } from './components/LoadingScreen';
 export { default as Input } from './components/Input';
+export { default as InfiniteScroll } from './components/InfiniteScroll';
 export { default as ImageWithDots, Dot } from './components/ImageWithDots';

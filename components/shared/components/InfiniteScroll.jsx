@@ -4,13 +4,19 @@ import propTypes from 'prop-types';
 const FOOTER_HEIGHT = 60;
 
 export default class InfiniteScroll extends Component {
+  static defaultProps = {
+    // children: null,
+  }
+
   static propTypes = {
     onScrollBottom: propTypes.func.isRequired,
-    children: propTypes.element.isRequired,
+    // children: propTypes.oneOfType([propTypes.arrayOf(propTypes.element), propTypes.element]),
   }
 
   componentDidMount () {
     window.addEventListener('scroll', this.handleScroll);
+
+    this.handleScroll();
   }
 
   componentWillUnmount () {

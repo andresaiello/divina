@@ -5,8 +5,8 @@ import { Query } from 'react-apollo';
 import { isFetchingMore, isRefreshing } from '~/util';
 import { Feed as FeedGQL } from '~/lib/graphql';
 import withMainLayout from '~/HOCs/withMainLayout';
+import { Loader } from '~/components/shared';
 
-import { Loader } from '../../shared';
 import Posts from './Posts';
 import StylesToDisplay from './StylesToDisplay';
 
@@ -19,7 +19,7 @@ function Feed (props) {
     <Query
       query={FeedGQL.Queries.GET_POSTS}
       notifyOnNetworkStatusChange
-      variables={{ amount: 2 }}
+      variables={{ amount: 4 }}
     >
       {({
         data, error, loading, refetch, networkStatus, fetchMore,

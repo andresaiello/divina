@@ -10,6 +10,8 @@ const Option = styled.div`
   img {
     border-radius: 5px;
     filter: ${({ selected }) => (selected ? 'saturate(2) brightness(100%) contrast(44%)' : '')};
+    max-height: 85px;
+    object-fit: cover;
   }
 
   p {

@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 import styled from 'styled-components';
 
-import { PostCard } from './PostCard';
-import InfiniteScroll from './InfiniteScroll';
+import { InfiniteScroll } from '~/components/shared';
+
+import PostCard from './PostCard';
 import PullToRefresh from './PullToRefresh';
 
 const PostsContainer = styled.div`
@@ -23,15 +24,18 @@ export default class Posts extends PureComponent {
     // prevent query if the user scrolls more than 1 time or there are no more items to show
     if (!fetchingMore && hasNextPage && !isRefetching) {
       fetchMore({
-        variables: { startingDate: lastCursor, amount: 2 },
+        variables: { startingDate: lastCursor, amount: 4 },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) {
             return prev;
           }
 
-          return Object.assign({}, fetchMoreResult, {
-            posts: { ...fetchMoreResult.posts, nodes: [...prev.posts.nodes, ...fetchMoreResult.posts.nodes] },
-          });
+          return Object.assign(
+            {},
+            fetchMoreResult, {
+              posts: { ...fetchMoreResult.posts, nodes: [...prev.posts.nodes, ...fetchMoreResult.posts.nodes] },
+            },
+          );
         },
       });
     }

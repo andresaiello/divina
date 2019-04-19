@@ -7,7 +7,7 @@ const dotSize = '20';
 
 const StyledDot = styled.div`
   position: absolute;
-  display: ${({ displayDot }) => (displayDot ? 'unset' : 'none')};
+  display: ${({ displayDot }) => (displayDot ? null : 'none')};
   left: ${({ xPosition, containerWidth }) => `calc((${containerWidth}px * ${xPosition}) - ${dotSize}px / 2)`};
   top: ${({ yPosition, containerHeight }) => `calc((${containerHeight}px * ${yPosition}) - ${dotSize}px / 2)`};
   height: ${dotSize}px;

@@ -32,7 +32,7 @@ const StyledLoader = styled.span`
   }
 
   .progress {
-    color: rgba(0, 0, 0, 0.54);
+    color: rgba(0, 0, 0, .54);
     margin-top: ${({ height, size }) => (height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`)};
     margin-bottom: ${({ height, size }) => (height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`)};
   }

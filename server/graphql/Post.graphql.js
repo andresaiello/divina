@@ -7,16 +7,17 @@ const PostLikes = require('../models/PostLikes');
 const Followers = require('../models/Followers');
 const Brand = require('../models/Brand');
 
-const { missing } = require('../util');
+const { missing, checkOwnership } = require('../util');
 
 const typeDefs = gql`
   extend type Query {
     comments (postId: String!): Comments
     post (_id: String!): Post
-    posts (startingDate: String, amount: Int, username: String): Posts
+    posts (startingDate: String, amount: Int, username: String, clothingStyles: [String]): Posts
   }
 
   extend type Mutation {
+    setClothingStyles (postId: String!, clothingStyles: [String]!): Post
     addDot (
       postId: String!,
       xPosition: Float!,
@@ -74,6 +75,15 @@ const typeDefs = gql`
     nodes: [Dot]
   }
 
+  type ClothingStyle {
+    name: String
+  }
+
+  type ClothingStyles {
+    _id: String
+    nodes: [ClothingStyle]
+  }
+
   type Post {
     _id: String
     author: User
@@ -82,6 +92,7 @@ const typeDefs = gql`
     comments: Comments
     createdAt: String
     dots: Dots
+    clothingStyles: ClothingStyles
     liked: LikeStatus
     likes: Likes
     picUrl: String
@@ -106,42 +117,35 @@ const resolvers = {
     },
   },
   Mutation: {
+    setClothingStyles: async (_, { postId, clothingStyles }, { loggedUser = missing('needLogin') }) => {
+      const { _id, author } = await Post.getById(postId);
+      checkOwnership(loggedUser, author);
+
+      return Post.setClothingStyles({ _id, clothingStyles });
+    },
     addDot: async (_, { postId, ...dot }, { loggedUser = missing('needLogin') }) => {
       const { _id, author } = await Post.getById(postId);
-      const authorId = author._id && author._id.toString();
-      const loggedUserId = loggedUser._id && loggedUser._id.toString();
-      if (!loggedUserId) throw new Error('Authentication needed');
-      if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
+      checkOwnership(loggedUser, author);
 
       return Post.addDot({ _id, dot });
     },
     deleteDot: async (_, { postId, dotId }, { loggedUser = missing('needLogin') }) => {
       const { author } = await Post.getById(postId);
-      const authorId = author._id && author._id.toString();
-      const loggedUserId = loggedUser._id && loggedUser._id.toString();
-      if (!loggedUserId) throw new Error('Authentication needed');
-      if (authorId !== loggedUserId) throw new Error('Post author and logged user don\'t match');
+      checkOwnership(loggedUser, author);
 
       return Post.deleteDot({ postId, dotId });
     },
-    // @todo: set authorization for this mutation
-    createPost: async (_, {
-      author, caption, picUrl, picId,
-    }) => {
-      const post = await Post.createPost({
-        author, caption, picUrl, picId,
-      });
+    createPost: async (_, { caption, picUrl, picId }, { loggedUser = missing('needLogin') }) => Post.createPost({
+      author: loggedUser._id, caption, picUrl, picId,
+    }),
+    editPost: async (_, { _id, caption }, { loggedUser = missing('needLogin') }) => {
+      const { author } = await Post.getById(_id);
+      checkOwnership(loggedUser, author);
 
-      return post;
+      return Post.editPost({ _id, caption });
     },
-    // @todo: set authorization for this mutation
-    editPost: async (_, { _id, caption }) => {
-      const post = await Post.editPost({ _id, caption });
-      return post;
-    },
-    // @todo: set authorization for this mutation
-    commentPost: async (_, { postId, author, comment }) => {
-      await PostComment.addNew({ postId, author, comment });
+    commentPost: async (_, { postId, comment }, { loggedUser = missing('needLogin') }) => {
+      await PostComment.addNew({ postId, author: loggedUser._id, comment });
       const nodes = await PostComment.findByPost({ postId });
       return { _id: postId, nodes };
     },
@@ -171,6 +175,13 @@ const resolvers = {
   Post: {
     comments: async ({ _id }) => {
       const nodes = await PostComment.findByPost({ postId: _id });
+      return { _id, nodes };
+    },
+    clothingStyles: async (nonFormattedPost) => {
+      const { _id, clothingStyles } = nonFormattedPost;
+
+      const nodes = clothingStyles && clothingStyles.length ? clothingStyles.map(cs => ({ name: cs })) : [];
+
       return { _id, nodes };
     },
     dots: async (nonFormattedPost) => {

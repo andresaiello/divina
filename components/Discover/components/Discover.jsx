@@ -1,69 +1,69 @@
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Query } from 'react-apollo';
 
-import { Image, SearchBar, Loader } from '~/components/shared';
+import withMainLayout from '~/HOCs/withMainLayout';
+import { Image, Loader, InfiniteScroll } from '~/components/shared';
 import { Link } from '~/server/routes';
 import { Discover as DiscoverGQL } from '~/lib/graphql';
+import useClothingStyles from '~/Hooks/useClothingStyles';
+import { isFetchingMore, isRefreshing } from '~/util';
 
-import withMainLayout from '~/HOCs/withMainLayout';
-
-const DiscoverGrid = styled.div`
-  display: grid;
-  width: 100%;
-  margin-top: 5px;
-  grid-template-columns: 32.5% 32.5% 32.5%;
-  grid-row-gap: 5px;
-  justify-content: space-between;
-
-  .img {
-    width: calc(100vw / 3 - 5px);
-    height: calc(100vw / 3 - 5px);
-
-    :nth-child(4) {
-      width: 100%;
-      height: 100%;
-      grid-row: 1 / span 2;
-      grid-column: 2 / span 2;
-    }
-  }
-`;
+import Filters from './Filters';
+import DiscoverGrid from './DiscoverGrid';
+import FilteredGrid from './FilteredGrid';
+import DiscoverNode from './DiscoverNode';
+import { fetchMorePosts, byClothingStyles } from '../helpers';
 
 function Discover (props) {
+  const clothingStylesData = useClothingStyles();
+  const { selectedClothingStyles } = clothingStylesData;
+
   return (
-    <Fragment>
+    <>
+      <Filters
+        clothingStylesData={clothingStylesData}
+      />
       <Query
         query={DiscoverGQL.Queries.GET_POSTS}
-        variables={{ amount: 20 }}
+        notifyOnNetworkStatusChange
+        variables={{ amount: 21 }}
       >
-        {({ data, loading, error }) => (
-          loading
-            ? <Loader />
-            : error
-              ? <div>Error</div> // @todo
-              : (
-                  <>
-                    {/* <SearchBar /> */}
-                    <DiscoverGrid {...props}>
-                      {data.posts.nodes.map(post => (
-                        <Link
-                          key={post._id}
-                          route="pictureDetails"
-                          params={{ username: post.author.username, postId: post._id }}
-                        >
-                          <Image
-                            className="img"
-                            src={post.picUrl}
-                            alt="Foto de perfil"
-                          />
-                        </Link>
-                      ))}
-                    </DiscoverGrid>
-                </>
-              )
-        )}
+        {({
+          data, loading, error, networkStatus, fetchMore,
+        }) => {
+          const noFilters = selectedClothingStyles.length === 0;
+          if (loading && !isFetchingMore(networkStatus)) return <Loader />;
+          if (error) return <div>Error</div>; // @todo
+          const { posts } = data || { posts: null };
+          const { nodes, pageInfo } = posts || { nodes: [], pageInfo: {} };
+
+          if (noFilters) {
+            return (
+              <InfiniteScroll
+                onScrollBottom={() => fetchMorePosts(
+                  fetchMore,
+                  !isFetchingMore(networkStatus) && pageInfo.hasNextPage,
+                  { startingDate: pageInfo.lastCursor },
+                )}
+              >
+                <DiscoverGrid {...props}>
+                  {nodes.map(post => <DiscoverNode key={post._id} post={post} />)}
+                </DiscoverGrid>
+                {isFetchingMore(networkStatus) && <Loader height="150" />}
+              </InfiniteScroll>
+            );
+          }
+
+          return (
+            <FilteredGrid
+              basePosts={nodes.filter(byClothingStyles(selectedClothingStyles))}
+              selectedClothingStyles={selectedClothingStyles}
+            />
+          );
+        }}
       </Query>
-    </Fragment>
+    </>
   );
 }
 
