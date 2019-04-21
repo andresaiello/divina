@@ -1,7 +1,6 @@
 const { gql } = require('apollo-server-express');
 
 const Post = require('../models/Post');
-const User = require('../models/User');
 const PostComment = require('../models/PostComment');
 const PostLikes = require('../models/PostLikes');
 const Followers = require('../models/Followers');
@@ -32,6 +31,7 @@ const typeDefs = gql`
     createPost (author: String!, caption: String!, picUrl: String!, picId: String!): Post
     commentPost (postId: String!, author: String!, comment: String!): Comments
     editPost (_id: String!, caption: String!): Post
+    deletePost (_id: String!): Post
     likePost (postId: String!): LikeStatus
     reportPost (postId: String!): Post
     unlikePost (postId: String!): LikeStatus
@@ -148,6 +148,12 @@ const resolvers = {
       checkOwnership(loggedUser, author);
 
       return Post.editPost({ _id, caption });
+    },
+    deletePost: async (_, { _id }, { loggedUser = missing('needLogin') }) => {
+      const { author } = await Post.getById(_id);
+      checkOwnership(loggedUser, author);
+
+      return Post.deletePost({ _id });
     },
     commentPost: async (_, { postId, comment }, { loggedUser = missing('needLogin') }) => {
       await PostComment.addNew({ postId, author: loggedUser._id, comment });

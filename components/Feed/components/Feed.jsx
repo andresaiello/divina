@@ -8,7 +8,6 @@ import withMainLayout from '~/HOCs/withMainLayout';
 import { Loader } from '~/components/shared';
 
 import Posts from './Posts';
-import StylesToDisplay from './StylesToDisplay';
 
 const StyledFeed = styled.div`
 
@@ -37,7 +36,6 @@ function Feed (props) {
 
         return (
           <StyledFeed {...props}>
-            <StylesToDisplay />
             <Posts
               fetchingMore={isFetchingMore(networkStatus)}
               posts={nodes}

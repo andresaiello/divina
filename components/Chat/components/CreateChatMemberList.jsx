@@ -1,6 +1,5 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import propTypes from 'prop-types';
 import {
   ListItemAvatar, Avatar, List, Typography, ListItem, ListItemText,
 } from '@material-ui/core';

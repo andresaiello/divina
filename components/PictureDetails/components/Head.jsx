@@ -2,12 +2,12 @@ import React from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import {
-  AppBar, Toolbar, Avatar, IconButton, Typography,
+  AppBar, Toolbar, Avatar, Typography,
 } from '@material-ui/core';
-import { ChevronLeft, MoreHoriz } from '@material-ui/icons';
+import { ChevronLeft } from '@material-ui/icons';
 
-import { Link, Router } from '~/server/routes';
-import { FollowButton } from '~/components/shared';
+import { Router } from '~/server/routes';
+import { MoreOptionsButton } from '~/components/shared';
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -46,7 +46,9 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
-function Head ({ username, profilePic, ...rest }) {
+function Head ({
+  username, profilePic, openMoreOptionsModal, ...rest
+}) {
   return (
     <StyledAppBar position="static" {...rest}>
       <Toolbar className="toolbar">
@@ -59,9 +61,7 @@ function Head ({ username, profilePic, ...rest }) {
           <Typography component="h4">{username}</Typography>
         </div>
         <div>
-          <IconButton>
-            <MoreHoriz />
-          </IconButton>
+          <MoreOptionsButton openModal={openMoreOptionsModal} />
         </div>
       </Toolbar>
     </StyledAppBar>
@@ -71,6 +71,7 @@ function Head ({ username, profilePic, ...rest }) {
 Head.propTypes = {
   username: propTypes.string.isRequired,
   profilePic: propTypes.string.isRequired,
+  openMoreOptionsModal: propTypes.func.isRequired,
 };
 
 export default Head;

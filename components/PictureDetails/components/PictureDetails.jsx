@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import propTypes from 'prop-types';
 
 import withRouteProgress from '~/HOCs/withRouteProgress';
-import { Image, Comments, ShareModal } from '~/components/shared';
+import {
+  Image, Comments, ShareModal, MoreOptionsModal,
+} from '~/components/shared';
 import SecContext from '~/context/secContext';
 
 import Head from './Head';
@@ -20,17 +22,20 @@ const StyledPictureDetails = styled.article`
 function PictureDetails ({
   postId, author, comments, picUrl, caption, likes, liked, ...rest
 }) {
-  const context = useContext(SecContext);
+  const { user } = useContext(SecContext);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isMoreOptionsModalOpen, setIsMoreOptionsModalOpen] = useState(false);
 
   const openShareModal = () => { setIsShareModalOpen(true); };
   const closeShareModal = () => { setIsShareModalOpen(false); };
+  const openMoreOptionsModal = () => { setIsMoreOptionsModalOpen(true); };
+  const closeMoreOptionsModal = () => { setIsMoreOptionsModalOpen(false); };
 
-  const loggedUserId = context.user && context.user._id;
+  const loggedUserId = user && user._id;
 
   return (
     <StyledPictureDetails {...rest}>
-      <Head {...{ ...author }} />
+      <Head {...{ ...author, openMoreOptionsModal }} />
       <Image
         className="image"
         fitCover
@@ -52,6 +57,12 @@ function PictureDetails ({
         postId={postId}
         isOpen={isShareModalOpen}
         close={closeShareModal}
+      />
+      <MoreOptionsModal
+        postId={postId}
+        isOwner={loggedUserId === author._id}
+        isOpen={isMoreOptionsModalOpen}
+        close={closeMoreOptionsModal}
       />
     </StyledPictureDetails>
   );

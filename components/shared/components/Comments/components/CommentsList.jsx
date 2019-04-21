@@ -50,10 +50,14 @@ export default function CommentsList ({ comments }) {
                 <Typography className="userName" component="p" color="textPrimary">
                   {`${username}`}
                 </Typography>
-
-                {content.map(singleContent => (
-                  <Typography className="commentText" component="p" color="textPrimary">
-                    {singleContent}
+                {content.map((commentText, i) => (
+                  <Typography
+                    key={i}
+                    className="commentText"
+                    component="p"
+                    color="textPrimary"
+                  >
+                    {commentText}
                   </Typography>
                 ))
                 }
@@ -61,10 +65,8 @@ export default function CommentsList ({ comments }) {
               </Fragment>
             )}
           />
-
         </ListItem>
       ))}
-
     </StyledList>
   );
 }

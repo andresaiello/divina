@@ -1,5 +1,6 @@
 export { Comments } from './components/Comments';
 export { ClothingStylesModal } from './components/ClothingStyles';
+export { MoreOptionsButton, MoreOptionsModal } from './components/MoreOptions';
 export { default as Loader } from './components/Loader';
 export { default as Image } from './components/Image';
 export { default as HeadAppBar } from './components/HeadAppBar';

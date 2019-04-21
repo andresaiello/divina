@@ -4,20 +4,17 @@ import propTypes from 'prop-types';
 import {
   Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton,
 } from '@material-ui/core';
-import {
-  Comment, Share, MoreHoriz as More,
-} from '@material-ui/icons';
+import { Comment, Share } from '@material-ui/icons';
 
 import SecContext from '~/context/secContext';
 import { Link } from '~/server/routes';
 import {
-  FollowButton, LikeButton, ImageWithDots, ShareModal,
+  FollowButton, LikeButton, ImageWithDots, ShareModal, MoreOptionsModal, MoreOptionsButton,
 } from '~/components/shared';
 
 import CommentsModal from './CommentsModal';
 import DotDetailsModal from './DotDetailsModal';
 import { POST_MAX_WIDTH } from '~/constants';
-import MoreOptionsModal from './MoreOptionsModal';
 
 const StyledCard = styled(Card)`
   margin: 0px auto;
@@ -72,10 +69,6 @@ const StyledCard = styled(Card)`
     align-self: flex-end;
     display: flex;
     align-items: flex-end;
-  }
-
-  .moreButton {
-    padding: 24px 12px 0px 12px;
   }
 `;
 
@@ -135,7 +128,7 @@ class PostCard extends PureComponent {
 
     const { username, profilePic } = author;
 
-    const { user = {} } = this.context;
+    const { user } = this.context;
 
     const {
       isCommentsModalOpen, isShareModalOpen, isDotDetailsModalOpen, selectedDotData, isMoreOptionsModalOpen,
@@ -143,6 +136,7 @@ class PostCard extends PureComponent {
 
     const screenWidth = process.browser ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : 450;
     const postHeight = screenWidth <= POST_MAX_WIDTH ? '100vw' : `${POST_MAX_WIDTH}px`;
+    const loggedUserId = user && user._id;
 
     return (
       <StyledCard>
@@ -167,16 +161,11 @@ class PostCard extends PureComponent {
             <Fragment>
               <FollowButton
                 className="follow"
-                author={user && user._id}
+                author={loggedUserId}
                 receiver={author._id}
                 isFollowing={authorFollowed.isFollowing}
               />
-              <IconButton
-                className="moreButton"
-                onClick={this.openMoreOptionsModal}
-              >
-                <More />
-              </IconButton>
+              <MoreOptionsButton openModal={this.openMoreOptionsModal} />
             </Fragment>
           )}
         />
@@ -204,7 +193,7 @@ class PostCard extends PureComponent {
         <CardActions className="actions" disableActionSpacing>
           <div>
             <LikeButton
-              author={user && user._id}
+              author={loggedUserId}
               liked={liked.isLiked}
               postId={_id}
             />
@@ -218,7 +207,12 @@ class PostCard extends PureComponent {
         </CardActions>
         <CommentsModal postId={_id} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
         <ShareModal username={username} postId={_id} isOpen={isShareModalOpen} close={this.closeShareModal} />
-        <MoreOptionsModal postId={_id} isOpen={isMoreOptionsModalOpen} close={this.closeMoreOptionsModal} />
+        <MoreOptionsModal
+          isOwner={loggedUserId === author._id}
+          postId={_id}
+          isOpen={isMoreOptionsModalOpen}
+          close={this.closeMoreOptionsModal}
+        />
       </StyledCard>
     );
   }

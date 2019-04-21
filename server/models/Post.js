@@ -104,6 +104,12 @@ postSchema.statics.editPost = async function editPost ({ _id, caption }) {
   return post.toObject();
 };
 
+postSchema.statics.deletePost = async function deletePost ({ _id }) {
+  await this.deleteOne({ _id });
+
+  return { _id };
+};
+
 postSchema.statics.setClothingStyles = async function setClothingStyles ({ _id, clothingStyles }) {
   const post = await this
     .findOneAndUpdate(
