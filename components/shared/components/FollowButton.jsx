@@ -15,18 +15,14 @@ const StyledButton = styled(Button)`
   }
 `;
 
-function FollowButton ({
-  className, author, receiver, isFollowing,
-}) {
+function FollowButton({ className, author, receiver, isFollowing }) {
   // @todo: bring followers/following with button mutation so the cache gets updated automatically
   if (!author || !receiver) return null;
   if (author === receiver) return null;
 
   if (isFollowing) {
     return (
-      <Mutation
-        mutation={User.Mutations.UNFOLLOW}
-      >
+      <Mutation mutation={User.Mutations.UNFOLLOW}>
         {(unfollowUser, { data, loading, error }) => (
           <StyledButton
             className={className}
@@ -41,9 +37,7 @@ function FollowButton ({
   }
 
   return (
-    <Mutation
-      mutation={User.Mutations.FOLLOW}
-    >
+    <Mutation mutation={User.Mutations.FOLLOW}>
       {(followUser, { data, loading, error }) => (
         <StyledButton
           className={className}

@@ -7,15 +7,20 @@ import { Mutation } from 'react-apollo';
 import { Post } from '~/lib/graphql';
 import { Loader } from '~/components/shared';
 
-const LinkText = styled(DialogContentText)`
-  cursor: pointer;
+const StyledContentText = styled(DialogContentText)`
+  && {
+    cursor: pointer;
+
+    p {
+      color: black;
+      margin: 0;
+    }
+  }
 `;
 
-export default function ReportPost ({ postId, close, BaseContent }) {
+export default function ReportPost({ postId, close, BaseContent }) {
   return (
-    <Mutation
-      mutation={Post.Mutations.REPORT}
-    >
+    <Mutation mutation={Post.Mutations.REPORT}>
       {(reportPost, { data, loading }) => {
         if (loading) return <Loader text="Denunciando post..." />;
 
@@ -23,16 +28,16 @@ export default function ReportPost ({ postId, close, BaseContent }) {
           return (
             <BaseContent
               close={close}
-              content={(
+              content={
                 <>
-                  <DialogContentText>
-                    ¡Gracias por tu denuncia!
-                  </DialogContentText>
-                  <DialogContentText>
-                    La estaremos revisando pronto.
-                  </DialogContentText>
+                  <StyledContentText>
+                    <p>¡Gracias por tu denuncia!</p>
+                  </StyledContentText>
+                  <StyledContentText>
+                    <p>La estaremos revisando pronto.</p>
+                  </StyledContentText>
                 </>
-              )}
+              }
             />
           );
         }
@@ -40,14 +45,11 @@ export default function ReportPost ({ postId, close, BaseContent }) {
         return (
           <BaseContent
             close={close}
-            content={(
-              <LinkText
-                color="primary"
-                onClick={() => reportPost({ variables: { postId } })}
-              >
-                Denunciar contenido
-              </LinkText>
-            )}
+            content={
+              <StyledContentText onClick={() => reportPost({ variables: { postId } })}>
+                <p>Denunciar contenido</p>
+              </StyledContentText>
+            }
           />
         );
       }}

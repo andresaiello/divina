@@ -35,20 +35,18 @@ class EditPost extends Component {
     isDotsModalOpen: false,
     isClothingStylesModalOpen: false,
     savingDot: false,
-  }
+  };
 
-  selectDotPlace = (e) => {
+  selectDotPlace = e => {
     this.setState({
       isDotsModalOpen: true,
       xPosition: e.nativeEvent.offsetX,
       yPosition: e.nativeEvent.offsetY,
     });
-  }
+  };
 
   onSaveDot = async (persistDot, dotData) => {
-    const {
-      xPosition, xLength, yPosition, yLength,
-    } = this.state;
+    const { xPosition, xLength, yPosition, yLength } = this.state;
     const { postId } = this.props;
 
     const variables = {
@@ -68,7 +66,7 @@ class EditPost extends Component {
         isDotsModalOpen: false,
       });
     });
-  }
+  };
 
   closeDotsModal = () => {
     this.setState({
@@ -76,23 +74,39 @@ class EditPost extends Component {
       xPosition: 0,
       yPosition: 0,
     });
-  }
+  };
 
-  getImageSize = (e) => {
+  getImageSize = e => {
     this.setState({ xLength: e.target.clientWidth, yLength: e.target.clientHeight });
-  }
+  };
 
-  persistAndRedirect = async (setClothingStyles) => {
+  persistAndRedirect = async setClothingStyles => {
     const { postId, selectedClothingStyles } = this.props;
-    await setClothingStyles({ variables: { postId, clothingStyles: selectedClothingStyles.map(cs => cs.name) } });
+    await setClothingStyles({
+      variables: { postId, clothingStyles: selectedClothingStyles.map(cs => cs.name) },
+    });
     Router.pushRoute('feed');
-  }
+  };
 
-  render () {
+  openClothingStylesModal = () => {
+    const { persistCurrentState } = this.props;
+
+    persistCurrentState();
+    this.setState({ isClothingStylesModalOpen: true });
+  };
+
+  closeClothingStylesModal = () => {
+    this.setState({ isClothingStylesModalOpen: false });
+  };
+
+  render() {
     const {
-      xPosition, xLength,
-      yPosition, yLength,
-      isDotsModalOpen, savingDot,
+      xPosition,
+      xLength,
+      yPosition,
+      yLength,
+      isDotsModalOpen,
+      savingDot,
       isClothingStylesModalOpen,
     } = this.state;
 
@@ -103,6 +117,9 @@ class EditPost extends Component {
       selectedClothingStyles,
       toggleStyleSelection,
       unselectStyle,
+      unselectAll,
+      persistCurrentState,
+      backToPersistedState,
       ...rest
     } = this.props;
 
@@ -120,9 +137,7 @@ class EditPost extends Component {
           picUrl={post.picUrl}
           postId={postId}
         />
-        <Mutation
-          mutation={Post.Mutations.ADD_DOT}
-        >
+        <Mutation mutation={Post.Mutations.ADD_DOT}>
           {addDot => (
             <DotsModal
               isOpen={isDotsModalOpen}
@@ -135,20 +150,22 @@ class EditPost extends Component {
         </Mutation>
         <ClothingStylesModal
           isOpen={isClothingStylesModalOpen}
-          close={() => this.setState({ isClothingStylesModalOpen: false })}
+          close={this.closeClothingStylesModal}
+          closeAndCancelSelection={() => {
+            backToPersistedState();
+            this.closeClothingStylesModal();
+          }}
           clothingStyles={clothingStyles}
           onStyleClick={toggleStyleSelection}
         />
         <div className="content">
           <p>¡Toca sobre la imagen para empezar a agregar tus prendas!</p>
           <StylesSelect
-            onClick={() => this.setState({ isClothingStylesModalOpen: true })}
+            onClick={this.openClothingStylesModal}
             handleDelete={unselectStyle}
             selectedClothingStyles={selectedClothingStyles}
           />
-          <Mutation
-            mutation={Post.Mutations.SET_CLOTHING_STYLES}
-          >
+          <Mutation mutation={Post.Mutations.SET_CLOTHING_STYLES}>
             {setClothingStyles => (
               <Button
                 className="save"
@@ -165,6 +182,5 @@ class EditPost extends Component {
     );
   }
 }
-
 
 export default withMainLayout(withClothingStyles(EditPost));

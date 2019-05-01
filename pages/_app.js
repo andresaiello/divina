@@ -23,7 +23,7 @@ const { ANALYTICS_TRACKING_ID } = publicRuntimeConfig;
 
 // @todo set 404
 
-const setOrientationChangeCallback = (onNewOrientation) => {
+const setOrientationChangeCallback = onNewOrientation => {
   if ('onorientationchange' in window) {
     window.onorientationchange = () => {
       if ('orientation' in window) {
@@ -34,7 +34,7 @@ const setOrientationChangeCallback = (onNewOrientation) => {
 };
 
 class MyApp extends App {
-  static async getInitialProps ({ Component, router, ctx }) {
+  static async getInitialProps({ Component, router, ctx }) {
     let pageProps = {};
 
     if (Component.getInitialProps) {
@@ -50,12 +50,16 @@ class MyApp extends App {
   pageContext = getPageContext();
 
   uploadPicture = (data, callback) => {
-    this.setState(({ pictureUploadContext }) => ({
-      pictureUploadContext: {
-        ...pictureUploadContext, ...data,
-      },
-    }), callback);
-  }
+    this.setState(
+      ({ pictureUploadContext }) => ({
+        pictureUploadContext: {
+          ...pictureUploadContext,
+          ...data,
+        },
+      }),
+      callback,
+    );
+  };
 
   state = {
     secContext: {
@@ -73,21 +77,22 @@ class MyApp extends App {
     validOrientation: true,
   };
 
-  updateUserState = async () => fetchWrapper('/api/user')
-    .then((user) => {
-      this.setState(({ secContext }) => ({ secContext: { ...secContext, user } }));
-    })
-    .catch((error) => {
-      this.setState(({ secContext }) => ({ secContext: { ...secContext, user: null } }));
-      console.log(error);
-    })
+  updateUserState = async () =>
+    fetchWrapper('/api/user')
+      .then(user => {
+        this.setState(({ secContext }) => ({ secContext: { ...secContext, user } }));
+      })
+      .catch(error => {
+        this.setState(({ secContext }) => ({ secContext: { ...secContext, user: null } }));
+        console.log(error);
+      });
 
-  onNewOrientation = (newOrientation) => {
+  onNewOrientation = newOrientation => {
     if (newOrientation === 0) this.setState({ validOrientation: true });
     else this.setState({ validOrientation: false });
-  }
+  };
 
-  async componentDidMount () {
+  async componentDidMount() {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
     if (jssStyles && jssStyles.parentNode) {
@@ -112,11 +117,9 @@ class MyApp extends App {
     this.setState({ displayLoader: false });
   }
 
-  render () {
+  render() {
     const { Component, pageProps, apolloClient } = this.props;
-    const {
-      displayLoader, secContext, pictureUploadContext, validOrientation,
-    } = this.state;
+    const { displayLoader, secContext, pictureUploadContext, validOrientation } = this.state;
 
     return (
       <PictureUploadContext.Provider value={pictureUploadContext}>
@@ -133,17 +136,21 @@ class MyApp extends App {
               {/* MuiThemeProvider makes the theme available down the React
               tree thanks to React context. */}
               <ThemeProvider theme={this.pageContext.theme}>
-                <MuiThemeProvider theme={this.pageContext.theme} sheetsManager={this.pageContext.sheetsManager}>
+                <MuiThemeProvider
+                  theme={this.pageContext.theme}
+                  sheetsManager={this.pageContext.sheetsManager}
+                >
                   {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                   <CssBaseline />
                   {/* Pass pageContext to the _document though the renderPage enhancer
                 to render collected styles on server-side. */}
                   <ApolloProvider client={apolloClient}>
                     {displayLoader ? <LoadingScreen /> : null}
-                    {validOrientation
-                      ? <Component pageContext={this.pageContext} {...pageProps} />
-                      : <NonAllowedOrientation />
-                    }
+                    {validOrientation ? (
+                      <Component pageContext={this.pageContext} {...pageProps} />
+                    ) : (
+                      <NonAllowedOrientation />
+                    )}
                   </ApolloProvider>
                 </MuiThemeProvider>
               </ThemeProvider>

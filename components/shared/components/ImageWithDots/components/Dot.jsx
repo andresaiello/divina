@@ -8,20 +8,18 @@ const dotSize = '20';
 const StyledDot = styled.div`
   position: absolute;
   display: ${({ displayDot }) => (displayDot ? null : 'none')};
-  left: ${({ xPosition, containerWidth }) => `calc((${containerWidth}px * ${xPosition}) - ${dotSize}px / 2)`};
-  top: ${({ yPosition, containerHeight }) => `calc((${containerHeight}px * ${yPosition}) - ${dotSize}px / 2)`};
+  left: ${({ xPosition, containerWidth }) =>
+    `calc((${containerWidth}px * ${xPosition}) - ${dotSize}px / 2)`};
+  top: ${({ yPosition, containerHeight }) =>
+    `calc((${containerHeight}px * ${yPosition}) - ${dotSize}px / 2)`};
   height: ${dotSize}px;
   width: ${dotSize}px;
   background-color: ${({ color }) => color || DOT_DEFAULT_COLOR};
   border-radius: 50%;
 `;
 
-function Dot (props) {
-  return (
-    <StyledDot
-      {...props}
-    />
-  );
+function Dot(props) {
+  return <StyledDot {...props} />;
 }
 
 Dot.defaultProps = {

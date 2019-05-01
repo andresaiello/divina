@@ -9,20 +9,12 @@ import { Loader } from '~/components/shared';
 
 import Posts from './Posts';
 
-const StyledFeed = styled.div`
+const StyledFeed = styled.div``;
 
-`;
-
-function Feed (props) {
+function Feed(props) {
   return (
-    <Query
-      query={FeedGQL.Queries.GET_POSTS}
-      notifyOnNetworkStatusChange
-      variables={{ amount: 4 }}
-    >
-      {({
-        data, error, loading, refetch, networkStatus, fetchMore,
-      }) => {
+    <Query query={FeedGQL.Queries.GET_POSTS} notifyOnNetworkStatusChange variables={{ amount: 4 }}>
+      {({ data, error, loading, refetch, networkStatus, fetchMore }) => {
         let loader = null;
         let errorMessage = null;
         const { posts } = data || { posts: null };

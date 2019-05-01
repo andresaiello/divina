@@ -3,20 +3,23 @@ import propTypes from 'prop-types';
 import styled from 'styled-components';
 
 const Option = styled.div`
+  cursor: pointer;
   position: relative;
   user-select: none;
-  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  min-height: 85px;
 
   img {
+    filter: ${({ selected }) => (selected ? 'saturate(2) brightness(100%) contrast(44%)' : null)};
     border-radius: 5px;
-    filter: ${({ selected }) => (selected ? 'saturate(2) brightness(100%) contrast(44%)' : '')};
     max-height: 85px;
     object-fit: cover;
   }
 
   p {
     position: absolute;
-    color: white;
+    color: ${({ selected, theme }) => (selected ? `${theme.palette.secondary.main}` : 'white')};
     bottom: 10%;
     left: 27%;
     font-weight: bold;
@@ -24,30 +27,21 @@ const Option = styled.div`
     padding-bottom: 2px;
 
     &.background {
+      color: ${({ selected, theme }) => (selected ? `${theme.palette.secondary.main}` : 'black')};
       bottom: 7.5%;
       left: 12.5%;
       width: 75%;
       background-color: white;
-      color: black;
       border-radius: 4px;
       text-align: center;
     }
   }
 `;
 
-export default function StyleOption ({
-  imgSrc, styleName, selected, ...rest
-}) {
+export default function StyleOption({ imgSrc, styleName, selected, ...rest }) {
   return (
-    <Option
-      selected={selected}
-      {...rest}
-    >
-      <img
-        src={imgSrc}
-        width="100%"
-        alt="estilo"
-      />
+    <Option selected={selected} {...rest}>
+      <img src={imgSrc} width="100%" alt="estilo" />
       <p className="background">{styleName}</p>
     </Option>
   );

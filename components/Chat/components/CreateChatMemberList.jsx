@@ -1,7 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import {
-  ListItemAvatar, Avatar, List, Typography, ListItem, ListItemText,
+  ListItemAvatar,
+  Avatar,
+  List,
+  Typography,
+  ListItem,
+  ListItemText,
 } from '@material-ui/core';
 
 import SecContext from '~/context/secContext';
@@ -13,12 +18,11 @@ const StyledList = styled(List)`
     padding: 8px 0px 12px 0px;
     margin: 0px auto;
     width: 90%;
-    border-top: 1px solid #9B9B9B;
+    border-top: 1px solid #9b9b9b;
 
     :first-child {
       border: none;
     }
-
   }
 
   .avatar {
@@ -41,59 +45,55 @@ const StyledList = styled(List)`
 `;
 
 export default class CreateChatMemberList extends React.PureComponent {
-    static contextType = SecContext;
+  static contextType = SecContext;
 
+  render() {
+    const { elements, handleEditMembers, selectedMembers } = this.props;
+    const { user } = this.context;
+    const loggedUserId = user && user._id;
 
-    render () {
-      const { elements, handleEditMembers, selectedMembers } = this.props;
-      const { user } = this.context;
-      const loggedUserId = user && user._id;
-
-      return (
-        <StyledList>
-          {elements.map(({
-            _id, username, profilePic,
-          }) => (
-            <ListItem key={_id} className="item" alignItems="flex-start">
-              <ListItemAvatar>
-                <Avatar
-                  className="avatar"
-                  alt="avatar"
-                  src={profilePic}
-                  onClick={() => Router.pushRoute('profile', { username })}
-                />
-              </ListItemAvatar>
-              <ListItemText
-                className="textContainer"
-                primary={(
-                  <Link route="profile" params={{ username }} prefetch>
-                    <Typography className="text" component="p" color="textPrimary">
-                      {username}
-                    </Typography>
-                  </Link>
-            )}
+    return (
+      <StyledList>
+        {elements.map(({ _id, username, profilePic }) => (
+          <ListItem key={_id} className="item" alignItems="flex-start">
+            <ListItemAvatar>
+              <Avatar
+                className="avatar"
+                alt="avatar"
+                src={profilePic}
+                onClick={() => Router.pushRoute('profile', { username })}
               />
-              <Checkbox
-                // checked={this.state.selectedValue === 'd'}
-                checked={selectedMembers.includes(_id)}
-                onChange={() => handleEditMembers(_id)}
-                value={_id}
-                color="default"
-                name="radio-button"
-              />
-              {/* <FollowButton
+            </ListItemAvatar>
+            <ListItemText
+              className="textContainer"
+              primary={
+                <Link route="profile" params={{ username }} prefetch>
+                  <Typography className="text" component="p" color="textPrimary">
+                    {username}
+                  </Typography>
+                </Link>
+              }
+            />
+            <Checkbox
+              // checked={this.state.selectedValue === 'd'}
+              checked={selectedMembers.includes(_id)}
+              onChange={() => handleEditMembers(_id)}
+              value={_id}
+              color="default"
+              name="radio-button"
+            />
+            {/* <FollowButton
             className="button"
             isFollowing={followedByLoggedUser.isFollowing}
             author={loggedUserId}
             receiver={_id}
           /> */}
-            </ListItem>
-          ))}
-        </StyledList>
-      );
-    }
+          </ListItem>
+        ))}
+      </StyledList>
+    );
+  }
 }
-
 
 // CreateChatMemberList.propTypes = {
 //   elements: propTypes.arrayOf(propTypes.shape({

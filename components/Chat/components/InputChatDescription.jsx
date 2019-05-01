@@ -19,36 +19,40 @@ const InputChatDescription = class extends React.Component {
 
   state = {
     currentMsg: '',
-  }
+  };
 
-  editMsg = (event) => {
+  editMsg = event => {
     this.setState({ currentMsg: event.target.value });
   };
 
-  sendMsg = send => async (value) => {
+  sendMsg = send => async value => {
     const { selectedMembers } = this.props;
     const { user } = this.context;
     const variables = {
-      author: user._id, caption: value, picUrl: [], members: [user._id, ...selectedMembers],
+      author: user._id,
+      caption: value,
+      picUrl: [],
+      members: [user._id, ...selectedMembers],
     };
 
     await send({
       variables,
     });
     this.setState({ currentMsg: '' });
-  }
+  };
 
-  render () {
+  render() {
     const { currentMsg } = this.state;
 
     return (
       <StyledInputText>
-        <Mutation
-          mutation={CHAT_NEW_CHAT}
-        >
+        <Mutation mutation={CHAT_NEW_CHAT}>
           {(send, { data, loading, error }) => {
-            if (loading) return (<p>Creando chat...</p>);
-            if (data) { Router.pushRoute(`/chat/${data.createChatGroup._id}`); return (<p>Redirigiendo...</p>); }
+            if (loading) return <p>Creando chat...</p>;
+            if (data) {
+              Router.pushRoute(`/chat/${data.createChatGroup._id}`);
+              return <p>Redirigiendo...</p>;
+            }
 
             return (
               <div>
@@ -61,8 +65,6 @@ const InputChatDescription = class extends React.Component {
             );
           }}
         </Mutation>
-
-
       </StyledInputText>
     );
   }

@@ -2,30 +2,34 @@ import React, { Component } from 'react';
 
 import SecContext from '~/context/secContext';
 import { LoadingScreen } from '~/components/shared';
-import {
-  isServer, isLoggedIn, serverRedirect, clientRedirect,
-} from '~/util';
+import { isServer, isLoggedIn, serverRedirect, clientRedirect } from '~/util';
 
 /**
- * warning: this HOC works only for pages, (it implements getInitialProps)
+ * this HOC works only for pages, (it implements getInitialProps)
  */
-export default function withRequiredLogin (BaseComponent) {
+export default function withRequiredLogin(BaseComponent) {
   class Enhancer extends Component {
-    static async getInitialProps ({ query, req, res }) {
-      if (isServer()) {
-        if (!isLoggedIn(req.user)) serverRedirect('landing')(res);
+    static async getInitialProps(ctx) {
+      let BaseComponentInitialProps = {};
+
+      if (BaseComponent.getInitialProps) {
+        BaseComponentInitialProps = await BaseComponent.getInitialProps(ctx);
       }
 
-      return { ...query, user: req && req.user };
+      if (isServer()) {
+        if (!isLoggedIn(ctx.req.user)) serverRedirect('landing')(ctx.res);
+      }
+
+      return { ...BaseComponentInitialProps, user: ctx.req && ctx.req.user };
     }
 
     static contextType = SecContext;
 
     state = {
       loading: true,
-    }
+    };
 
-    componentDidMount () {
+    componentDidMount() {
       const { user } = this.context;
       // in case that the req came from the server (no context is set yet)
       const { user: userFromServer } = this.props;
@@ -34,13 +38,14 @@ export default function withRequiredLogin (BaseComponent) {
       else this.setState({ loading: false });
     }
 
-    render () {
+    render() {
       const { loading: loadingContext, user } = this.context;
       const { loading } = this.state;
 
-      return (loadingContext || loading || !user
-        ? <LoadingScreen withLayout />
-        : <BaseComponent {...this.props} />
+      return loadingContext || loading || !user ? (
+        <LoadingScreen withLayout />
+      ) : (
+        <BaseComponent {...this.props} />
       );
     }
   }

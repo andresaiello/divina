@@ -3,15 +3,17 @@ const User = require('./User');
 
 const { Schema } = mongoose;
 
-const chatGroupSchema = new Schema({
-  author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  picUrl: [{ type: String }],
-  caption: { type: String, default: '' },
-  members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+const chatGroupSchema = new Schema(
+  {
+    author: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    picUrl: [{ type: String }],
+    caption: { type: String, default: '' },
+    members: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  },
+  { timestamps: true },
+);
 
-}, { timestamps: true });
-
-chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, amount = 500 }) {
+chatGroupSchema.statics.getChatGroups = async function getChatGroups({ member, amount = 500 }) {
   // ask for 1 document more to check if there is another page
   // (the other option is to perform 2 queries)
   const checkNextPage = amount + 1;
@@ -31,18 +33,16 @@ chatGroupSchema.statics.getChatGroups = async function getChatGroups ({ member, 
   return { nodes, lastCursor, hasNextPage: documents.length === checkNextPage };
 };
 
-chatGroupSchema.statics.getById = async function getById (_id) {
-  const [chatGroup] = await this
-    .find({ _id })
+chatGroupSchema.statics.getById = async function getById(_id) {
+  const [chatGroup] = await this.find({ _id })
     .populate({ path: 'author', model: User })
     .populate({ path: 'members', model: User })
     .lean();
   return chatGroup;
 };
 
-chatGroupSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
-  const nodes = await this
-    .find({ author })
+chatGroupSchema.statics.getByAuthor = async function getByAuthor({ author }) {
+  const nodes = await this.find({ author })
     .populate({ path: 'author', model: User })
     .populate({ path: 'members', model: User })
     .lean()
@@ -51,13 +51,18 @@ chatGroupSchema.statics.getByAuthor = async function getByAuthor ({ author }) {
   return { nodes };
 };
 
-chatGroupSchema.statics.createChatGroup = async function createChatGroup ({
-  author, picUrl, caption, members,
+chatGroupSchema.statics.createChatGroup = async function createChatGroup({
+  author,
+  picUrl,
+  caption,
+  members,
 }) {
-  const { _id } = await this
-    .create({
-      author, picUrl, caption, members,
-    });
+  const { _id } = await this.create({
+    author,
+    picUrl,
+    caption,
+    members,
+  });
 
   const chatGroup = await this.getById(_id);
 

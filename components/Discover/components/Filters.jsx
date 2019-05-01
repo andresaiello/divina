@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Typography, Chip } from '@material-ui/core';
-import useClothingStyles from '~/Hooks/useClothingStyles';
+
+import { useClothingStylesPropTypes } from '~/Hooks/useClothingStyles';
 import { ClothingStylesModal } from '~/components/shared';
 
 const Container = styled.div`
@@ -29,25 +30,39 @@ const Filter = styled(Typography).attrs({
   && {
     display: inline-block;
     padding-bottom: 3px;
-    color: ${({ selected, theme }) => (selected ? theme.palette.primary.main : null)};
-    border-top: ${({ selected, theme }) => (selected ? `1px solid ${theme.palette.primary.main}` : '1px solid transparent')};
-    border-bottom: ${({ selected, theme }) => (selected ? `1px solid ${theme.palette.primary.main}` : '1px solid transparent')};
+    color: ${({ selected, theme }) => (selected ? theme.palette.secondary.main : null)};
+    border-top: ${({ selected, theme }) =>
+      selected ? `1px solid ${theme.palette.secondary.main}` : '1px solid transparent'};
+    border-bottom: ${({ selected, theme }) =>
+      selected ? `1px solid ${theme.palette.secondary.main}` : '1px solid transparent'};
   }
 `;
 
-export default function Filters ({ clothingStylesData }) {
+export default function Filters({ clothingStylesData }) {
   const [isClothingStylesModalOpen, setIsClothingStylesModalOpen] = useState(false);
   const {
-    clothingStyles, toggleStyleSelection, selectedClothingStyles, unselectStyle,
+    clothingStyles,
+    toggleStyleSelection,
+    selectedClothingStyles,
+    unselectStyle,
+    persistCurrentState,
+    backToPersistedState,
   } = clothingStylesData;
+
+  function closeAndCancelSelection() {
+    backToPersistedState();
+    setIsClothingStylesModalOpen(false);
+  }
+
+  function openClothingStylesModal() {
+    persistCurrentState();
+    setIsClothingStylesModalOpen(true);
+  }
 
   return (
     <Container>
       <div className="filters">
-        <Filter
-          onClick={() => setIsClothingStylesModalOpen(true)}
-          selected={selectedClothingStyles.length > 0}
-        >
+        <Filter onClick={openClothingStylesModal} selected={selectedClothingStyles.length > 0}>
           Estilos
         </Filter>
       </div>
@@ -64,6 +79,7 @@ export default function Filters ({ clothingStylesData }) {
       <ClothingStylesModal
         isOpen={isClothingStylesModalOpen}
         close={() => setIsClothingStylesModalOpen(false)}
+        closeAndCancelSelection={closeAndCancelSelection}
         clothingStyles={clothingStyles}
         onStyleClick={toggleStyleSelection}
       />
@@ -72,10 +88,5 @@ export default function Filters ({ clothingStylesData }) {
 }
 
 Filters.propTypes = {
-  clothingStylesData: propTypes.shape({
-    clothingStyles: propTypes.arrayOf(propTypes.shape({})).isRequired,
-    toggleStyleSelection: propTypes.func.isRequired,
-    selectedClothingStyles: propTypes.arrayOf(propTypes.shape({})).isRequired,
-    unselectStyle: propTypes.func.isRequired,
-  }).isRequired,
+  clothingStylesData: useClothingStylesPropTypes.isRequired,
 };

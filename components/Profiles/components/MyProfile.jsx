@@ -17,7 +17,7 @@ const StyledProfile = styled.article`
   }
 `;
 
-function MyProfile ({ profile, ...rest }) {
+function MyProfile({ profile, ...rest }) {
   const editProfile = (
     <Link route="editProfile" prefetch>
       <Button variant="outlined">editar</Button>

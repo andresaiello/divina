@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
-import {
-  Avatar, TextField, Grid, InputAdornment,
-} from '@material-ui/core';
+import { Avatar, TextField, Grid, InputAdornment } from '@material-ui/core';
 
 const Container = styled(Grid)`
   justify-content: space-around;
@@ -45,18 +43,23 @@ const StyledAdornment = styled(InputAdornment)`
     cursor: pointer;
     font-weight: bold;
     user-select: none;
-    color: #ABDBFF;
+    color: #abdbff;
   }
 
   &.isEnabled {
     p {
-      color: rgb(1,145,255);
+      color: rgb(1, 145, 255);
     }
   }
 `;
 
-function CommentInput ({
-  currentComment, editComment, savingComment, sendComment, userAvatar, ...rest
+function CommentInput({
+  currentComment,
+  editComment,
+  savingComment,
+  sendComment,
+  userAvatar,
+  ...rest
 }) {
   const isEnabled = currentComment.length > 0 && !savingComment;
 

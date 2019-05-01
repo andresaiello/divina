@@ -7,16 +7,14 @@ import { CreateChat } from '~/components/Chat';
 export default class extends React.Component {
   static contextType = SecContext;
 
-  static async getInitialProps ({ query }) {
+  static async getInitialProps({ query }) {
     return { ...query };
   }
 
-  render () {
+  render() {
     const { user } = this.context;
     if (!user || !user.username) return <div>Necesitás estar logueado</div>; // @todo: set better error
 
-    return (
-      <CreateChat />
-    );
+    return <CreateChat />;
   }
 }

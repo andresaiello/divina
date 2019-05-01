@@ -22,29 +22,26 @@ const InputText = class extends React.Component {
 
   state = {
     currentMsg: '',
-  }
+  };
 
-  editMsg = (event) => {
+  editMsg = event => {
     this.setState({ currentMsg: event.target.value });
   };
 
-  sendMsg = send => async (value) => {
+  sendMsg = send => async value => {
     const { chatGroupId } = this.props;
 
     await send({ variables: { chatGroupId, content: value } });
     this.setState({ currentMsg: '' });
-  }
+  };
 
-  render () {
+  render() {
     const { currentMsg } = this.state;
 
     return (
       <StyledInputText>
-        <Mutation
-          mutation={CHAT_NEW_MSG}
-        >
+        <Mutation mutation={CHAT_NEW_MSG}>
           {(send, { data, loading, error }) => (
-
             <MessageInput
               editMsg={this.editMsg}
               currentMsg={currentMsg}
@@ -52,8 +49,6 @@ const InputText = class extends React.Component {
             />
           )}
         </Mutation>
-
-
       </StyledInputText>
     );
   }

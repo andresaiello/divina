@@ -10,31 +10,31 @@ const { missing, checkOwnership } = require('../util');
 
 const typeDefs = gql`
   extend type Query {
-    comments (postId: String!): Comments
-    post (_id: String!): Post
-    posts (startingDate: String, amount: Int, username: String, clothingStyles: [String]): Posts
+    comments(postId: String!): Comments
+    post(_id: String!): Post
+    posts(startingDate: String, amount: Int, username: String, clothingStyles: [String]): Posts
   }
 
   extend type Mutation {
-    setClothingStyles (postId: String!, clothingStyles: [String]!): Post
-    addDot (
-      postId: String!,
-      xPosition: Float!,
-      yPosition: Float!,
-      title: String!,
-      brand: String!,
-      price: Int!,
-      currency: String!,
-      color: String!,
+    setClothingStyles(postId: String!, clothingStyles: [String]!): Post
+    addDot(
+      postId: String!
+      xPosition: Float!
+      yPosition: Float!
+      title: String!
+      brand: String!
+      price: Int!
+      currency: String!
+      color: String!
     ): Post
-    deleteDot (postId: String!, dotId: String!): Post
-    createPost (author: String!, caption: String!, picUrl: String!, picId: String!): Post
-    commentPost (postId: String!, author: String!, comment: String!): Comments
-    editPost (_id: String!, caption: String!): Post
-    deletePost (_id: String!): Post
-    likePost (postId: String!): LikeStatus
-    reportPost (postId: String!): Post
-    unlikePost (postId: String!): LikeStatus
+    deleteDot(postId: String!, dotId: String!): Post
+    createPost(author: String!, caption: String!, picUrl: String!, picId: String!): Post
+    commentPost(postId: String!, author: String!, comment: String!): Comments
+    editPost(_id: String!, caption: String!): Post
+    deletePost(_id: String!): Post
+    likePost(postId: String!): LikeStatus
+    reportPost(postId: String!): Post
+    unlikePost(postId: String!): LikeStatus
   }
 
   type Comment {
@@ -118,7 +118,11 @@ const resolvers = {
     },
   },
   Mutation: {
-    setClothingStyles: async (_, { postId, clothingStyles }, { loggedUser = missing('needLogin') }) => {
+    setClothingStyles: async (
+      _,
+      { postId, clothingStyles },
+      { loggedUser = missing('needLogin') },
+    ) => {
       const { _id, author } = await Post.getById(postId);
       checkOwnership(loggedUser, author);
 
@@ -136,13 +140,18 @@ const resolvers = {
 
       return Post.deleteDot({ postId, dotId });
     },
-    reportPost: async (_, { postId }, { loggedUser = missing('needLogin') }) => Post.report({
-      postId,
-      reporterId: loggedUser._id,
-    }),
-    createPost: async (_, { caption, picUrl, picId }, { loggedUser = missing('needLogin') }) => Post.createPost({
-      author: loggedUser._id, caption, picUrl, picId,
-    }),
+    reportPost: async (_, { postId }, { loggedUser = missing('needLogin') }) =>
+      Post.report({
+        postId,
+        reporterId: loggedUser._id,
+      }),
+    createPost: async (_, { caption, picUrl, picId }, { loggedUser = missing('needLogin') }) =>
+      Post.createPost({
+        author: loggedUser._id,
+        caption,
+        picUrl,
+        picId,
+      }),
     editPost: async (_, { _id, caption }, { loggedUser = missing('needLogin') }) => {
       const { author } = await Post.getById(_id);
       checkOwnership(loggedUser, author);
@@ -188,14 +197,15 @@ const resolvers = {
       const nodes = await PostComment.findByPost({ postId: _id });
       return { _id, nodes };
     },
-    clothingStyles: async (nonFormattedPost) => {
+    clothingStyles: async nonFormattedPost => {
       const { _id, clothingStyles } = nonFormattedPost;
 
-      const nodes = clothingStyles && clothingStyles.length ? clothingStyles.map(cs => ({ name: cs })) : [];
+      const nodes =
+        clothingStyles && clothingStyles.length ? clothingStyles.map(cs => ({ name: cs })) : [];
 
       return { _id, nodes };
     },
-    dots: async (nonFormattedPost) => {
+    dots: async nonFormattedPost => {
       const { _id, dots } = nonFormattedPost;
 
       return { _id, nodes: dots || [] };
@@ -204,23 +214,23 @@ const resolvers = {
       _id,
       nodes: await PostLikes.findByPost({ _id }),
     }),
-    liked: async ({ _id }, _, { loggedUser }) => (loggedUser && loggedUser._id
-      ? {
-        _id,
-        isLiked: await PostLikes.isPostLiked({ _id, author: loggedUser._id }),
-      }
-      : { _id: null, isLiked: false }
-    ),
-    authorFollowed: async ({ author }, _, { loggedUser }) => (loggedUser && loggedUser._id
-      ? {
-        _id: author._id,
-        isFollowing: await Followers.isFollowedBy({
-          owner: author._id,
-          followedBy: loggedUser && loggedUser._id,
-        }),
-      }
-      : { _id: author._id, isFollowing: false }
-    ),
+    liked: async ({ _id }, _, { loggedUser }) =>
+      loggedUser && loggedUser._id
+        ? {
+            _id,
+            isLiked: await PostLikes.isPostLiked({ _id, author: loggedUser._id }),
+          }
+        : { _id: null, isLiked: false },
+    authorFollowed: async ({ author }, _, { loggedUser }) =>
+      loggedUser && loggedUser._id
+        ? {
+            _id: author._id,
+            isFollowing: await Followers.isFollowedBy({
+              owner: author._id,
+              followedBy: loggedUser && loggedUser._id,
+            }),
+          }
+        : { _id: author._id, isFollowing: false },
   },
   Dot: {
     brand: async ({ brand }) => Brand.getById(brand),

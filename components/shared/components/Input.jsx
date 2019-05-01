@@ -10,7 +10,7 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-function Input ({ onChange, value }) {
+function Input({ onChange, value }) {
   return (
     <StyledTextField
       multiline

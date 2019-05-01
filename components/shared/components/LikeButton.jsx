@@ -13,16 +13,12 @@ const StyledIconButton = styled(IconButton)`
   }
 `;
 
-export default function LikeButton ({
-  className, author, postId, liked,
-}) {
+export default function LikeButton({ className, author, postId, liked }) {
   if (!author) return null;
 
   if (liked) {
     return (
-      <Mutation
-        mutation={Post.Mutations.UNLIKE}
-      >
+      <Mutation mutation={Post.Mutations.UNLIKE}>
         {(unlikePost, { data, loading, error }) => (
           <StyledIconButton
             className={className}
@@ -37,9 +33,7 @@ export default function LikeButton ({
   }
 
   return (
-    <Mutation
-      mutation={Post.Mutations.LIKE}
-    >
+    <Mutation mutation={Post.Mutations.LIKE}>
       {(likePost, { data, loading, error }) => (
         <StyledIconButton
           className={className}

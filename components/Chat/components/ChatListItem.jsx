@@ -9,8 +9,6 @@ import timeAgo from '~/lib/timeAgo';
 
 const StyledChatListItem = styled.div`
   && {
-
-    
     width: 100%;
     height: 72px;
     min-height: 72px;
@@ -20,18 +18,18 @@ const StyledChatListItem = styled.div`
     position: relative;
     color: rgb(74, 74, 74);
 
-    .avatar{
-        width: 55px;
-        height: 55px;
+    .avatar {
+      width: 55px;
+      height: 55px;
     }
 
-    .content{
+    .content {
       flex-grow: 1;
       height: 100%;
       margin: 0 25px 0 0;
     }
 
-    .caption{
+    .caption {
       color: rgb(1, 145, 255);
       font-size: 16px;
       font-weight: 600;
@@ -59,16 +57,18 @@ const StyledChatListItem = styled.div`
       position: absolute;
       right: 20px;
     }
-
   }
-
 `;
 
 const ChatListItem = class extends React.PureComponent {
-  render () {
+  render() {
     const {
       item: {
-        _id, caption, updatedAt, author, author: { username, profilePic },
+        _id,
+        caption,
+        updatedAt,
+        author,
+        author: { username, profilePic },
       },
     } = this.props;
 
@@ -81,19 +81,14 @@ const ChatListItem = class extends React.PureComponent {
             <div className="author">{username}</div>
             <Divider />
           </div>
-          <div className="updatedAt">
-            {timeAgo.format(parseInt(updatedAt, 10))}
-          </div>
+          <div className="updatedAt">{timeAgo.format(parseInt(updatedAt, 10))}</div>
           <KeyboardArrowRight />
         </StyledChatListItem>
       </Link>
-
-
     );
   }
 };
 
-ChatListItem.propTypes = {
-};
+ChatListItem.propTypes = {};
 
 export default ChatListItem;

@@ -21,7 +21,7 @@ const StyledMessageItem = styled.li`
       border-top-right-radius: 7.5px;
     }
 
-    .content{
+    .content {
       flex-grow: 1;
       height: 100%;
       margin: 0 27px 13px 27px;
@@ -29,16 +29,16 @@ const StyledMessageItem = styled.li`
       border-radius: 7.5px;
       opacity: 0.8;
     }
-    
+
     .createdAt {
       position: absolute;
       right: 35px;
       bottom: 23px;
-      color: rgb(74, 74,74);
+      color: rgb(74, 74, 74);
       font-size: 12px;
     }
 
-    .avatar{
+    .avatar {
       width: 30px;
       height: 30px;
       top: 0;
@@ -48,10 +48,10 @@ const StyledMessageItem = styled.li`
       z-index: 1;
     }
 
-    .self{
+    .self {
       text-align: right;
 
-      .avatar{
+      .avatar {
         right: 7px;
         left: initial;
       }
@@ -59,7 +59,7 @@ const StyledMessageItem = styled.li`
       .author {
         padding: 0 35px 0 0;
       }
-      .content{
+      .content {
         background-color: rgb(248, 231, 28);
       }
       .createdAt {
@@ -67,29 +67,28 @@ const StyledMessageItem = styled.li`
         left: 35px;
       }
     }
-
   }
-
 `;
-
 
 const MessageItem = class extends React.PureComponent {
   static contextType = SecContext;
 
-  render () {
+  render() {
     const { user } = this.context;
 
     const {
       message: {
-        createdAt, content, author, author: { username },
+        createdAt,
+        content,
+        author,
+        author: { username },
       },
     } = this.props;
     const created = format(new Date(parseInt(createdAt, 10)), 'HH:mm');
 
-
     return (
       <StyledMessageItem>
-        <div className={(username === user.username) ? 'self' : 'friend'}>
+        <div className={username === user.username ? 'self' : 'friend'}>
           <Avatar user={author} />
           <div className="content">
             <div className="author">{username}</div>
@@ -101,6 +100,5 @@ const MessageItem = class extends React.PureComponent {
     );
   }
 };
-
 
 export default MessageItem;

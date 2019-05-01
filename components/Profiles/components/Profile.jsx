@@ -9,10 +9,9 @@ import { FollowButton } from '~/components/shared';
 import PhotoGrid from './PhotoGrid';
 import ProfileInfo from './ProfileInfo';
 
-const StyledProfile = styled.article`
-`;
+const StyledProfile = styled.article``;
 
-function Profile ({ profile = {}, ...rest }) {
+function Profile({ profile = {}, ...rest }) {
   if (!profile.user) return <div>El perfil no existe!</div>; // @todo set better error
   const secContext = useContext(SecContext);
 
@@ -21,13 +20,13 @@ function Profile ({ profile = {}, ...rest }) {
   return (
     <StyledProfile {...rest}>
       <ProfileInfo
-        action={(
+        action={
           <FollowButton
             author={secContext.user && secContext.user._id}
             receiver={profile.user && profile.user._id}
             isFollowing={profile.authorFollowed && profile.authorFollowed.isFollowing}
           />
-        )}
+        }
         followersCount={profile.followersCount}
         followingCount={profile.followingCount}
         postsCount={profile.postsCount}
@@ -38,8 +37,6 @@ function Profile ({ profile = {}, ...rest }) {
   );
 }
 
-Profile.propTypes = {
-
-};
+Profile.propTypes = {};
 
 export default withMainLayout(Profile);

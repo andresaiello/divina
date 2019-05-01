@@ -34,7 +34,7 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
-function HeadAppBar (props) {
+function HeadAppBar(props) {
   return (
     <StyledAppBar position="static" {...props}>
       <Toolbar className="toolbar">
@@ -42,9 +42,13 @@ function HeadAppBar (props) {
           icon={<img width="32" src="/static/pinkBlackLogo.png" alt="Cámara" />}
         />
         <Typography variant="h5" color="inherit" className="disable-select">
-          <Link route="/feed" prefetch><a>Divina</a></Link>
+          <Link route="/feed" prefetch>
+            <a>Divina</a>
+          </Link>
         </Typography>
-        <img width="32" src="/static/ShopBag.svg" alt="ShopBag" />
+        <Link route="/discover" prefetch>
+          <img width="26" src="/static/ShopBag.svg" alt="ShopBag" />
+        </Link>
       </Toolbar>
     </StyledAppBar>
   );

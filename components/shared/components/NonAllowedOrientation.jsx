@@ -9,10 +9,6 @@ const Container = styled.div`
   align-items: center;
 `;
 
-export default function NonAllowedOrientation () {
-  return (
-    <Container>
-      Por favor, rota tu móvil para una mejor experiencia usando la app.
-    </Container>
-  );
+export default function NonAllowedOrientation() {
+  return <Container>Por favor, rota tu móvil para una mejor experiencia usando la app.</Container>;
 }

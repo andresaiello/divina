@@ -10,20 +10,18 @@ class ChatPage extends React.Component {
 
   static propTypes = {
     chatGroupId: propTypes.string.isRequired,
-  }
+  };
 
-  static async getInitialProps ({ query }) {
+  static async getInitialProps({ query }) {
     return { ...query };
   }
 
-  render () {
+  render() {
     const { chatGroupId } = this.props;
     const { user } = this.context;
     const { loading } = this.state;
 
-    return (
-      <Chat chatGroupId={chatGroupId} />
-    );
+    return <Chat chatGroupId={chatGroupId} />;
   }
 }
 

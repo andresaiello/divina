@@ -6,7 +6,7 @@ import PictureUploadContext from '~/context/PictureUploadContext';
 import router, { Router } from '~/server/routes';
 
 export default class extends React.Component {
-  static async getInitialProps ({ query, res }) {
+  static async getInitialProps({ query, res }) {
     // allow the user to access this route only from the client
     if (!process.browser) {
       res.writeHead(302, { Location: router.findByName('feed').toPath() });
@@ -18,15 +18,15 @@ export default class extends React.Component {
 
   static contextType = PictureUploadContext;
 
-  componentDidMount () {
+  componentDidMount() {
     const { src } = this.context;
 
     if (!src) Router.pushRoute('feed');
   }
 
-  render () {
+  render() {
     if (!this.context.src) return null;
 
-    return <UploadPicture {...{ ...this.context }} />;
+    return <UploadPicture hideFooter {...{ ...this.context }} />;
   }
 }

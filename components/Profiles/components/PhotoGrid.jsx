@@ -24,13 +24,10 @@ const StyledPhotoGrid = styled.div`
   }
 `;
 
-export default function PhotoGrid ({ userId, username }) {
+export default function PhotoGrid({ userId, username }) {
   // @todo case: user has no posts
   return (
-    <Query
-      query={Profile.Queries.GET_POSTS}
-      variables={{ _id: userId }}
-    >
+    <Query query={Profile.Queries.GET_POSTS} variables={{ _id: userId }}>
       {({ data, loading, error }) => {
         // @todo set a good error message
         if (error) return <div>Hubo un error</div>;
@@ -41,22 +38,20 @@ export default function PhotoGrid ({ userId, username }) {
         // @todo: better empty message
         if (!profilePosts || profilePosts.length === 0) {
           return (
-            <div style={{ textAlign: 'center' }}>
-              Este usuario todavía no subió ninguna foto!
-            </div>
+            <div style={{ textAlign: 'center' }}>Este usuario todavía no subió ninguna foto!</div>
           );
         }
 
         return (
           <StyledPhotoGrid>
             {profilePosts.map(post => (
-              <Link route="pictureDetails" params={{ username, postId: post._id }} key={post._id} prefetch>
-                <Image
-                  className="cardPic"
-                  fitCover
-                  src={post.picUrl}
-                  alt="Foto de perfil"
-                />
+              <Link
+                route="pictureDetails"
+                params={{ username, postId: post._id }}
+                key={post._id}
+                prefetch
+              >
+                <Image className="cardPic" fitCover src={post.picUrl} alt="Foto de perfil" />
               </Link>
             ))}
           </StyledPhotoGrid>

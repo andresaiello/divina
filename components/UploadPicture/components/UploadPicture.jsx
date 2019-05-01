@@ -30,63 +30,69 @@ class UploadPicture extends Component {
     src: propTypes.string.isRequired,
     width: propTypes.number.isRequired,
     height: propTypes.number.isRequired,
-  }
+  };
 
   state = {
     uploading: false,
     caption: '',
     base64Img: this.props.height === this.props.width ? this.props.src : null,
-  }
+  };
 
-  updatePicture = (base64Img) => {
+  updatePicture = base64Img => {
     this.setState({ base64Img });
-  }
+  };
 
-  editCaption = (e) => {
-    const { target: { value } } = e;
+  editCaption = e => {
+    const {
+      target: { value },
+    } = e;
     this.setState({ caption: value });
-  }
+  };
 
   uploadToImageServer = async () => {
     const { user } = this.context;
     const { base64Img } = this.state;
 
     return base64ToCloudinary(base64Img, [user._id, user.name, user.username]);
-  }
+  };
 
-  render () {
+  render() {
     const { user } = this.context;
-    const {
-      src, width, height, ...rest
-    } = this.props;
+    const { src, width, height, ...rest } = this.props;
     const { caption, uploading } = this.state;
 
     if (uploading) return <LoadingScreen />;
 
     return (
-      <Mutation
-        mutation={Post.Mutations.CREATE}
-      >
+      <Mutation mutation={Post.Mutations.CREATE}>
         {createPost => (
           <Container {...rest}>
-            {height === width
-              ? <Image src={src} alt="Post" />
-              : <PictureCrop updatePicture={this.updatePicture} {...{ src, width, height }} />
-            }
-            <Input
-              onChange={this.editCaption}
-              value={caption}
-            />
+            {height === width ? (
+              <Image src={src} alt="Post" />
+            ) : (
+              <PictureCrop updatePicture={this.updatePicture} {...{ src, width, height }} />
+            )}
+            <Input onChange={this.editCaption} value={caption} />
             <Button
               className="save"
               color="primary"
               onClick={async () => {
                 this.setState({ uploading: true }, async () => {
                   try {
-                    const { public_id: picId, secure_url: picUrl } = await this.uploadToImageServer();
-                    const { data: { createPost: { _id } } } = await createPost({
+                    const {
+                      public_id: picId,
+                      secure_url: picUrl,
+                    } = await this.uploadToImageServer();
+                    const {
+                      data: {
+                        createPost: { _id },
+                      },
+                    } = await createPost({
                       variables: {
-                        author: user._id, caption, picUrl, picId,
+                        author: user._id,
+                        caption,
+                        picUrl,
+                        picId,
                       },
                     });
 

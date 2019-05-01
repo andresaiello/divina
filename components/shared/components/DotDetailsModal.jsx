@@ -1,13 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
-import {
-  Typography, Modal, Button,
-} from '@material-ui/core';
+import { Typography, Modal, Button } from '@material-ui/core';
 import { formatPrice } from '~/util';
 import { POST_MAX_WIDTH } from '~/constants';
 
-function getModalStyle () {
+function getModalStyle() {
   const top = 63;
 
   return {
@@ -33,7 +31,8 @@ const StyledModal = styled(Modal)`
       max-width: ${POST_MAX_WIDTH}px;
       background-color: white;
       padding: 10px;
-      box-shadow: 0px 3px 5px -1px rgba(0,0,0,.2), 0px 5px 8px 0px rgba(0,0,0,.14), 0px 1px 14px 0px rgba(0,0,0,.12);
+      box-shadow: 0px 3px 5px -1px rgba(0, 0, 0, 0.2), 0px 5px 8px 0px rgba(0, 0, 0, 0.14),
+        0px 1px 14px 0px rgba(0, 0, 0, 0.12);
       outline: none;
 
       .price {
@@ -50,9 +49,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-function DotDetailsModal ({
-  isOpen, onClose, container, dotData,
-}) {
+function DotDetailsModal({ isOpen, onClose, container, dotData }) {
   if (!dotData || !dotData.price) return null;
 
   return (
@@ -77,10 +74,7 @@ function DotDetailsModal ({
           rel="noopener noreferrer"
           href={dotData.brand.website}
         >
-          <Button
-            variant="outlined"
-            className="button"
-          >
+          <Button variant="outlined" className="button">
             Comprar
           </Button>
         </a>

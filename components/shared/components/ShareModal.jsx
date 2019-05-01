@@ -10,23 +10,23 @@ import SecContext from '~/context/secContext';
 
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import {
-  FaFacebookF, FaWhatsapp, FaTwitter, FaEnvelope,
-} from 'react-icons/fa';
+import { FaFacebookF, FaWhatsapp, FaTwitter, FaEnvelope } from 'react-icons/fa';
 
 import getConfig from 'next/config';
 
 import {
-  FacebookShareButton, WhatsappShareButton, TwitterShareButton, EmailShareButton,
+  FacebookShareButton,
+  WhatsappShareButton,
+  TwitterShareButton,
+  EmailShareButton,
 } from 'react-share';
 
 const { publicRuntimeConfig } = getConfig();
 const { SERVER_URL } = publicRuntimeConfig;
 
-
 const StyledDialog = styled(Dialog)`
   && {
-    div+div{
+    div + div {
       overflow-x: hidden;
     }
 
@@ -35,11 +35,11 @@ const StyledDialog = styled(Dialog)`
     }
 
     #share-title {
-      border-bottom: 1px solid #EFEFEF;
+      border-bottom: 1px solid #efefef;
     }
 
     #share-title h6 {
-      font-family: Roboto,Helvetica,Arial,sans-serif;
+      font-family: Roboto, Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: 600;
       line-height: 24px;
@@ -60,7 +60,7 @@ const StyledDialog = styled(Dialog)`
     }
 
     .avatar-whatsapp {
-      background-color: #25D366;
+      background-color: #25d366;
     }
 
     .avatar-twitter {
@@ -68,7 +68,6 @@ const StyledDialog = styled(Dialog)`
     }
 
     .avatar-email {
-
     }
 
     .cancel-button span {
@@ -89,10 +88,8 @@ class ShareModal extends Component {
     close: propTypes.func.isRequired,
   };
 
-  render () {
-    const {
-      isOpen, postId, close, username,
-    } = this.props;
+  render() {
+    const { isOpen, postId, close, username } = this.props;
     const { user } = this.context;
     const url = `${SERVER_URL}/foto/${username}/${postId}`;
     const shareText = `Ver esta foto de Divina de ${username}`;
@@ -118,11 +115,7 @@ class ShareModal extends Component {
                 <ListItemText primary="Compartir en Facebook" />
               </ListItem>
             </FacebookShareButton>
-            <WhatsappShareButton
-              url={url}
-              title={shareText}
-              className="share-link"
-            >
+            <WhatsappShareButton url={url} title={shareText} className="share-link">
               <ListItem button>
                 <ListItemAvatar>
                   <Avatar className="avatar-whatsapp">
@@ -132,11 +125,7 @@ class ShareModal extends Component {
                 <ListItemText primary="Compartir en Whatsapp" />
               </ListItem>
             </WhatsappShareButton>
-            <TwitterShareButton
-              url={url}
-              title={shareText}
-              className="share-link"
-            >
+            <TwitterShareButton url={url} title={shareText} className="share-link">
               <ListItem button>
                 <ListItemAvatar>
                   <Avatar className="avatar-twitter">

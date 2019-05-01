@@ -2,9 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import { Toolbar, Typography, IconButton } from '@material-ui/core';
-import {
-  Favorite, Visibility, Comment as AddComment, Share,
-} from '@material-ui/icons';
+import { Favorite, Visibility, Comment as AddComment, Share } from '@material-ui/icons';
 import { LikeButton } from '~/components/shared';
 
 const StyledSubBar = styled(Toolbar)`
@@ -58,28 +56,17 @@ const StyledLikeButton = styled(LikeButton)`
   }
 `;
 
-export default function SubBar ({
-  caption, likes, postId, loggedUserId, liked, openShareModal,
-}) {
+export default function SubBar({ caption, likes, postId, loggedUserId, liked, openShareModal }) {
   return (
     <StyledSubBar>
-      <Typography component="p">
-        {caption}
-      </Typography>
+      <Typography component="p">{caption}</Typography>
       <div className="info">
         <div className="actions">
-          <StyledLikeButton
-            liked={liked}
-            author={loggedUserId}
-            postId={postId}
-          />
+          <StyledLikeButton liked={liked} author={loggedUserId} postId={postId} />
           {/* <StyledIconButton aria-label="Comment">
             <AddComment />
           </StyledIconButton> */}
-          <StyledIconButton
-            aria-label="Share"
-            onClick={openShareModal}
-          >
+          <StyledIconButton aria-label="Share" onClick={openShareModal}>
             <Share />
           </StyledIconButton>
         </div>
@@ -104,9 +91,11 @@ SubBar.propTypes = {
   caption: propTypes.string.isRequired,
   likes: propTypes.shape({
     _id: propTypes.string.isRequired,
-    nodes: propTypes.arrayOf(propTypes.shape({
-      username: propTypes.string,
-      profilePic: propTypes.string,
-    })).isRequired,
+    nodes: propTypes.arrayOf(
+      propTypes.shape({
+        username: propTypes.string,
+        profilePic: propTypes.string,
+      }),
+    ).isRequired,
   }).isRequired,
 };

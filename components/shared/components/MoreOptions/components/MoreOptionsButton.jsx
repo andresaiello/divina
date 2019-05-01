@@ -6,15 +6,13 @@ import { MoreHoriz } from '@material-ui/icons';
 
 const StyledIconButton = styled(IconButton)`
   && {
-    padding: 24px 12px 0px 12px;
+    padding: 12px 12px 8px 12px;
   }
 `;
 
-export default function MoreOptionsButton ({ openModal }) {
+export default function MoreOptionsButton({ openModal }) {
   return (
-    <StyledIconButton
-      onClick={openModal}
-    >
+    <StyledIconButton onClick={openModal}>
       <MoreHoriz />
     </StyledIconButton>
   );

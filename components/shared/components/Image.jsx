@@ -3,16 +3,24 @@ import propTypes from 'prop-types';
 import ReactImage from 'react-image';
 import Loader from './Loader';
 
-const Image = ({
-  className, withLoader, fitCover, width, height, ...rest
-}) => (
+const Image = ({ className, withLoader, fitCover, width, height, ...rest }) => (
   <ReactImage
     className={className}
     loader={withLoader ? <Loader className={className} {...{ height, width }} /> : null}
-    unloader={<img className={className} src="/static/imageNotFound.png" width="100%" alt="Not found" />}
+    unloader={
+      <img
+        className={className}
+        style={{ objectFit: 'cover' }}
+        src="/static/imageNotFound.png"
+        width="100%"
+        alt="Not found"
+      />
+    }
     style={fitCover ? { objectFit: 'cover' } : {}}
     {...{
-      height, width, ...rest,
+      height,
+      width,
+      ...rest,
     }}
   />
 );
@@ -30,14 +38,16 @@ Image.propTypes = {
   height: ({ withLoader, ...rest }, propName) => {
     if (withLoader) {
       return rest[propName]
-        ? null : new Error(`The prop ${propName} is required when using withLoader`);
+        ? null
+        : new Error(`The prop ${propName} is required when using withLoader`);
     }
     return null;
   },
   width: ({ withLoader, ...rest }, propName) => {
     if (withLoader) {
       return rest[propName]
-        ? null : new Error(`The prop ${propName} is required when using withLoader`);
+        ? null
+        : new Error(`The prop ${propName} is required when using withLoader`);
     }
     return null;
   },

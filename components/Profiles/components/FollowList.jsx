@@ -2,7 +2,12 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import {
-  ListItemAvatar, Avatar, List, Typography, ListItem, ListItemText,
+  ListItemAvatar,
+  Avatar,
+  List,
+  Typography,
+  ListItem,
+  ListItemText,
 } from '@material-ui/core';
 
 import SecContext from '~/context/secContext';
@@ -14,12 +19,11 @@ const StyledList = styled(List)`
     padding: 8px 0px 12px 0px;
     margin: 0px auto;
     width: 90%;
-    border-top: 1px solid #9B9B9B;
+    border-top: 1px solid #9b9b9b;
 
     :first-child {
       border: none;
     }
-
   }
 
   .avatar {
@@ -41,16 +45,14 @@ const StyledList = styled(List)`
   }
 `;
 
-export default function FollowList ({ elements }) {
+export default function FollowList({ elements }) {
   const context = useContext(SecContext);
 
   const loggedUserId = context.user && context.user._id;
 
   return (
     <StyledList>
-      {elements.map(({
-        _id, username, profilePic, followedByLoggedUser,
-      }) => (
+      {elements.map(({ _id, username, profilePic, followedByLoggedUser }) => (
         <ListItem key={_id} className="item" alignItems="flex-start">
           <ListItemAvatar>
             <Avatar
@@ -62,13 +64,13 @@ export default function FollowList ({ elements }) {
           </ListItemAvatar>
           <ListItemText
             className="textContainer"
-            primary={(
+            primary={
               <Link route="profile" params={{ username }} prefetch>
                 <Typography className="text" component="p" color="textPrimary">
                   {username}
                 </Typography>
               </Link>
-            )}
+            }
           />
           <FollowButton
             className="button"
@@ -82,11 +84,12 @@ export default function FollowList ({ elements }) {
   );
 }
 
-
 FollowList.propTypes = {
-  elements: propTypes.arrayOf(propTypes.shape({
-    _id: propTypes.string.isRequired,
-    username: propTypes.string.isRequired,
-    profilePic: propTypes.string.isRequired,
-  })).isRequired,
+  elements: propTypes.arrayOf(
+    propTypes.shape({
+      _id: propTypes.string.isRequired,
+      username: propTypes.string.isRequired,
+      profilePic: propTypes.string.isRequired,
+    }),
+  ).isRequired,
 };

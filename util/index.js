@@ -5,11 +5,11 @@ import imageFileToBase64 from 'image-file-to-base64-exif';
 const { publicRuntimeConfig } = getConfig();
 const { CLOUDINARY_UPLOAD_URL, CLOUDINARY_PRESET } = publicRuntimeConfig;
 
-export const fetchWrapper = async (url, options = { headers: {} }) => fetch(url, {
-  ...options,
-  headers: { ...options.headers, 'Access-Control-Allow-Origin': '*' },
-})
-  .then((response) => {
+export const fetchWrapper = async (url, options = { headers: {} }) =>
+  fetch(url, {
+    ...options,
+    headers: { ...options.headers, 'Access-Control-Allow-Origin': '*' },
+  }).then(response => {
     if (response.status >= 200 && response.status < 300) {
       const contentType = response.headers.get('content-type');
 
@@ -38,9 +38,10 @@ export const formatPrice = (price, currency) => {
   }
 };
 
-const base64ToFile = async base64Img => fetch(base64Img)
-  .then(res => res.blob())
-  .then(blob => new File([blob], 'image'));
+const base64ToFile = async base64Img =>
+  fetch(base64Img)
+    .then(res => res.blob())
+    .then(blob => new File([blob], 'image'));
 
 const createCloudinaryForm = (file, tags = []) => {
   const formData = new FormData();
@@ -54,14 +55,15 @@ const createCloudinaryForm = (file, tags = []) => {
   return formData;
 };
 
-const uploadToCloudinary = async formData => fetch(CLOUDINARY_UPLOAD_URL, {
-  method: 'POST',
-  body: formData,
-})
-  .then(response => response.json())
-  // eslint-disable-next-line
+const uploadToCloudinary = async formData =>
+  fetch(CLOUDINARY_UPLOAD_URL, {
+    method: 'POST',
+    body: formData,
+  })
+    .then(response => response.json())
+    // eslint-disable-next-line
   .then(({ public_id, secure_url }) => ({ public_id, secure_url }));
-  // @todo: do something when the upload fails
+// @todo: do something when the upload fails
 
 export const base64ToCloudinary = async (base64Img, tags) => {
   const file = await base64ToFile(base64Img);
@@ -69,23 +71,26 @@ export const base64ToCloudinary = async (base64Img, tags) => {
   return uploadToCloudinary(formData);
 };
 
-export const readImageAsBase64 = async image => new Promise(async (resolve, reject) => {
-  const base64Img = await imageFileToBase64(image);
-  const img = new Image();
-  img.src = base64Img;
-  img.onload = async () => {
-    resolve({ base64Img: img.src, width: img.width, height: img.height });
-  };
+export const readImageAsBase64 = async image =>
+  new Promise(async (resolve, reject) => {
+    const base64Img = await imageFileToBase64(image);
+    const img = new Image();
+    img.src = base64Img;
+    img.onload = async () => {
+      resolve({ base64Img: img.src, width: img.width, height: img.height });
+    };
 
-  if (!image) reject(new Error('No image provided'));
-});
+    if (!image) reject(new Error('No image provided'));
+  });
 
-export const serverRedirect = routeName => (res) => {
+export const serverRedirect = routeName => res => {
   res.writeHead(302, { Location: router.findByName(routeName).toPath() });
   res.end();
 };
 
-export const clientRedirect = (routeName) => { Router.pushRoute(routeName); };
+export const clientRedirect = routeName => {
+  Router.pushRoute(routeName);
+};
 
 export const isServer = () => !process.browser;
 

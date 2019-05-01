@@ -1,13 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import {
-  Fab,
-  AppBar,
-  Toolbar,
-  CircularProgress,
-  IconButton,
-} from '@material-ui/core';
+import { Fab, AppBar, Toolbar, CircularProgress, IconButton } from '@material-ui/core';
 import {
   ChatBubbleOutline as Chat,
   Search as SearchIcon,
@@ -66,7 +60,7 @@ class BottomAppBar extends Component {
     uploading: false,
   };
 
-  render () {
+  render() {
     const { uploading } = this.state;
 
     return (

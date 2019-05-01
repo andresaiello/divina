@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Tooltip as MuiTooltip } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-function arrowGenerator (color) {
+function arrowGenerator(color) {
   return {
     '&[x-placement*="bottom"] $arrow': {
       top: 0,
@@ -100,19 +100,19 @@ const Content = styled.div`
   }
 `;
 
-export default function Tooltip ({ children, content, ...rest }) {
+export default function Tooltip({ children, content, ...rest }) {
   const classes = useStyles();
   const [arrowRef, setArrowRef] = React.useState(null);
 
   return (
     <MuiTooltip
       interactive
-      title={(
+      title={
         <Content>
           {content}
           <span className={classes.arrow} ref={setArrowRef} />
         </Content>
-      )}
+      }
       classes={{
         tooltip: classes.bootstrapTooltip,
         popper: classes.bootstrapPopper,

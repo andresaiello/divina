@@ -9,31 +9,23 @@ import { EditPost as EditPostGQL } from '~/lib/graphql';
 export default class extends Component {
   static propTypes = {
     postId: propTypes.string.isRequired,
-  }
+  };
 
-  static async getInitialProps ({ query }) {
+  static async getInitialProps({ query }) {
     return { ...query };
   }
 
-  render () {
+  render() {
     const { postId } = this.props;
 
     return (
-      <Query
-        query={EditPostGQL.Queries.GET_POST}
-        variables={{ _id: postId }}
-      >
+      <Query query={EditPostGQL.Queries.GET_POST} variables={{ _id: postId }}>
         {({ data, loading, error }) => {
           if (loading) return <Loader />;
           if (error) return <div>Error!</div>; // @todo: better error message
           if (!data.post || !data.post.picUrl) return <div>No existe!</div>; // @todo: better error message
 
-          return (
-            <EditPost
-              postId={postId}
-              post={data.post}
-            />
-          );
+          return <EditPost postId={postId} post={data.post} />;
         }}
       </Query>
     );

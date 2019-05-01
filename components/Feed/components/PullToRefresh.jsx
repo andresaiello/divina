@@ -3,9 +3,8 @@ import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { CircularProgress } from '@material-ui/core';
 
-
 class Pullable extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
 
     this.clearTouchStatus();
@@ -16,13 +15,13 @@ class Pullable extends React.Component {
     };
   }
 
-  componentDidMount () {
+  componentDidMount() {
     window.addEventListener('touchstart', this.onTouchStart);
     window.addEventListener('touchmove', this.onTouchMove, { passive: false });
     window.addEventListener('touchend', this.onTouchEnd);
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     window.removeEventListener('touchstart', this.onTouchStart);
     window.removeEventListener('touchmove', this.onTouchMove, { passive: false });
     window.removeEventListener('touchend', this.onTouchEnd);
@@ -39,7 +38,7 @@ class Pullable extends React.Component {
     this.ignoreTouches = false;
   };
 
-  onTouchStart = (e) => {
+  onTouchStart = e => {
     if (this.props.disabled || this.ignoreTouches) return;
 
     if (this.state.status === 'ready' && this.props.shouldPullToRefresh()) {
@@ -49,7 +48,7 @@ class Pullable extends React.Component {
     }
   };
 
-  onTouchMove = (e) => {
+  onTouchMove = e => {
     if (this.props.disabled || this.ignoreTouches || this.pullStartY === null) return;
 
     this.pullMoveY = e.touches[0].screenY;
@@ -66,7 +65,7 @@ class Pullable extends React.Component {
     }
   };
 
-  onTouchEnd = (e) => {
+  onTouchEnd = e => {
     if (this.props.disabled || this.ignoreTouches) return;
 
     if (this.state.status === 'pulling') {
@@ -96,10 +95,8 @@ class Pullable extends React.Component {
     }, delay);
   };
 
-  render () {
-    const {
-      className, centerSpinner, resetDuration, resetEase, children,
-    } = this.props;
+  render() {
+    const { className, centerSpinner, resetDuration, resetEase, children } = this.props;
     const { status, height } = this.state;
     const shouldReset = status === 'pullAborted' || status === 'refreshCompleted';
 
@@ -107,7 +104,12 @@ class Pullable extends React.Component {
       <React.Fragment>
         <Container
           {...{
-            className, height, centerSpinner, resetDuration, resetEase, shouldReset,
+            className,
+            height,
+            centerSpinner,
+            resetDuration,
+            resetEase,
+            shouldReset,
           }}
         >
           <CircularProgress />

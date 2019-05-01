@@ -6,45 +6,21 @@ import { Modal } from '~/components/shared';
 import ReportPost from './ReportPost';
 import DeletePost from './DeletePost';
 
-const BaseContent = ({ close, content, customCloseButton }) => (
+const BaseContent = ({ content, customCloseButton }) => (
   <>
-    <DialogContent>
-      {content}
-    </DialogContent>
-    <DialogActions>
-      {customCloseButton || (
-        <Button onClick={close} color="primary">
-          Cancelar
-        </Button>
-      )}
-    </DialogActions>
+    <DialogContent>{content}</DialogContent>
+    {customCloseButton && <DialogActions>{customCloseButton}</DialogActions>}
   </>
 );
 
-export default function MoreOptionsModal ({
-  isOwner, isOpen, close, postId,
-}) {
+export default function MoreOptionsModal({ isOwner, isOpen, close, postId }) {
   return (
-    <Modal
-      isOpen={isOpen}
-      close={close}
-    >
-      {isOwner
-        ? (
-          <DeletePost
-            postId={postId}
-            close={close}
-            BaseContent={BaseContent}
-          />
-        )
-        : (
-          <ReportPost
-            postId={postId}
-            close={close}
-            BaseContent={BaseContent}
-          />
-        )
-      }
+    <Modal isOpen={isOpen} close={close}>
+      {isOwner ? (
+        <DeletePost postId={postId} close={close} BaseContent={BaseContent} />
+      ) : (
+        <ReportPost postId={postId} close={close} BaseContent={BaseContent} />
+      )}
     </Modal>
   );
 }

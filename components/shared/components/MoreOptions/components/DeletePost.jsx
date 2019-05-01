@@ -15,7 +15,7 @@ const LinkText = styled(DialogContentText)`
   }
 `;
 
-function redirect () {
+function redirect() {
   if (Router.route === '/feed') {
     document.location.reload();
   } else {
@@ -29,11 +29,9 @@ const RedirectButton = () => (
   </Button>
 );
 
-export default function DeletePost ({ postId, close, BaseContent }) {
+export default function DeletePost({ postId, close, BaseContent }) {
   return (
-    <Mutation
-      mutation={Post.Mutations.DELETE}
-    >
+    <Mutation mutation={Post.Mutations.DELETE}>
       {(deletePost, { data, loading }) => {
         if (loading) return <Loader text="Borrando post..." />;
 
@@ -41,11 +39,7 @@ export default function DeletePost ({ postId, close, BaseContent }) {
           return (
             <BaseContent
               close={close}
-              content={(
-                <DialogContentText>
-                  ¡El post ha sido eliminado!
-                </DialogContentText>
-              )}
+              content={<DialogContentText>¡El post ha sido eliminado!</DialogContentText>}
               customCloseButton={<RedirectButton />}
             />
           );
@@ -54,13 +48,11 @@ export default function DeletePost ({ postId, close, BaseContent }) {
         return (
           <BaseContent
             close={close}
-            content={(
-              <LinkText
-                onClick={() => deletePost({ variables: { _id: postId } })}
-              >
+            content={
+              <LinkText onClick={() => deletePost({ variables: { _id: postId } })}>
                 Eliminar post
               </LinkText>
-            )}
+            }
           />
         );
       }}

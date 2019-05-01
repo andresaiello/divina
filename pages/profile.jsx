@@ -16,7 +16,7 @@ export default class extends React.Component {
     username: propTypes.string.isRequired,
   };
 
-  static async getInitialProps ({ query, req, res }) {
+  static async getInitialProps({ query, req, res }) {
     if (isServer()) {
       const isLoggedUserProfile = req.user && req.user.username === query.username;
       if (isLoggedUserProfile) serverRedirect('myProfile')(res);
@@ -27,9 +27,9 @@ export default class extends React.Component {
 
   state = {
     loadingProfile: true,
-  }
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     const { user } = this.context || {};
     const { username } = user || {};
 
@@ -39,26 +39,25 @@ export default class extends React.Component {
     else this.setState({ loadingProfile: false });
   }
 
-  render () {
+  render() {
     const { username } = this.props;
     const { loadingProfile } = this.state;
 
     if (loadingProfile) return <LoadingScreen withLayout />;
 
     return (
-      <Query
-        query={User.Queries.GET_PROFILE}
-        notifyOnNetworkStatusChange
-        variables={{ username }}
-      >
-        {({ data: profileData, loading, error }) => (loading
-          ? <LoadingScreen withLayout />
-          : error
-            ? <div>Error!</div> // @todo: better error message
-            : !profileData.profile
-              ? <div>El perfil no existe!</div> // @todo: better error message
-              : <Profile {...profileData} />
-        )}
+      <Query query={User.Queries.GET_PROFILE} notifyOnNetworkStatusChange variables={{ username }}>
+        {({ data: profileData, loading, error }) =>
+          loading ? (
+            <LoadingScreen withLayout />
+          ) : error ? (
+            <div>Error!</div> // @todo: better error message
+          ) : !profileData.profile ? (
+            <div>El perfil no existe!</div> // @todo: better error message
+          ) : (
+            <Profile {...profileData} />
+          )
+        }
       </Query>
     );
   }

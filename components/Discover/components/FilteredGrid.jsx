@@ -11,7 +11,7 @@ import DiscoverGrid from './DiscoverGrid';
 import DiscoverNode from './DiscoverNode';
 import { fetchMorePosts } from '../helpers';
 
-export default function FilteredGrid ({ basePosts, selectedClothingStyles }) {
+export default function FilteredGrid({ basePosts, selectedClothingStyles }) {
   const lastPost = basePosts[basePosts.length - 1];
 
   if (!lastPost) return null;
@@ -28,9 +28,7 @@ export default function FilteredGrid ({ basePosts, selectedClothingStyles }) {
         clothingStyles: parsedClothingStyles,
       }}
     >
-      {({
-        data, loading, error, networkStatus, fetchMore,
-      }) => {
+      {({ data, loading, error, networkStatus, fetchMore }) => {
         if (loading && !isFetchingMore(networkStatus)) return <Loader />;
         if (error) return <div>Error</div>; // @todo
         const { posts } = data || { posts: null };
@@ -38,14 +36,17 @@ export default function FilteredGrid ({ basePosts, selectedClothingStyles }) {
 
         return (
           <InfiniteScroll
-            onScrollBottom={() => fetchMorePosts(
-              fetchMore,
-              !isFetchingMore(networkStatus) && pageInfo.hasNextPage,
-              { startingDate: pageInfo.lastCursor, clothingStyles: parsedClothingStyles },
-            )}
+            onScrollBottom={() =>
+              fetchMorePosts(fetchMore, !isFetchingMore(networkStatus) && pageInfo.hasNextPage, {
+                startingDate: pageInfo.lastCursor,
+                clothingStyles: parsedClothingStyles,
+              })
+            }
           >
             <DiscoverGrid>
-              {[...basePosts, ...nodes].map(post => <DiscoverNode key={post._id} post={post} />)}
+              {[...basePosts, ...nodes].map(post => (
+                <DiscoverNode key={post._id} post={post} />
+              ))}
               {isFetchingMore(networkStatus) && <Loader height="150" />}
             </DiscoverGrid>
           </InfiniteScroll>

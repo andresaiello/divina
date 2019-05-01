@@ -39,7 +39,7 @@ const styles = {
   },
 };
 
-function CustomizedInputBase (props) {
+function CustomizedInputBase(props) {
   const { classes } = props;
 
   return (

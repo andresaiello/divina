@@ -9,11 +9,11 @@ const StyledPaper = styled(Paper)`
     text-align: center;
     width: 75%;
     max-width: 200px;
-    border-radius: 11px;
+    border-radius: 6px;
   }
 `;
 
-function Modal ({ children, isOpen, close }) {
+function Modal({ children, isOpen, close }) {
   return (
     <Dialog
       open={isOpen}

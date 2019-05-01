@@ -4,7 +4,11 @@ import propTypes from 'prop-types';
 
 import withRouteProgress from '~/HOCs/withRouteProgress';
 import {
-  Image, Comments, ShareModal, MoreOptionsModal,
+  Comments,
+  ShareModal,
+  MoreOptionsModal,
+  ImageWithDots,
+  DotDetailsModal,
 } from '~/components/shared';
 import SecContext from '~/context/secContext';
 
@@ -19,26 +23,48 @@ const StyledPictureDetails = styled.article`
   }
 `;
 
-function PictureDetails ({
-  postId, author, comments, picUrl, caption, likes, liked, ...rest
+function PictureDetails({
+  postId,
+  author,
+  dots,
+  comments,
+  picUrl,
+  caption,
+  likes,
+  liked,
+  ...rest
 }) {
   const { user } = useContext(SecContext);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isMoreOptionsModalOpen, setIsMoreOptionsModalOpen] = useState(false);
+  const [dotModalData, setDotModalData] = useState({ dotData: null, isOpen: false });
 
-  const openShareModal = () => { setIsShareModalOpen(true); };
-  const closeShareModal = () => { setIsShareModalOpen(false); };
-  const openMoreOptionsModal = () => { setIsMoreOptionsModalOpen(true); };
-  const closeMoreOptionsModal = () => { setIsMoreOptionsModalOpen(false); };
+  const setModalStatus = (modal, status) => dotData => {
+    switch (modal) {
+      case 'share':
+        setIsShareModalOpen(status);
+        break;
+      case 'moreOptions':
+        setIsMoreOptionsModalOpen(status);
+        break;
+      case 'dots':
+        setDotModalData({ dotData, isOpen: status });
+        break;
+      default:
+    }
+  };
 
   const loggedUserId = user && user._id;
 
   return (
     <StyledPictureDetails {...rest}>
-      <Head {...{ ...author, openMoreOptionsModal }} />
-      <Image
+      <Head {...{ ...author }} openMoreOptionsModal={setModalStatus('moreOptions', true)} />
+      <ImageWithDots
         className="image"
         fitCover
+        onDotLinkClick={setModalStatus('dots', true)}
+        postId={postId}
+        dots={dots.nodes}
         withLoader
         src={picUrl}
         alt="Post"
@@ -49,20 +75,25 @@ function PictureDetails ({
         postId={postId}
         loggedUserId={loggedUserId}
         liked={liked.isLiked}
-        openShareModal={openShareModal}
+        openShareModal={setModalStatus('share', true)}
       />
       <Comments postId={postId} />
+      <DotDetailsModal
+        isOpen={dotModalData.isOpen}
+        onClose={setModalStatus('dots', false)}
+        dotData={dotModalData.dotData}
+      />
       <ShareModal
         username={author.username}
         postId={postId}
         isOpen={isShareModalOpen}
-        close={closeShareModal}
+        close={setModalStatus('share', false)}
       />
       <MoreOptionsModal
         postId={postId}
         isOwner={loggedUserId === author._id}
         isOpen={isMoreOptionsModalOpen}
-        close={closeMoreOptionsModal}
+        close={setModalStatus('moreOptions', false)}
       />
     </StyledPictureDetails>
   );
@@ -82,10 +113,12 @@ PictureDetails.propTypes = {
   }).isRequired,
   likes: propTypes.shape({
     _id: propTypes.string.isRequired,
-    nodes: propTypes.arrayOf(propTypes.shape({
-      username: propTypes.string,
-      profilePic: propTypes.string,
-    })).isRequired,
+    nodes: propTypes.arrayOf(
+      propTypes.shape({
+        username: propTypes.string,
+        profilePic: propTypes.string,
+      }),
+    ).isRequired,
   }).isRequired,
 };
 

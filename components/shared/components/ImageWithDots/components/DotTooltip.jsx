@@ -5,34 +5,22 @@ import { makeStyles } from '@material-ui/styles';
 
 import Tooltip from '../../Tooltip';
 
-function DotTooltip ({
-  children, brandName, brandWebsite, price, onClick, ...rest
-}) {
+function DotTooltip({ children, brandName, brandWebsite, price, onClick, ...rest }) {
   const text = `${brandName} | ${price}`;
 
   return (
     <Tooltip
-      content={(onClick
-        ? (
-          <div
-            className="action"
-            onClick={onClick}
-            role="button"
-          >
+      content={
+        onClick ? (
+          <div className="action" onClick={onClick} role="button">
             {text}
           </div>
-        )
-        : (
-          <a
-            className="action"
-            target="_blank"
-            rel="noopener noreferrer"
-            href={brandWebsite}
-          >
+        ) : (
+          <a className="action" target="_blank" rel="noopener noreferrer" href={brandWebsite}>
             {text}
           </a>
         )
-      )}
+      }
       {...rest}
     >
       {children}

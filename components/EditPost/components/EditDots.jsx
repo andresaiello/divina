@@ -8,12 +8,10 @@ const Container = styled.div`
   position: relative;
 `;
 
-export default function EditDots ({
-  existentDots, picUrl, selectDotPlace, getImageSize, postId,
-}) {
+export default function EditDots({ existentDots, picUrl, selectDotPlace, getImageSize, postId }) {
   const [openTooltip, setOpenTooltip] = useState('');
 
-  function onDotClick (e, dot) {
+  function onDotClick(e, dot) {
     e.stopPropagation();
     setOpenTooltip(dot._id);
   }
@@ -47,9 +45,11 @@ EditDots.propTypes = {
   selectDotPlace: propTypes.func.isRequired,
   getImageSize: propTypes.func.isRequired,
   postId: propTypes.string.isRequired,
-  existentDots: propTypes.arrayOf(propTypes.shape({
-    _id: propTypes.string.isRequired,
-    xPosition: propTypes.number.isRequired,
-    yPosition: propTypes.number.isRequired,
-  })),
+  existentDots: propTypes.arrayOf(
+    propTypes.shape({
+      _id: propTypes.string.isRequired,
+      xPosition: propTypes.number.isRequired,
+      yPosition: propTypes.number.isRequired,
+    }),
+  ),
 };

@@ -6,12 +6,10 @@ import { Mutation } from 'react-apollo';
 import Tooltip from '../../Tooltip';
 import { Post } from '~/lib/graphql';
 
-export default function RemoveDotTooltip ({
-  children, postId, dots, dotId, ...rest
-}) {
+export default function RemoveDotTooltip({ children, postId, dots, dotId, ...rest }) {
   return (
     <Tooltip
-      content={(
+      content={
         <Fragment>
           <Mutation
             mutation={Post.Mutations.DELETE_DOT}
@@ -30,17 +28,13 @@ export default function RemoveDotTooltip ({
             }}
           >
             {deleteDot => (
-              <div
-                onClick={deleteDot}
-                role="button"
-                tabIndex={0}
-              >
+              <div onClick={deleteDot} role="button" tabIndex={0}>
                 Eliminar dot
               </div>
             )}
           </Mutation>
         </Fragment>
-      )}
+      }
       {...rest}
     >
       {children}
@@ -51,8 +45,10 @@ export default function RemoveDotTooltip ({
 RemoveDotTooltip.propTypes = {
   postId: propTypes.string.isRequired,
   dotId: propTypes.string.isRequired,
-  dots: propTypes.arrayOf(propTypes.shape({
-    _id: propTypes.string.isRequired,
-    __typename: propTypes.string.isRequired,
-  })).isRequired,
+  dots: propTypes.arrayOf(
+    propTypes.shape({
+      _id: propTypes.string.isRequired,
+      __typename: propTypes.string.isRequired,
+    }),
+  ).isRequired,
 };

@@ -34,22 +34,21 @@ const StyledLoader = styled.span`
   }
 
   .progress {
-    color: rgba(0, 0, 0, .54);
-    margin-top: ${({ height, size }) => (height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`)};
-    margin-bottom: ${({ height, size, text }) => (text
-    ? null
-    : height
-      ? `calc(${half(height)} - ${half(size)})`
-      : `calc(50% - ${half(size)})`)};
+    color: rgba(0, 0, 0, 0.54);
+    margin-top: ${({ height, size }) =>
+      height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`};
+    margin-bottom: ${({ height, size, text }) =>
+      text ? null : height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`};
   }
 
   .text {
     margin-top: 7.5px;
-    margin-bottom: ${({ height, size }) => (height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`)};
+    margin-bottom: ${({ height, size }) =>
+      height ? `calc(${half(height)} - ${half(size)})` : `calc(50% - ${half(size)})`};
   }
 `;
 
-export default function Loader ({ size, text, ...rest }) {
+export default function Loader({ size, text, ...rest }) {
   return (
     <StyledLoader {...{ size, text, ...rest }}>
       <div className="container">

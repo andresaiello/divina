@@ -15,14 +15,14 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default class MyDocument extends Document {
-  static async getInitialProps (ctx) {
+  static async getInitialProps(ctx) {
     // styled-components
     const sheet = new ServerStyleSheet();
 
     // material-ui
     let pageContext;
-    const page = ctx.renderPage((Component) => {
-      const WrappedComponent = (props) => {
+    const page = ctx.renderPage(Component => {
+      const WrappedComponent = props => {
         pageContext = props.pageContext;
         return sheet.collectStyles(<Component {...props} />);
       };
@@ -53,7 +53,7 @@ export default class MyDocument extends Document {
     };
   }
 
-  render () {
+  render() {
     const { styleTags, pageContext } = this.props;
 
     return (

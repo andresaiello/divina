@@ -7,21 +7,23 @@ import { Profile } from '~/lib/graphql';
 
 import FollowList from './FollowList';
 
-export default function FollowingModal ({ isOpen, closeModal, username }) {
+export default function FollowingModal({ isOpen, closeModal, username }) {
   return (
     <FullscreenModal
       title="Siguiendo"
       isOpen={isOpen}
       close={() => closeModal('followingModalOpen')}
     >
-      <Query
-        query={Profile.Queries.GET_FOLLOWING}
-        variables={{ username }}
-      >
+      <Query query={Profile.Queries.GET_FOLLOWING} variables={{ username }}>
         {({ data, loading, error }) => {
           if (loading) return <Loader />;
           if (error) return <div>Hubo un error</div>; // @todo better error
-          if (!data || !data.profile || !data.profile.user || data.profile.user.following.length === 0) {
+          if (
+            !data ||
+            !data.profile ||
+            !data.profile.user ||
+            data.profile.user.following.length === 0
+          ) {
             return <div>El usuario no sigue a nadie</div>; // @todo better message
           }
 

@@ -11,17 +11,22 @@ const MESSAGE_CREATED = 'MESSAGE_CREATED';
 
 const typeDefs = gql`
   extend type Query {
-    chatGroup (_id: String!): ChatGroup
-    chatGroups (amount: Int, member: String): ChatGroups
-    chatMessages (_id: String!): ChatMessages
+    chatGroup(_id: String!): ChatGroup
+    chatGroups(amount: Int, member: String): ChatGroups
+    chatMessages(_id: String!): ChatMessages
   }
   extend type Mutation {
-    createChatGroup (author: String!, caption: String!, picUrl: [String!], members: [String!]): ChatGroup
-    addMessageToChatGroup (chatGroupId: String!, content: String!): ChatMessage
+    createChatGroup(
+      author: String!
+      caption: String!
+      picUrl: [String!]
+      members: [String!]
+    ): ChatGroup
+    addMessageToChatGroup(chatGroupId: String!, content: String!): ChatMessage
   }
 
   extend type Subscription {
-    messageCreated (_id: String!): ChatMessage
+    messageCreated(_id: String!): ChatMessage
   }
 
   type ChatMessage {
@@ -69,16 +74,25 @@ const resolvers = {
     },
   },
   Mutation: {
-    createChatGroup: async (_, {
-      author, caption, picUrl, members,
-    }, { loggedUser = missing('needLogin') }) => {
+    createChatGroup: async (
+      _,
+      { author, caption, picUrl, members },
+      { loggedUser = missing('needLogin') },
+    ) => {
       const realAuthor = loggedUser._id;
       const chatGroup = await ChatGroup.createChatGroup({
-        author: realAuthor, caption, picUrl, members,
+        author: realAuthor,
+        caption,
+        picUrl,
+        members,
       });
       return chatGroup;
     },
-    addMessageToChatGroup: async (_, { chatGroupId, content }, { loggedUser = missing('needLogin') }) => {
+    addMessageToChatGroup: async (
+      _,
+      { chatGroupId, content },
+      { loggedUser = missing('needLogin') },
+    ) => {
       const author = loggedUser._id;
       const newMessage = await ChatMessage.addNew({ chatGroupId, author, content });
 
@@ -91,7 +105,8 @@ const resolvers = {
     messageCreated: {
       subscribe: withFilter(
         () => pubsub.asyncIterator(['MESSAGE_CREATED']),
-        (payload, variables) => payload.messageCreated.chatGroup.toString() === variables._id.toString(),
+        (payload, variables) =>
+          payload.messageCreated.chatGroup.toString() === variables._id.toString(),
       ),
     },
   },

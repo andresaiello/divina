@@ -34,16 +34,23 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
-function CreateChatHeadAppBar (props) {
+function CreateChatHeadAppBar(props) {
   return (
     <StyledAppBar position="static" {...props}>
       <Toolbar className="toolbar">
-        <Link route="/chat" prefetch><KeyboardArrowLeft /></Link>
+        <Link route="/chat" prefetch>
+          <KeyboardArrowLeft />
+        </Link>
 
         <Typography variant="p" color="inherit" className="disable-select">
           Nueva conversación
         </Typography>
-        <Typography variant="p" color="inherit" className="disable-select" onClick={() => props.onNext()}>
+        <Typography
+          variant="p"
+          color="inherit"
+          className="disable-select"
+          onClick={() => props.onNext()}
+        >
           {props.stepNumber === 0 ? 'Siguiente' : 'Crear'}
         </Typography>
       </Toolbar>

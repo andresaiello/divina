@@ -13,7 +13,7 @@ import ChatHeadAppBar from './ChatHeadAppBar';
 
 const StyledChat = styled.div`
   && {
-    background-image: url("/static/chat-background.jpg");
+    background-image: url('/static/chat-background.jpg');
     background-size: cover;
     display: flex;
     flex-direction: column;
@@ -22,7 +22,6 @@ const StyledChat = styled.div`
     max-height: -webkit-fill-available;
   }
 `;
-
 
 const StyledChat1 = styled.div`
   && {
@@ -63,24 +62,18 @@ const StyledChat3 = styled.div`
 
 const StyledChat4 = styled.div`
   && {
-    background-image: url("/static/chat-background.jpg");
+    background-image: url('/static/chat-background.jpg');
     background-size: cover;
   }
 `;
 
-
 const Chat = class extends React.PureComponent {
-  render () {
+  render() {
     const { chatGroupId } = this.props;
 
     return (
-      <Query
-        query={CHAT_GET_MESSAGES}
-        variables={{ _id: chatGroupId }}
-      >
-        {({
-          loading, error, data, subscribeToMore, networkStatus, refetch,
-        }) => {
+      <Query query={CHAT_GET_MESSAGES} variables={{ _id: chatGroupId }}>
+        {({ loading, error, data, subscribeToMore, networkStatus, refetch }) => {
           let loader = null;
           let errorMessage = null;
 
@@ -93,25 +86,28 @@ const Chat = class extends React.PureComponent {
           if (error) errorMessage = <div>Error!</div>;
           // @todo add timeout and no connection error message to refetch and fetch more
 
-          const more = () => subscribeToMore({
-            document: CHAT_SUB_NEW_MSG,
-            variables: { _id: chatGroupId },
-            updateQuery: (prev, { subscriptionData }) => {
-              if (!subscriptionData.data) return prev;
-              // console.log(prev);
-              // console.log(subscriptionData);
-              // console.log(subscriptionData.data.messageCreated);
-              return Object.assign({}, prev, {
-                chatMessages: {
-                  nodes: [...prev.chatMessages.nodes, subscriptionData.data.messageCreated].slice(0, 200),
-                  __typename: 'ChatMessages',
-                },
-
-              });
-            },
-          });
+          const more = () =>
+            subscribeToMore({
+              document: CHAT_SUB_NEW_MSG,
+              variables: { _id: chatGroupId },
+              updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+                // console.log(prev);
+                // console.log(subscriptionData);
+                // console.log(subscriptionData.data.messageCreated);
+                return Object.assign({}, prev, {
+                  chatMessages: {
+                    nodes: [...prev.chatMessages.nodes, subscriptionData.data.messageCreated].slice(
+                      0,
+                      200,
+                    ),
+                    __typename: 'ChatMessages',
+                  },
+                });
+              },
+            });
           return (
-            <PageVisibility onChange={isVisible => (isVisible && refetch())}>
+            <PageVisibility onChange={isVisible => isVisible && refetch()}>
               <StyledChat1>
                 <StyledChat2>
                   <StyledChat3>
@@ -124,10 +120,10 @@ const Chat = class extends React.PureComponent {
                   </StyledChat3>
                 </StyledChat2>
               </StyledChat1>
-            </PageVisibility>);
+            </PageVisibility>
+          );
         }}
       </Query>
-
     );
   }
 };

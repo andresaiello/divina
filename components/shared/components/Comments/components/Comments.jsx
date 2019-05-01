@@ -18,24 +18,24 @@ export default class extends Component {
 
   state = {
     currentComment: '',
-  }
+  };
 
-  editComment = (e) => {
+  editComment = e => {
     const { value } = e.target;
 
     this.setState({ currentComment: value });
-  }
+  };
 
-  sendComment = send => async (value) => {
+  sendComment = send => async value => {
     const { postId } = this.props;
     const { user } = this.context;
 
     await send({ variables: { postId, author: user._id, comment: value } });
 
     this.setState({ currentComment: '' });
-  }
+  };
 
-  render () {
+  render() {
     const { postId } = this.props;
     const { currentComment } = this.state;
     const { user } = this.context;
@@ -43,37 +43,32 @@ export default class extends Component {
     // @todo: set an animation + go down with the overflow on add comment
     return (
       <Fragment>
-        <Query
-          query={Post.Queries.GET_COMMENTS}
-          variables={{ postId }}
-        >
-          {({ data, error, loading }) => (error
-            ? <div>Error obteniendo comentarios</div> // @todo: better error
-            : loading
-              ? <Loader />
-              : data && data.comments && data.comments.nodes.length
-                ? <CommentsList comments={data.comments} />
-                : <div>Todavía no hay comentarios!</div> // @todo: add screen for empty comments
-          )}
+        <Query query={Post.Queries.GET_COMMENTS} variables={{ postId }}>
+          {({ data, error, loading }) =>
+            error ? (
+              <div>Error obteniendo comentarios</div> // @todo: better error
+            ) : loading ? (
+              <Loader />
+            ) : data && data.comments && data.comments.nodes.length ? (
+              <CommentsList comments={data.comments} />
+            ) : (
+              <div>Todavía no hay comentarios!</div>
+            ) // @todo: add screen for empty comments
+          }
         </Query>
-        {user && user._id
-          ? (
-            <Mutation
-              mutation={Post.Mutations.COMMENT}
-            >
-              {(send, { loading }) => (
-                <CommentInput
-                  savingComment={loading}
-                  editComment={this.editComment}
-                  currentComment={currentComment}
-                  sendComment={this.sendComment(send)}
-                  userAvatar={user.profilePic}
-                />
-              )}
-            </Mutation>
-          )
-          : null
-        }
+        {user && user._id ? (
+          <Mutation mutation={Post.Mutations.COMMENT}>
+            {(send, { loading }) => (
+              <CommentInput
+                savingComment={loading}
+                editComment={this.editComment}
+                currentComment={currentComment}
+                sendComment={this.sendComment(send)}
+                userAvatar={user.profilePic}
+              />
+            )}
+          </Mutation>
+        ) : null}
       </Fragment>
     );
   }

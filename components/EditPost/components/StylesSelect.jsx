@@ -24,12 +24,12 @@ const StyledPaper = styled(Paper)`
   }
 `;
 
-function StylesSelect ({ handleDelete, selectedClothingStyles, ...rest }) {
+function StylesSelect({ handleDelete, selectedClothingStyles, ...rest }) {
   return (
-    <StyledPaper
-      {...rest}
-    >
-      {!selectedClothingStyles.length && <p className="placeholder">Toca aquí para agregar tus estilos</p>}
+    <StyledPaper {...rest}>
+      {!selectedClothingStyles.length && (
+        <p className="placeholder">Toca aquí para agregar tus estilos</p>
+      )}
       {selectedClothingStyles.map(style => (
         <Chip
           className="chip"

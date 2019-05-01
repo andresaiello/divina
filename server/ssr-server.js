@@ -19,30 +19,31 @@ const brandsRouter = require('./routes/brands');
 const setupPassport = require('./passport');
 const { typeDefs, resolvers } = require('./graphql');
 
-const {
-  PORT, ENV, SEC_COOKIE, SESSION_SECRET,
-} = getConfig.serverRuntimeConfig;
+const { PORT, ENV, SEC_COOKIE, SESSION_SECRET } = getConfig.serverRuntimeConfig;
 const dev = ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 const handler = routes.getRequestHandler(app);
 
-app.prepare()
+app
+  .prepare()
   .then(() => {
     const dbConnection = db.connect();
     const server = express();
     const passport = setupPassport();
 
     server.use(cookieParser());
-    server.use(session({
-      secret: SESSION_SECRET,
-      cookie: { secure: SEC_COOKIE },
-      resave: false,
-      saveUninitialized: true,
-      store: new MongoStore({
-        mongooseConnection: dbConnection,
+    server.use(
+      session({
+        secret: SESSION_SECRET,
+        cookie: { secure: SEC_COOKIE },
+        resave: false,
+        saveUninitialized: true,
+        store: new MongoStore({
+          mongooseConnection: dbConnection,
+        }),
       }),
-    }));
+    );
 
     server.use(passport.initialize());
     server.use(passport.session());
@@ -67,9 +68,7 @@ app.prepare()
       headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
     };
 
-    server.get('/robots.txt', (req, res) => (
-      res.status(200).sendFile('robots.txt', options)
-    ));
+    server.get('/robots.txt', (req, res) => res.status(200).sendFile('robots.txt', options));
 
     server.use('/', authRouter);
     server.use('/api/', apiRouter);
@@ -80,15 +79,17 @@ app.prepare()
 
     server.get('*', (req, res) => handle(req, res));
 
-    httpServer.listen(PORT, (err) => {
+    httpServer.listen(PORT, err => {
       if (err) throw err;
       console.log(`Running in ${ENV} mode`);
       console.log(`> Server ready on http://localhost:${PORT}`);
       console.log(`> GraphQL server: http://localhost:${PORT}${apolloServer.graphqlPath}`);
-      console.log(`> GraphQL Subscriptions ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`);
+      console.log(
+        `> GraphQL Subscriptions ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`,
+      );
     });
   })
-  .catch((ex) => {
+  .catch(ex => {
     console.error(ex.stack);
     process.exit(1);
   });
