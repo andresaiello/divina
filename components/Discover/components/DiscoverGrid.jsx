@@ -15,7 +15,7 @@ export default styled.div`
 
     :nth-child(4) {
       width: 100%;
-      height: 100%;
+      height: calc(100vw / 3 * 2 - 5px);
       grid-row: 1 / span 2;
       grid-column: 2 / span 2;
     }
