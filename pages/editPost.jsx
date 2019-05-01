@@ -25,7 +25,7 @@ export default class extends Component {
           if (error) return <div>Error!</div>; // @todo: better error message
           if (!data.post || !data.post.picUrl) return <div>No existe!</div>; // @todo: better error message
 
-          return <EditPost postId={postId} post={data.post} />;
+          return <EditPost hideFooter postId={postId} post={data.post} />;
         }}
       </Query>
     );

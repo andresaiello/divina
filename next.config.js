@@ -1,4 +1,5 @@
 const ip = require('ip');
+const withCSS = require('@zeit/next-css');
 
 const PORT = 3004;
 
@@ -6,7 +7,20 @@ const debugMobile = false;
 
 const host = debugMobile ? ip.address() : 'localhost';
 
-module.exports = {
+module.exports = withCSS({
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.(eot|woff|woff2|ttf|svg|png|jpg|gif)$/,
+      use: {
+        loader: 'url-loader',
+        options: {
+          limit: 100000,
+          name: '[name].[ext]',
+        },
+      },
+    });
+    return config;
+  },
   serverRuntimeConfig: {
     PORT: process.env.PORT || PORT,
     ENV: process.env.NODE_ENV || 'development',
@@ -39,4 +53,4 @@ module.exports = {
     ANALYTICS_TRACKING_ID: process.env.ANALYTICS_TRACKING_ID || 'UA-137727478-2',
     FB_APP_ID: process.env.fb_app_id || '1217981644879628',
   },
-};
+});

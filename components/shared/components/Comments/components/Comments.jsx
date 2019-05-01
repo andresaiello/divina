@@ -43,12 +43,12 @@ export default class extends Component {
     // @todo: set an animation + go down with the overflow on add comment
     return (
       <Fragment>
-        <Query query={Post.Queries.GET_COMMENTS} variables={{ postId }}>
+        <Query query={Post.Queries.GET_COMMENTS} variables={{ postId }} fetchPolicy="network-only">
           {({ data, error, loading }) =>
             error ? (
               <div>Error obteniendo comentarios</div> // @todo: better error
             ) : loading ? (
-              <Loader />
+              <Loader height="50px" />
             ) : data && data.comments && data.comments.nodes.length ? (
               <CommentsList comments={data.comments} />
             ) : (
