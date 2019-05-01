@@ -2,12 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 import classNames from 'classnames';
+import Div100vh from 'react-div-100vh';
 
 import { Link } from '~/server/routes';
 import SecContext, { isAuthenticated } from '~/context/secContext';
 
-const StyledLanding = styled.article`
-  height: 100vh;
+const StyledLanding = styled(Div100vh)`
   width: 100%;
   color: white;
   background-image: url('/static/background01.jpg');
