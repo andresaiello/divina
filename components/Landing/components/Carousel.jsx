@@ -70,6 +70,7 @@ const StyledSlider = styled(Slider)`
 
   .slick-dots {
     bottom: 7vh;
+    position: fixed;
   }
 
   .slick-dots li button.customSliderDot {
