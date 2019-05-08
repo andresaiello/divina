@@ -2,9 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import { Toolbar, Typography, IconButton } from '@material-ui/core';
-import {
-  Favorite, Visibility, Comment as AddComment, Share,
-} from '@material-ui/icons';
+import { Favorite, Visibility, Comment as AddComment, Share } from '@material-ui/icons';
 import { LikeButton } from '~/components/shared';
 
 const StyledSubBar = styled(Toolbar)`
@@ -30,6 +28,10 @@ const StyledSubBar = styled(Toolbar)`
       padding: 5px 7px 4px 3px;
     }
 
+    .actions {
+      margin-left: 15px;
+    }
+
     .data {
       display: flex;
 
@@ -42,7 +44,7 @@ const StyledSubBar = styled(Toolbar)`
 
 const StyledIconButton = styled(IconButton)`
   && {
-    padding: 5px 3px;
+    padding: 5px;
     color: black;
   }
 `;
@@ -54,25 +56,17 @@ const StyledLikeButton = styled(LikeButton)`
   }
 `;
 
-export default function SubBar ({
-  caption, likes, postId, loggedUserId, liked,
-}) {
+export default function SubBar({ caption, likes, postId, loggedUserId, liked, openShareModal }) {
   return (
     <StyledSubBar>
-      <Typography component="p">
-        {caption}
-      </Typography>
+      <Typography component="p">{caption}</Typography>
       <div className="info">
         <div className="actions">
-          <StyledLikeButton
-            liked={liked}
-            author={loggedUserId}
-            postId={postId}
-          />
-          <StyledIconButton aria-label="Comment">
+          <StyledLikeButton liked={liked} author={loggedUserId} postId={postId} />
+          {/* <StyledIconButton aria-label="Comment">
             <AddComment />
-          </StyledIconButton>
-          <StyledIconButton aria-label="Share">
+          </StyledIconButton> */}
+          <StyledIconButton aria-label="Share" onClick={openShareModal}>
             <Share />
           </StyledIconButton>
         </div>
@@ -93,12 +87,15 @@ SubBar.propTypes = {
   loggedUserId: propTypes.string,
   postId: propTypes.string.isRequired,
   liked: propTypes.bool.isRequired,
+  openShareModal: propTypes.func.isRequired,
   caption: propTypes.string.isRequired,
   likes: propTypes.shape({
     _id: propTypes.string.isRequired,
-    nodes: propTypes.arrayOf(propTypes.shape({
-      username: propTypes.string,
-      profilePic: propTypes.string,
-    })).isRequired,
+    nodes: propTypes.arrayOf(
+      propTypes.shape({
+        username: propTypes.string,
+        profilePic: propTypes.string,
+      }),
+    ).isRequired,
   }).isRequired,
 };

@@ -8,10 +8,10 @@ const { missing } = require('../util');
 
 const typeDefs = gql`
   extend type Mutation {
-    followUser (userToFollow: String!): FollowingStatus
-    unfollowUser (userToUnfollow: String!): FollowingStatus
-    editUserDescription (description: String!): User
-    updateProfilePic (newUrl: String!): User
+    followUser(userToFollow: String!): FollowingStatus
+    unfollowUser(userToUnfollow: String!): FollowingStatus
+    editProfile(description: String!, website: String!, instagram: String!): User
+    updateProfilePic(newUrl: String!): User
   }
 
   type FollowingStatus {
@@ -25,6 +25,8 @@ const typeDefs = gql`
     followedByLoggedUser: FollowingStatus
     username: String
     description: String
+    website: String
+    instagram: String
     profilePic: String
     followers: [User]
     following: [User]
@@ -53,7 +55,10 @@ const resolvers = {
       const author = loggedUser._id;
 
       // @todo: ensure that both operations were successful, if 1 was and other not, revert the one that was
-      const removeFollower = Followers.removeFollower({ owner: userToUnfollow, followerToRemove: author });
+      const removeFollower = Followers.removeFollower({
+        owner: userToUnfollow,
+        followerToRemove: author,
+      });
       const removeFollowing = Following.removeFollowing({ owner: author, userToUnfollow });
 
       try {
@@ -64,26 +69,28 @@ const resolvers = {
         return { _id: userToUnfollow, isFollowing: true };
       }
     },
-    editUserDescription: async (_, { description }, { loggedUser = missing('needLogin') }) => User.editDescription({
-      _id: loggedUser._id,
-      description,
-    }),
-    updateProfilePic: async (_, { newUrl }, { loggedUser = missing('needLogin') }) => User.updateProfilePic({
-      _id: loggedUser._id,
-      newUrl,
-    }),
+    editProfile: async (_, profileInfo, { loggedUser = missing('needLogin') }) =>
+      User.editProfile({
+        _id: loggedUser._id,
+        profileInfo,
+      }),
+    updateProfilePic: async (_, { newUrl }, { loggedUser = missing('needLogin') }) =>
+      User.updateProfilePic({
+        _id: loggedUser._id,
+        newUrl,
+      }),
   },
   User: {
-    followedByLoggedUser: async ({ _id }, _, { loggedUser }) => (loggedUser
-      ? {
-        _id,
-        isFollowing: await Followers.isFollowedBy({
-          owner: _id,
-          followedBy: loggedUser && loggedUser._id,
-        }),
-      }
-      : { _id, isFollowing: false }
-    ),
+    followedByLoggedUser: async ({ _id }, _, { loggedUser }) =>
+      loggedUser
+        ? {
+            _id,
+            isFollowing: await Followers.isFollowedBy({
+              owner: _id,
+              followedBy: loggedUser && loggedUser._id,
+            }),
+          }
+        : { _id, isFollowing: false },
     followers: async ({ _id }) => Followers.findByUserId({ owner: _id }),
     following: async ({ _id }) => Following.findByUserId({ owner: _id }),
   },

@@ -15,14 +15,14 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 export default class MyDocument extends Document {
-  static async getInitialProps (ctx) {
+  static async getInitialProps(ctx) {
     // styled-components
     const sheet = new ServerStyleSheet();
 
     // material-ui
     let pageContext;
-    const page = ctx.renderPage((Component) => {
-      const WrappedComponent = (props) => {
+    const page = ctx.renderPage(Component => {
+      const WrappedComponent = props => {
         pageContext = props.pageContext;
         return sheet.collectStyles(<Component {...props} />);
       };
@@ -53,17 +53,21 @@ export default class MyDocument extends Document {
     };
   }
 
-  render () {
+  render() {
     const { styleTags, pageContext } = this.props;
 
     return (
-      <html lang="es">
+      <html lang="es" dir="ltr">
         <Head>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta charSet="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
           <meta
             name="theme-color"
             content={pageContext ? pageContext.theme.palette.primary.main : null}
+          />
+          <meta
+            name="description"
+            content="Comparte tus prendas con gente de todo el mundo, encuentra nuevos looks y prendas de última moda."
           />
           <link rel="shortcut icon" type="image/x-icon" href="/static/favicon.ico" />
           {styleTags}

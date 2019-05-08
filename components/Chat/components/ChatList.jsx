@@ -18,7 +18,6 @@ const StyledChatList = styled.div`
     flex-direction: column;
     height: 100vh;
   }
-
 `;
 
 const ChatListWrapper = styled.div`
@@ -29,16 +28,13 @@ const ChatListWrapper = styled.div`
     overflow: scroll;
     width: 100%;
   }
-
 `;
 
 const ChatList = class extends React.PureComponent {
-  render () {
+  render() {
     return (
       <Query query={CHAT_GET_CHAT_GROUPS}>
-        {({
-          loading, error, data, networkStatus, refetch,
-        }) => {
+        {({ loading, error, data, networkStatus, refetch }) => {
           let loader = null;
           let errorMessage = null;
           const { chatGroups } = data || { chatGroups: null };
@@ -50,7 +46,7 @@ const ChatList = class extends React.PureComponent {
           // @todo add timeout and no connection error message to refetch and fetch more
 
           return (
-            <PageVisibility onChange={isVisible => (isVisible && refetch())}>
+            <PageVisibility onChange={isVisible => isVisible && refetch()}>
               <StyledChatList>
                 <ChatListHeadAppBar />
                 <ChatListWrapper>
@@ -59,10 +55,10 @@ const ChatList = class extends React.PureComponent {
                   ))}
                 </ChatListWrapper>
               </StyledChatList>
-            </PageVisibility>);
+            </PageVisibility>
+          );
         }}
       </Query>
-
     );
   }
 };

@@ -1,21 +1,29 @@
 {
   "parser": "babel-eslint",
-  "extends": "airbnb",
+  "extends": [
+    "airbnb",
+    "prettier",
+    "prettier/react"
+  ],
+  "plugins": ["react-hooks", "prettier"],
   "env": {
     "jest": true,
     "browser": true,
     "es6": true
   },
   "rules": {
+    "prettier/prettier": "error",
     "import/no-cycle": "true",
     "import/prefer-default-export": "false",
-    "max-len": ["error", { "code": 130 }],
     "react/no-array-index-key": "false",
+    "react/prop-types": "error",
+    "react/require-default-props": "error",
     "no-nested-ternary": 0,
-    "space-before-function-paren": ["error", "always"],
     "jsx-a11y/anchor-is-valid": false,
     "jsx-a11y/click-events-have-key-events": false,
-    "no-underscore-dangle": 0
+    "no-underscore-dangle": 0,
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
   },
   "settings": {
     "import/resolver": {

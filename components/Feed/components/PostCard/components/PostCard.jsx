@@ -1,31 +1,41 @@
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
 import {
-  Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Avatar,
+  Typography,
+  IconButton,
 } from '@material-ui/core';
-import {
-  Comment, Share, MoreHoriz as More,
-} from '@material-ui/icons';
+import { Comment, Share } from '@material-ui/icons';
 
 import SecContext from '~/context/secContext';
 import { Link } from '~/server/routes';
-import { FollowButton, LikeButton, ImageWithDots } from '~/components/shared';
+import {
+  FollowButton,
+  LikeButton,
+  ImageWithDots,
+  ShareModal,
+  MoreOptionsModal,
+  MoreOptionsButton,
+  DotDetailsModal,
+} from '~/components/shared';
 
 import CommentsModal from './CommentsModal';
-import DotDetailsModal from './DotDetailsModal';
-import ShareModal from './ShareModal';
 import { POST_MAX_WIDTH } from '~/constants';
 
 const StyledCard = styled(Card)`
   margin: 0px auto;
-  border-bottom: 1px solid #9B9B9B;
+  border-bottom: 1px solid #9b9b9b;
   box-shadow: none;
   max-width: ${POST_MAX_WIDTH}px;
   border-radius: 0;
 
   :first-child {
-    border-top: 1px solid #9B9B9B;
+    border-top: 1px solid #9b9b9b;
   }
 
   .header {
@@ -71,66 +81,60 @@ const StyledCard = styled(Card)`
     display: flex;
     align-items: flex-end;
   }
-
-  .moreButton {
-    padding: 24px 12px 0px 12px;
-  }
 `;
 
-class PostCard extends Component {
+class PostCard extends PureComponent {
   static contextType = SecContext;
 
   state = {
     isCommentsModalOpen: false,
     isShareModalOpen: false,
     isDotDetailsModalOpen: false,
+    isMoreOptionsModalOpen: false,
     selectedDotData: null,
-  }
-
-  openCommentsModal = () => {
-    this.setState({ isCommentsModalOpen: true });
   };
 
-  closeCommentsModal = () => {
-    this.setState({ isCommentsModalOpen: false });
+  setModalStatus = (modal, status) => dotData => {
+    switch (modal) {
+      case 'share':
+        this.setState({ isShareModalOpen: status });
+        break;
+      case 'comments':
+        this.setState({ isCommentsModalOpen: status });
+        break;
+      case 'moreOptions':
+        this.setState({ isMoreOptionsModalOpen: status });
+        break;
+      case 'dots':
+        this.setState({
+          selectedDotData: dotData,
+          isDotDetailsModalOpen: status,
+        });
+        break;
+      default:
+    }
   };
 
-  openShareModal = () => {
-    this.setState({ isShareModalOpen: true });
-  };
-
-  closeShareModal = () => {
-    this.setState({ isShareModalOpen: false });
-  };
-
-  openDotDetailsModal = (dotData) => {
-    this.setState({
-      selectedDotData: dotData,
-      isDotDetailsModalOpen: true,
-    });
-  };
-
-  closeDotDetailsModal = () => {
-    this.setState({
-      selectedDotData: null,
-      isDotDetailsModalOpen: false,
-    });
-  };
-
-  render () {
-    const {
-      _id, liked, authorFollowed, dots, author, picUrl, caption, createdAt,
-    } = this.props;
+  render() {
+    const { _id, liked, authorFollowed, dots, author, picUrl, caption, createdAt } = this.props;
 
     const { username, profilePic } = author;
 
-    const { user = {} } = this.context;
+    const { user } = this.context;
 
     const {
-      isCommentsModalOpen, isShareModalOpen, isDotDetailsModalOpen, selectedDotData,
+      isCommentsModalOpen,
+      isShareModalOpen,
+      isDotDetailsModalOpen,
+      selectedDotData,
+      isMoreOptionsModalOpen,
     } = this.state;
 
-    const screenWidth = process.browser ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0) : 450;
+    const screenWidth = process.browser
+      ? Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+      : 450;
+    const postHeight = screenWidth <= POST_MAX_WIDTH ? '100vw' : `${POST_MAX_WIDTH}px`;
+    const loggedUserId = user && user._id;
 
     return (
       <StyledCard>
@@ -141,36 +145,35 @@ class PostCard extends Component {
             avatar: 'avatar',
             title: 'title',
           }}
-          avatar={(
+          avatar={
             <Link route="profile" params={{ username }} prefetch>
               <Avatar className="avatarPic" alt="avatar" src={profilePic} />
             </Link>
-          )}
-          title={(
+          }
+          title={
             <Link route="profile" params={{ username }} prefetch>
-              <Typography variant="h6" className="profileName">{username}</Typography>
+              <Typography variant="h6" className="profileName">
+                {username}
+              </Typography>
             </Link>
-          )}
-          action={(
+          }
+          action={
             <Fragment>
               <FollowButton
                 className="follow"
-                author={user && user._id}
+                author={loggedUserId}
                 receiver={author._id}
                 isFollowing={authorFollowed.isFollowing}
               />
-              <IconButton className="moreButton">
-                <More />
-              </IconButton>
+              <MoreOptionsButton openModal={this.setModalStatus('moreOptions', true)} />
             </Fragment>
-          )}
+          }
         />
         <ImageWithDots
           className="cardPic"
           fitCover
-          onDotLinkClick={this.openDotDetailsModal}
+          onDotLinkClick={this.setModalStatus('dots', true)}
           src={picUrl}
-          height={screenWidth <= POST_MAX_WIDTH ? '100vw' : `${POST_MAX_WIDTH}px`}
           postId={_id}
           withLoader
           dots={dots.nodes}
@@ -178,31 +181,40 @@ class PostCard extends Component {
         />
         <DotDetailsModal
           isOpen={isDotDetailsModalOpen}
-          onClose={this.closeDotDetailsModal}
+          onClose={this.setModalStatus('dots', false)}
           dotData={selectedDotData}
         />
         <CardContent className="caption">
-          <Typography component="p">
-            {caption}
-          </Typography>
+          <Typography component="p">{caption}</Typography>
         </CardContent>
         <CardActions className="actions" disableActionSpacing>
           <div>
-            <LikeButton
-              author={user && user._id}
-              liked={liked.isLiked}
-              postId={_id}
-            />
-            <IconButton onClick={this.openCommentsModal} aria-label="Comment">
+            <LikeButton author={loggedUserId} liked={liked.isLiked} postId={_id} />
+            <IconButton onClick={this.setModalStatus('comments', true)} aria-label="Comment">
               <Comment />
             </IconButton>
           </div>
-          <IconButton onClick={this.openShareModal} aria-label="Share">
+          <IconButton onClick={this.setModalStatus('share', true)} aria-label="Share">
             <Share />
           </IconButton>
         </CardActions>
-        <CommentsModal postId={_id} isOpen={isCommentsModalOpen} close={this.closeCommentsModal} />
-        <ShareModal username={username} postId={_id} isOpen={isShareModalOpen} close={this.closeShareModal} />
+        <CommentsModal
+          postId={_id}
+          isOpen={isCommentsModalOpen}
+          close={this.setModalStatus('comments', false)}
+        />
+        <ShareModal
+          username={username}
+          postId={_id}
+          isOpen={isShareModalOpen}
+          close={this.setModalStatus('share', false)}
+        />
+        <MoreOptionsModal
+          isOwner={loggedUserId === author._id}
+          postId={_id}
+          isOpen={isMoreOptionsModalOpen}
+          close={this.setModalStatus('moreOptions', false)}
+        />
       </StyledCard>
     );
   }
@@ -212,7 +224,7 @@ PostCard.propTypes = {
   _id: propTypes.string.isRequired,
   picUrl: propTypes.string.isRequired,
   liked: propTypes.shape({
-    _id: propTypes.string.isRequired,
+    _id: propTypes.string,
     isLiked: propTypes.bool.isRequired,
   }).isRequired,
   authorFollowed: propTypes.shape({

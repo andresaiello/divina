@@ -2,41 +2,38 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const userSchema = new Schema({
-  username: { type: String, required: true, unique: true }, // @todo: check how well mongoose unique works (probably not much)
-  profilePic: { type: String }, // @todo set as required and set default profile pic
-  name: { type: String },
-  email: { type: String, required: true, unique: true }, // @todo: validate email
-  birthdate: { type: String },
-  gender: {
-    type: String,
-    enum: [
-      'male',
-      'female',
-      'other',
-      '-',
-    ],
+const userSchema = new Schema(
+  {
+    username: { type: String, required: true, unique: true }, // @todo: check how well mongoose unique works (probably not much)
+    profilePic: { type: String }, // @todo set as required and set default profile pic
+    name: { type: String },
+    email: { type: String, required: true, unique: true }, // @todo: validate email
+    birthdate: { type: String },
+    gender: {
+      type: String,
+      enum: ['male', 'female', 'other', '-'],
+    },
+    description: { type: String },
+    phone: { type: String },
+    website: { type: String },
+    instagram: { type: String },
   },
-  description: { type: String },
-  phone: { type: String },
-  website: { type: String },
-  instagram: { type: String },
-}, { timestamps: true });
+  { timestamps: true },
+);
 
-userSchema.statics.createFromAuth0 = async function createFromAuth0 (data = {}) {
-  const newUser = await this
-    .create({
-      username: data.nickname || mongoose.Types.ObjectId(),
-      email: data.email || null,
-      profilePic: data.picture || null,
-      name: data.name || '',
-      gender: data.gender || '-',
-    });
+userSchema.statics.createFromAuth0 = async function createFromAuth0(data = {}) {
+  const newUser = await this.create({
+    username: data.nickname || mongoose.Types.ObjectId(),
+    email: data.email || null,
+    profilePic: data.picture || null,
+    name: data.name || '',
+    gender: data.gender || '-',
+  });
 
   return newUser.toObject();
 };
 
-userSchema.statics.updateProfilePic = async function updateProfilePic ({ _id, newUrl }) {
+userSchema.statics.updateProfilePic = async function updateProfilePic({ _id, newUrl }) {
   try {
     const user = await this.findOneAndUpdate(
       { _id },
@@ -55,13 +52,13 @@ userSchema.statics.updateProfilePic = async function updateProfilePic ({ _id, ne
   }
 };
 
-userSchema.statics.editDescription = async function editDescription ({ _id, description }) {
+userSchema.statics.editProfile = async function editProfile({ _id, profileInfo }) {
   try {
     const user = await this.findOneAndUpdate(
       { _id },
       {
         $set: {
-          description,
+          ...profileInfo,
         },
       },
       { new: true },
@@ -74,11 +71,9 @@ userSchema.statics.editDescription = async function editDescription ({ _id, desc
   }
 };
 
-userSchema.statics.findByEmail = async function findByEmail (email) {
+userSchema.statics.findByEmail = async function findByEmail(email) {
   try {
-    const [existingUser] = await this
-      .find({ email })
-      .lean();
+    const [existingUser] = await this.find({ email }).lean();
     return existingUser;
   } catch (e) {
     console.log(e);
@@ -86,11 +81,9 @@ userSchema.statics.findByEmail = async function findByEmail (email) {
   }
 };
 
-userSchema.statics.findByUsername = async function findByUsername (username) {
+userSchema.statics.findByUsername = async function findByUsername(username) {
   try {
-    const [existingUser] = await this
-      .find({ username })
-      .lean();
+    const [existingUser] = await this.find({ username }).lean();
     return existingUser;
   } catch (e) {
     console.log(e);
@@ -98,11 +91,9 @@ userSchema.statics.findByUsername = async function findByUsername (username) {
   }
 };
 
-userSchema.statics.findById = async function findById (_id) {
+userSchema.statics.findById = async function findById(_id) {
   try {
-    const [existingUser] = await this
-      .find({ _id })
-      .lean();
+    const [existingUser] = await this.find({ _id }).lean();
     return existingUser;
   } catch (e) {
     console.log(e);

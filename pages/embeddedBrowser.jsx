@@ -12,11 +12,11 @@ import FolderIcon from '@material-ui/icons/Folder';
 import Button from '@material-ui/core/Button';
 
 export default class extends React.Component {
-  static async getInitialProps ({ query }) {
+  static async getInitialProps({ query }) {
     return { ...query };
   }
 
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
       googleQuery: '',
@@ -25,21 +25,20 @@ export default class extends React.Component {
     };
   }
 
-
   search = () => {
     this.setState({ url: null });
     fetch(`/api/google/${this.state.googleQuery}`)
       .then(response => response.json())
       .then(data => this.setState({ googleResults: data }));
-  }
+  };
 
-  handleSearchBarChange = (event) => {
+  handleSearchBarChange = event => {
     this.setState({
       googleQuery: event.target.value,
     });
   };
 
-  render () {
+  render() {
     const { googleQuery, googleResults, url } = this.state;
 
     return (
@@ -51,47 +50,38 @@ export default class extends React.Component {
           onChange={this.handleSearchBarChange}
         />
         <Button variant="contained" onClick={() => this.search()}>
-        Buscar
+          Buscar
         </Button>
         <span />
 
         <div>
           <List>
-            {!url
-            && googleResults.map(elem => (
-              <ListItem
-                onClick={() => this.setState({ url: elem.url })}
-              >
-                <ListItemAvatar>
-                  <Avatar>
-                    <FolderIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary={elem.title}
-                  secondary="Secondary text"
-                />
-              </ListItem>
-            ))
-          }
+            {!url &&
+              googleResults.map(elem => (
+                <ListItem onClick={() => this.setState({ url: elem.url })}>
+                  <ListItemAvatar>
+                    <Avatar>
+                      <FolderIcon />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={elem.title} secondary="Secondary text" />
+                </ListItem>
+              ))}
           </List>
         </div>
-        {url
-        && (
-        <Iframe
-          url={url}
-          width="100%"
-          height="450px"
-          id="myId"
-          className="myClassname"
-          display="initial"
-          position="relative"
-          allowFullScreen
-        />
-        )
-        }
+        {url && (
+          <Iframe
+            url={url}
+            width="100%"
+            height="450px"
+            id="myId"
+            className="myClassname"
+            display="initial"
+            position="relative"
+            allowFullScreen
+          />
+        )}
       </div>
-
     );
   }
 }

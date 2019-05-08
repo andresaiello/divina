@@ -2,10 +2,14 @@ import React, { PureComponent, Fragment } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { TextField, Button, InputAdornment } from '@material-ui/core';
+import { CirclePicker } from 'react-color';
+import { Query } from 'react-apollo';
 
 import { FullscreenModal, Loader } from '~/components/shared';
-import { Query } from 'react-apollo';
 import { EditPost } from '~/lib/graphql';
+import { DOT_DEFAULT_COLOR } from '~/constants';
+
+const colors = [DOT_DEFAULT_COLOR, '#e91e63', '#9c27b0', '#673ab7', '#4caf50', '#00bcd4'];
 
 const StyledModal = styled(FullscreenModal)`
   .content {
@@ -34,6 +38,17 @@ const FormContainer = styled.form`
   .save {
     margin-top: 25px;
   }
+
+  .colorTitle {
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .colorPicker {
+    margin-left: auto;
+    margin-right: auto !important;
+  }
 `;
 
 const BrandsGrid = styled.div`
@@ -52,6 +67,8 @@ const BrandsGrid = styled.div`
     height: 24vw;
     margin-bottom: 1vw;
     border: 1px solid black;
+    word-break: break-word;
+    padding: 5px;
   }
 
   .search {
@@ -69,6 +86,7 @@ const initialState = {
   title: '',
   price: '',
   brandFilter: '',
+  color: colors[0],
 };
 
 export default class DotsModal extends PureComponent {
@@ -78,41 +96,43 @@ export default class DotsModal extends PureComponent {
     onSaveDot: propTypes.func.isRequired,
     persistDot: propTypes.func.isRequired,
     savingDot: propTypes.bool.isRequired,
-  }
+  };
 
-  state = { ...initialState }
+  state = { ...initialState };
 
-  selectBrand = (brand) => {
+  selectBrand = brand => {
     this.setState({ selectedBrand: brand });
-  }
+  };
 
   saveDot = async () => {
     const { onSaveDot, persistDot } = this.props;
-    const { title, selectedBrand, price } = this.state;
+    const { title, selectedBrand, price, color } = this.state;
 
     this.setState({ ...initialState }, async () => {
       await onSaveDot(persistDot, {
-        title, brand: selectedBrand._id, price: parseInt(price, 10), currency: 'EUR',
+        title,
+        brand: selectedBrand._id,
+        price: parseInt(price, 10),
+        currency: 'EUR',
+        color: color.hex,
       });
     });
-  }
+  };
 
-  updateValue = (e) => {
+  updateValue = e => {
     const { name, value } = e.target;
 
     this.setState({ [name]: value });
-  }
+  };
 
   close = () => {
     const { close } = this.props;
 
     this.setState({ ...initialState }, close);
-  }
+  };
 
-  render () {
-    const {
-      title, selectedBrand, price, brandFilter,
-    } = this.state;
+  render() {
+    const { title, selectedBrand, price, brandFilter, color } = this.state;
     const { isOpen, savingDot } = this.props;
 
     const lowerCaseBrandFilter = brandFilter.toLowerCase();
@@ -120,73 +140,69 @@ export default class DotsModal extends PureComponent {
     // @todo: validate dot form, don't allow null title - price.
 
     return (
-      <StyledModal
-        isOpen={isOpen}
-        close={this.close}
-        title="Agregar dots!"
-        disableBackdropClick
-      >
-        {savingDot
-          ? <Loader />
-          : selectedBrand
-            ? (
-              <FormContainer>
-                <TextField
-                  label="Título"
-                  name="title"
-                  margin="normal"
-                  value={title}
-                  onChange={this.updateValue}
-                />
-                <TextField
-                  label="Marca"
-                  margin="normal"
-                  value={selectedBrand.name}
-                  disabled
-                />
-                <TextField
-                  label="Precio"
-                  name="price"
-                  id="formatted-numberformat-input"
-                  type="number"
-                  onChange={this.updateValue}
-                  value={price}
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                  }}
-                />
-                <Button
-                  className="save"
-                  color="primary"
-                  variant="contained"
-                  onClick={this.saveDot}
-                  disabled={!title.length || price.toString ? !price.toString().length : price.length}
-                >
-                  Guardar
-                </Button>
-              </FormContainer>
-            )
-            : (
-              <Query
-                query={EditPost.Queries.GET_BRANDS}
-              >
-                {({ data, loading, error }) => (loading
-                  ? <Loader />
-                  : error
-                    ? <div>Error</div> // @todo
-                    : (
-                      <Fragment>
-                        <TextField
-                          label="Filtrar"
-                          name="brandFilter"
-                          className="brandFilterInput"
-                          margin="normal"
-                          value={brandFilter}
-                          onChange={this.updateValue}
-                          variant="outlined"
-                        />
-                        <BrandsGrid>
-                          {/* <div className="search brand">
+      <StyledModal isOpen={isOpen} close={this.close} title="Agregar prendas!" disableBackdropClick>
+        {savingDot ? (
+          <Loader />
+        ) : selectedBrand ? (
+          <FormContainer>
+            <TextField
+              label="Título"
+              name="title"
+              margin="normal"
+              value={title}
+              onChange={this.updateValue}
+            />
+            <TextField label="Marca" margin="normal" value={selectedBrand.name} disabled />
+            <TextField
+              label="Precio"
+              name="price"
+              id="formatted-numberformat-input"
+              type="number"
+              onChange={this.updateValue}
+              value={price}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">€</InputAdornment>,
+              }}
+            />
+            <div>
+              <div className="colorTitle">Color</div>
+              <CirclePicker
+                className="colorPicker"
+                colors={colors}
+                color={color}
+                onChange={updatedColor => this.setState({ color: updatedColor })}
+              />
+            </div>
+            <Button
+              className="save"
+              color="primary"
+              variant="contained"
+              onClick={this.saveDot}
+              disabled={!title.length || price.toString ? !price.toString().length : price.length}
+            >
+              Guardar
+            </Button>
+          </FormContainer>
+        ) : (
+          <Query query={EditPost.Queries.GET_BRANDS}>
+            {({ data, loading, error }) =>
+              loading ? (
+                <Loader />
+              ) : error ? (
+                <div>Error</div> // @todo
+              ) : (
+                <Fragment>
+                  <TextField
+                    label="Filtrar"
+                    name="brandFilter"
+                    className="brandFilterInput"
+                    margin="normal"
+                    value={brandFilter}
+                    onChange={this.updateValue}
+                    variant="outlined"
+                  />
+                  <BrandsGrid>
+                    {/* <div className="search brand">
                             <Search
                               className="icon"
                               color="primary"
@@ -194,26 +210,25 @@ export default class DotsModal extends PureComponent {
                             />
                             <div>Buscar</div>
                           </div> */}
-                          {data.brands.nodes
-                            .filter(b => b.name.toLowerCase().indexOf(lowerCaseBrandFilter) !== -1)
-                            .map(brand => (
-                              <div
-                                key={brand.name}
-                                className="brand"
-                                onClick={() => this.selectBrand(brand)}
-                                role="button"
-                                tabIndex={0}
-                              >
-                                {brand.name}
-                              </div>
-                            ))}
-                        </BrandsGrid>
-                      </Fragment>
-                    )
-                )}
-              </Query>
-            )
-        }
+                    {data.brands.nodes
+                      .filter(b => b.name.toLowerCase().indexOf(lowerCaseBrandFilter) !== -1)
+                      .map(brand => (
+                        <div
+                          key={brand.name}
+                          className="brand"
+                          onClick={() => this.selectBrand(brand)}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          {brand.name}
+                        </div>
+                      ))}
+                  </BrandsGrid>
+                </Fragment>
+              )
+            }
+          </Query>
+        )}
       </StyledModal>
     );
   }

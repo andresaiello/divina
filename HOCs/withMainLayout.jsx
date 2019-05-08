@@ -17,13 +17,13 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export default BaseComponent => ({ hideProgressBar, ...rest }) => {
+export default BaseComponent => ({ hideProgressBar, hideFooter, ...rest }) => {
   const Content = props => (
     <Fragment>
       <GlobalStyle />
       <HeadAppBar />
       <BaseComponent style={{ marginBottom: '60px' }} {...props} />
-      <BottomAppBar />
+      {!hideFooter && <BottomAppBar />}
     </Fragment>
   );
 

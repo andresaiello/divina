@@ -1,13 +1,10 @@
 import React from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import {
-  Dialog, AppBar, Toolbar, IconButton, Typography, Slide,
-} from '@material-ui/core';
+import { Dialog, AppBar, Toolbar, IconButton, Typography, Slide } from '@material-ui/core';
 import { Close, ChevronLeft } from '@material-ui/icons';
 
-const StyledDialog = styled(Dialog)`
-`;
+const StyledDialog = styled(Dialog)``;
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -43,8 +40,15 @@ const StyledAppBar = styled(AppBar)`
 
 const Transition = props => <Slide {...props} />;
 
-export default function FullscreenModal ({
-  isOpen, customAppBar, transitionDirection, close, title, children, ...rest
+export default function FullscreenModal({
+  isOpen,
+  customAppBar,
+  transitionDirection,
+  close,
+  title,
+  children,
+  appBarContent,
+  ...rest
 }) {
   const appBar = (
     <StyledAppBar position="static">
@@ -53,7 +57,7 @@ export default function FullscreenModal ({
           <ChevronLeft className="backIcon" onClick={close} />
         </div>
         <Typography component="h4">{title}</Typography>
-        <div />
+        {appBarContent || <div />}
       </Toolbar>
     </StyledAppBar>
   );
@@ -68,9 +72,7 @@ export default function FullscreenModal ({
       {...rest}
     >
       {customAppBar || appBar}
-      <div className="content">
-        {children}
-      </div>
+      <div className="content">{children}</div>
     </StyledDialog>
   );
 }
@@ -85,6 +87,7 @@ FullscreenModal.propTypes = {
   transitionDirection: propTypes.string,
   isOpen: propTypes.bool.isRequired,
   close: propTypes.func.isRequired,
-  children: propTypes.oneOfType([propTypes.arrayOf(propTypes.element), propTypes.element]).isRequired,
+  children: propTypes.oneOfType([propTypes.arrayOf(propTypes.element), propTypes.element])
+    .isRequired,
   title: propTypes.string.isRequired,
 };

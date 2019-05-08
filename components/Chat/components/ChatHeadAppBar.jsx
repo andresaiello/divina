@@ -21,12 +21,12 @@ const StyledAppBar = styled(AppBar)`
       justify-content: left;
     }
 
-    .avatar{
+    .avatar {
       margin: 0 5px 0 5px;
     }
 
     h6 {
-      font-family: Roboto,Helvetica,Arial,sans-serif;
+      font-family: Roboto, Helvetica, Arial, sans-serif;
       font-size: 16px;
       color: rgb(74, 74, 74);
     }
@@ -38,14 +38,16 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
-function ChatHeadAppBar (props) {
+function ChatHeadAppBar(props) {
   const { chatGroup } = props;
   const defaultUser = { username: '', profilePic: '' };
-  const user = (chatGroup && chatGroup.members.length > 1) ? chatGroup.members[1] : defaultUser;
+  const user = chatGroup && chatGroup.members.length > 1 ? chatGroup.members[1] : defaultUser;
   return (
     <StyledAppBar position="static" {...props}>
       <Toolbar className="toolbar">
-        <Link route="/chat" prefetch><KeyboardArrowLeft /></Link>
+        <Link route="/chat" prefetch>
+          <KeyboardArrowLeft />
+        </Link>
         <Avatar user={user} border />
 
         <Typography variant="h6" color="inherit" className="disable-select">

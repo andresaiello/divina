@@ -1,13 +1,7 @@
 import React, { Fragment, Component } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import {
-  Fab,
-  AppBar,
-  Toolbar,
-  CircularProgress,
-  IconButton,
-} from '@material-ui/core';
+import { Fab, AppBar, Toolbar, CircularProgress, IconButton } from '@material-ui/core';
 import {
   ChatBubbleOutline as Chat,
   Search as SearchIcon,
@@ -21,6 +15,7 @@ import SecContext from '~/context/secContext';
 import PictureUploadContext from '~/context/PictureUploadContext';
 import { Link, Router } from '~/server/routes';
 import { readImageAsBase64 } from '~/util';
+import UploadImageContainer from './UploadImageContainer';
 
 const StyledAppBar = styled(AppBar)`
   && {
@@ -65,75 +60,47 @@ class BottomAppBar extends Component {
     uploading: false,
   };
 
-  onDropImage = async (acceptedFiles, rejectedFiles, uploadPicture) => {
-    this.setState({ uploading: true });
-
-    let fileToSend = null;
-    acceptedFiles.forEach((file) => { fileToSend = file; });
-
-    const { base64Img, width, height } = await readImageAsBase64(fileToSend);
-
-    uploadPicture({ src: base64Img, width, height }, () => Router.pushRoute('uploadPicture'));
-  }
-
-  render () {
+  render() {
     const { uploading } = this.state;
 
     return (
-      <PictureUploadContext.Consumer>
-        {({ uploadPicture }) => (
-          <Fragment>
-            <StyledAppBar position="fixed" {...this.props}>
-              <Toolbar className="toolbar">
-                <Link route="feed" prefetch>
-                  <a>
-                    <IconButton color="inherit" aria-label="Open drawer">
-                      <HomeIcon />
-                    </IconButton>
-                  </a>
-                </Link>
-                <Link route="discover" prefetch>
-                  <a>
-                    <IconButton color="inherit">
-                      <SearchIcon />
-                    </IconButton>
-                  </a>
-                </Link>
-                {uploading
-                  ? <CircularProgress />
-                  : (
-                    <Dropzone
-                      onDrop={(accepted, rejected) => { this.onDropImage(accepted, rejected, uploadPicture); }}
-                      className="drop-zone"
-                    >
-                      {({ getRootProps, getInputProps }) => (
-                        <div {...getRootProps()} className="button-small">
-                          <input {...getInputProps()} />
-                          <AddIcon className="fab upload" color="primary" aria-label="Add" />
-                        </div>
-                      )}
-                    </Dropzone>
-                  )
-                }
-                <Link route="chatList" prefetch>
-                  <a>
-                    <IconButton color="inherit">
-                      <Chat />
-                    </IconButton>
-                  </a>
-                </Link>
-                <Link route="myProfile" prefetch>
-                  <a>
-                    <IconButton color="inherit">
-                      <ProfileIcon />
-                    </IconButton>
-                  </a>
-                </Link>
-              </Toolbar>
-            </StyledAppBar>
-          </Fragment>
-        )}
-      </PictureUploadContext.Consumer>
+      <Fragment>
+        <StyledAppBar position="fixed" {...this.props}>
+          <Toolbar className="toolbar">
+            <Link route="feed" prefetch>
+              <a>
+                <IconButton color="inherit" aria-label="Open drawer">
+                  <HomeIcon />
+                </IconButton>
+              </a>
+            </Link>
+            <Link route="discover" prefetch>
+              <a>
+                <IconButton color="inherit">
+                  <SearchIcon />
+                </IconButton>
+              </a>
+            </Link>
+            <UploadImageContainer
+              icon={<AddIcon className="fab upload" color="primary" aria-label="Add" />}
+            />
+            <Link route="chatList" prefetch>
+              <a>
+                <IconButton color="inherit">
+                  <img width="22" src="/static/chatBlack.png" alt="chat" />
+                </IconButton>
+              </a>
+            </Link>
+            <Link route="myProfile" prefetch>
+              <a>
+                <IconButton color="inherit">
+                  <ProfileIcon />
+                </IconButton>
+              </a>
+            </Link>
+          </Toolbar>
+        </StyledAppBar>
+      </Fragment>
     );
   }
 }

@@ -9,8 +9,8 @@ const { missing } = require('../util');
 
 const typeDefs = gql`
   extend type Query {
-    profile (username: String): Profile
-    profilePosts (_id: String!): [Post]
+    profile(username: String): Profile
+    profilePosts(_id: String!): [Post]
   }
 
   type Profile {
@@ -38,16 +38,16 @@ const resolvers = {
     },
   },
   Profile: {
-    authorFollowed: async ({ user }, _, { loggedUser }) => (loggedUser
-      ? {
-        _id: user._id,
-        isFollowing: await Followers.isFollowedBy({
-          owner: user._id,
-          followedBy: loggedUser && loggedUser._id,
-        }),
-      }
-      : { _id: user._id, isFollowing: false }
-    ),
+    authorFollowed: async ({ user }, _, { loggedUser }) =>
+      loggedUser
+        ? {
+            _id: user._id,
+            isFollowing: await Followers.isFollowedBy({
+              owner: user._id,
+              followedBy: loggedUser && loggedUser._id,
+            }),
+          }
+        : { _id: user._id, isFollowing: false },
     followersCount: async ({ user }) => Followers.countFollowers({ owner: user._id }),
     followingCount: async ({ user }) => Following.countFollowing({ owner: user._id }),
     postsCount: async ({ user }) => Post.countDocuments({ author: user._id }),

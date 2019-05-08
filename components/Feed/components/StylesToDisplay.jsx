@@ -25,7 +25,6 @@ const Container = styled.div`
     object-fit: cover;
     border-radius: 15px;
     filter: saturate(2) brightness(100%) contrast(44%);
-    -webkit-filter: saturate(2) brightness(100%) contrast(44%);
 
     margin: 0px 2.5px;
 
@@ -35,19 +34,28 @@ const Container = styled.div`
   }
 `;
 
-export default function StylesToDisplay () {
+export default function StylesToDisplay() {
   return (
     <Container>
       <div className="imageContainer">
-        <img src="https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg" alt="prueba" />
+        <img
+          src="https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg"
+          alt="prueba"
+        />
         <p>Estilo 1</p>
       </div>
       <div className="imageContainer">
-        <img src="https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg" alt="prueba" />
+        <img
+          src="https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg"
+          alt="prueba"
+        />
         <p>Estilo 2</p>
       </div>
       <div className="imageContainer">
-        <img src="https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg" alt="prueba" />
+        <img
+          src="https://cdn.vogue.es/uploads/images/thumbs/es/vog/2/s/2016/15/vogue_news_922575988_620x.jpg"
+          alt="prueba"
+        />
         <p>Estilo 3</p>
       </div>
     </Container>

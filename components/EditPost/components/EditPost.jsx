@@ -5,15 +5,21 @@ import { Button } from '@material-ui/core';
 import { Mutation, Query } from 'react-apollo';
 
 import withMainLayout from '~/HOCs/withMainLayout';
+import withClothingStyles from '~/HOCs/withClothingStyles';
 import { Router } from '~/server/routes';
 import { Post, EditPost as EditPostGQL } from '~/lib/graphql';
-import { Loader } from '~/components/shared';
+import { Loader, ClothingStylesModal } from '~/components/shared';
 
 import EditDots from './EditDots';
 import DotsModal from './DotsModal';
+import StylesSelect from './StylesSelect';
 
 const Container = styled.div`
   text-align: center;
+
+  .content {
+    margin: 0 10px;
+  }
 `;
 
 class EditPost extends Component {
@@ -26,114 +32,155 @@ class EditPost extends Component {
     xLength: null,
     yPosition: 0,
     yLength: null,
-    dotsModalOpen: false,
+    isDotsModalOpen: false,
+    isClothingStylesModalOpen: false,
     savingDot: false,
-  }
+  };
 
-  selectDotPlace = (e) => {
+  selectDotPlace = e => {
     this.setState({
-      dotsModalOpen: true,
+      isDotsModalOpen: true,
       xPosition: e.nativeEvent.offsetX,
       yPosition: e.nativeEvent.offsetY,
     });
-  }
+  };
 
   onSaveDot = async (persistDot, dotData) => {
-    const {
-      xPosition, xLength, yPosition, yLength,
-    } = this.state;
+    const { xPosition, xLength, yPosition, yLength } = this.state;
     const { postId } = this.props;
 
+    const variables = {
+      postId,
+      xPosition: xPosition / xLength,
+      yPosition: yPosition / yLength,
+      ...dotData,
+    };
+
     this.setState({ savingDot: true }, async () => {
-      await persistDot({
-        variables: {
-          postId,
-          xPosition: xPosition / xLength,
-          yPosition: yPosition / yLength,
-          ...dotData,
-        },
-      });
+      await persistDot({ variables });
 
       this.setState({
         xPosition: 0,
         yPosition: 0,
         savingDot: false,
-        dotsModalOpen: false,
+        isDotsModalOpen: false,
       });
     });
-  }
+  };
 
   closeDotsModal = () => {
     this.setState({
-      dotsModalOpen: false,
+      isDotsModalOpen: false,
       xPosition: 0,
       yPosition: 0,
     });
-  }
+  };
 
-  getImageSize = (e) => {
-    this.setState({ xLength: e.target.width, yLength: e.target.height });
-  }
+  getImageSize = e => {
+    this.setState({ xLength: e.target.clientWidth, yLength: e.target.clientHeight });
+  };
 
-  render () {
+  persistAndRedirect = async setClothingStyles => {
+    const { postId, selectedClothingStyles } = this.props;
+    await setClothingStyles({
+      variables: { postId, clothingStyles: selectedClothingStyles.map(cs => cs.name) },
+    });
+    Router.pushRoute('feed');
+  };
+
+  openClothingStylesModal = () => {
+    const { persistCurrentState } = this.props;
+
+    persistCurrentState();
+    this.setState({ isClothingStylesModalOpen: true });
+  };
+
+  closeClothingStylesModal = () => {
+    this.setState({ isClothingStylesModalOpen: false });
+  };
+
+  render() {
     const {
-      xPosition, xLength, yPosition, yLength, dotsModalOpen, savingDot,
+      xPosition,
+      xLength,
+      yPosition,
+      yLength,
+      isDotsModalOpen,
+      savingDot,
+      isClothingStylesModalOpen,
     } = this.state;
-    const { postId, ...rest } = this.props;
+
+    const {
+      postId,
+      post,
+      clothingStyles,
+      selectedClothingStyles,
+      toggleStyleSelection,
+      unselectStyle,
+      unselectAll,
+      persistCurrentState,
+      backToPersistedState,
+      ...rest
+    } = this.props;
 
     return (
-      <Query
-        query={EditPostGQL.Queries.GET_POST}
-        variables={{ _id: postId }}
-      >
-        {({ data, loading, error }) => {
-          if (loading) return <Loader />;
-          if (error) return <div>Error!</div>; // @todo: better error message
-          if (!data.post || !data.post.picUrl) return <div>No existe!</div>; // @todo: better error message
-
-          return (
-            <Container {...rest}>
-              <EditDots
-                selectDotPlace={this.selectDotPlace}
-                existentDots={data.post.dots && data.post.dots.nodes}
-                imageSizeX={xLength}
-                imageSizeY={yLength}
-                dotX={xPosition}
-                dotY={yPosition}
-                displayDot={xPosition + yPosition !== 0}
-                getImageSize={this.getImageSize}
-                picUrl={data.post.picUrl}
-                postId={postId}
-              />
-              <p>¡Toca sobre la imagen para empezar a agregar tus dots!</p>
-              <Mutation
-                mutation={Post.Mutations.ADD_DOT}
-              >
-                {addDot => (
-                  <DotsModal
-                    isOpen={dotsModalOpen}
-                    close={this.closeDotsModal}
-                    onSaveDot={this.onSaveDot}
-                    savingDot={savingDot}
-                    persistDot={addDot}
-                  />
-                )}
-              </Mutation>
+      <Container {...rest}>
+        <EditDots
+          selectDotPlace={this.selectDotPlace}
+          existentDots={post.dots && post.dots.nodes}
+          imageSizeX={xLength}
+          imageSizeY={yLength}
+          dotX={xPosition}
+          dotY={yPosition}
+          displayDot={xPosition + yPosition !== 0}
+          getImageSize={this.getImageSize}
+          picUrl={post.picUrl}
+          postId={postId}
+        />
+        <Mutation mutation={Post.Mutations.ADD_DOT}>
+          {addDot => (
+            <DotsModal
+              isOpen={isDotsModalOpen}
+              close={this.closeDotsModal}
+              onSaveDot={this.onSaveDot}
+              savingDot={savingDot}
+              persistDot={addDot}
+            />
+          )}
+        </Mutation>
+        <ClothingStylesModal
+          isOpen={isClothingStylesModalOpen}
+          close={this.closeClothingStylesModal}
+          closeAndCancelSelection={() => {
+            backToPersistedState();
+            this.closeClothingStylesModal();
+          }}
+          clothingStyles={clothingStyles}
+          onStyleClick={toggleStyleSelection}
+        />
+        <div className="content">
+          <p>¡Toca sobre la imagen para empezar a agregar tus prendas!</p>
+          <StylesSelect
+            onClick={this.openClothingStylesModal}
+            handleDelete={unselectStyle}
+            selectedClothingStyles={selectedClothingStyles}
+          />
+          <Mutation mutation={Post.Mutations.SET_CLOTHING_STYLES}>
+            {setClothingStyles => (
               <Button
                 className="save"
                 color="primary"
                 variant="contained"
-                onClick={() => Router.pushRoute('feed')}
+                onClick={() => this.persistAndRedirect(setClothingStyles)}
               >
                 Guardar
               </Button>
-            </Container>
-          );
-        }}
-      </Query>
+            )}
+          </Mutation>
+        </div>
+      </Container>
     );
   }
 }
 
-
-export default withMainLayout(EditPost);
+export default withMainLayout(withClothingStyles(EditPost));

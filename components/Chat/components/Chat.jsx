@@ -13,26 +13,67 @@ import ChatHeadAppBar from './ChatHeadAppBar';
 
 const StyledChat = styled.div`
   && {
-    background-image: url("/static/chat-background.jpg");
+    background-image: url('/static/chat-background.jpg');
     background-size: cover;
     display: flex;
     flex-direction: column;
     height: 100vh;
+    /* min-height: -webkit-fill-available; */
+    max-height: -webkit-fill-available;
+  }
+`;
+
+const StyledChat1 = styled.div`
+  && {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1300;
+    position: fixed;
+  }
+`;
+
+const StyledChat2 = styled.div`
+  && {
+    height: 100%;
+    outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const StyledChat3 = styled.div`
+  && {
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    max-width: 100%;
+    max-height: none;
+    border-radius: 0;
+    flex: 0 1 auto;
+    display: flex;
+    position: relative;
+    overflow-y: auto;
+    flex-direction: column;
+  }
+`;
+
+const StyledChat4 = styled.div`
+  && {
+    background-image: url('/static/chat-background.jpg');
+    background-size: cover;
   }
 `;
 
 const Chat = class extends React.PureComponent {
-  render () {
+  render() {
     const { chatGroupId } = this.props;
 
     return (
-      <Query
-        query={CHAT_GET_MESSAGES}
-        variables={{ _id: chatGroupId }}
-      >
-        {({
-          loading, error, data, subscribeToMore, networkStatus, refetch,
-        }) => {
+      <Query query={CHAT_GET_MESSAGES} variables={{ _id: chatGroupId }}>
+        {({ loading, error, data, subscribeToMore, networkStatus, refetch }) => {
           let loader = null;
           let errorMessage = null;
 
@@ -45,34 +86,44 @@ const Chat = class extends React.PureComponent {
           if (error) errorMessage = <div>Error!</div>;
           // @todo add timeout and no connection error message to refetch and fetch more
 
-          const more = () => subscribeToMore({
-            document: CHAT_SUB_NEW_MSG,
-            variables: { _id: chatGroupId },
-            updateQuery: (prev, { subscriptionData }) => {
-              if (!subscriptionData.data) return prev;
-              // console.log(prev);
-              // console.log(subscriptionData);
-              // console.log(subscriptionData.data.messageCreated);
-              return Object.assign({}, prev, {
-                chatMessages: {
-                  nodes: [...prev.chatMessages.nodes, subscriptionData.data.messageCreated].slice(0, 200),
-                  __typename: 'ChatMessages',
-                },
-
-              });
-            },
-          });
+          const more = () =>
+            subscribeToMore({
+              document: CHAT_SUB_NEW_MSG,
+              variables: { _id: chatGroupId },
+              updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return prev;
+                // console.log(prev);
+                // console.log(subscriptionData);
+                // console.log(subscriptionData.data.messageCreated);
+                return Object.assign({}, prev, {
+                  chatMessages: {
+                    nodes: [...prev.chatMessages.nodes, subscriptionData.data.messageCreated].slice(
+                      0,
+                      200,
+                    ),
+                    __typename: 'ChatMessages',
+                  },
+                });
+              },
+            });
           return (
-            <PageVisibility onChange={isVisible => (isVisible && refetch())}>
-              <StyledChat>
-                <ChatHeadAppBar chatGroup={chatGroup} />
-                <MessageList messages={messages || []} subscribeToMore={more} />
-                <InputText chatGroupId={chatGroupId} />
-              </StyledChat>
-            </PageVisibility>);
+            <PageVisibility onChange={isVisible => isVisible && refetch()}>
+              <StyledChat1>
+                <StyledChat2>
+                  <StyledChat3>
+                    <ChatHeadAppBar chatGroup={chatGroup} />
+                    <StyledChat4>
+                      <MessageList messages={messages || []} subscribeToMore={more} />
+
+                      <InputText chatGroupId={chatGroupId} />
+                    </StyledChat4>
+                  </StyledChat3>
+                </StyledChat2>
+              </StyledChat1>
+            </PageVisibility>
+          );
         }}
       </Query>
-
     );
   }
 };

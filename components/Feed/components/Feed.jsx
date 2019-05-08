@@ -5,25 +5,16 @@ import { Query } from 'react-apollo';
 import { isFetchingMore, isRefreshing } from '~/util';
 import { Feed as FeedGQL } from '~/lib/graphql';
 import withMainLayout from '~/HOCs/withMainLayout';
+import { Loader } from '~/components/shared';
 
-import { Loader } from '../../shared';
 import Posts from './Posts';
-import StylesToDisplay from './StylesToDisplay';
 
-const StyledFeed = styled.div`
+const StyledFeed = styled.div``;
 
-`;
-
-function Feed (props) {
+function Feed(props) {
   return (
-    <Query
-      query={FeedGQL.Queries.GET_POSTS}
-      notifyOnNetworkStatusChange
-      variables={{ amount: 2 }}
-    >
-      {({
-        data, error, loading, refetch, networkStatus, fetchMore,
-      }) => {
+    <Query query={FeedGQL.Queries.GET_POSTS} notifyOnNetworkStatusChange variables={{ amount: 4 }}>
+      {({ data, error, loading, refetch, networkStatus, fetchMore }) => {
         let loader = null;
         let errorMessage = null;
         const { posts } = data || { posts: null };
@@ -37,7 +28,6 @@ function Feed (props) {
 
         return (
           <StyledFeed {...props}>
-            <StylesToDisplay />
             <Posts
               fetchingMore={isFetchingMore(networkStatus)}
               posts={nodes}

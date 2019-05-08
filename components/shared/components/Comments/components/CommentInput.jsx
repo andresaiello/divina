@@ -1,9 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import propTypes from 'prop-types';
-import {
-  Avatar, TextField, Grid, InputAdornment,
-} from '@material-ui/core';
+import { Avatar, TextField, Grid, InputAdornment } from '@material-ui/core';
 
 const Container = styled(Grid)`
   justify-content: space-around;
@@ -45,20 +43,25 @@ const StyledAdornment = styled(InputAdornment)`
     cursor: pointer;
     font-weight: bold;
     user-select: none;
-    color: #ABDBFF;
+    color: #abdbff;
   }
 
   &.isEnabled {
     p {
-      color: rgb(1,145,255);
+      color: rgb(1, 145, 255);
     }
   }
 `;
 
-function CommentInput ({
-  currentComment, editComment, sendComment, userAvatar, ...rest
+function CommentInput({
+  currentComment,
+  editComment,
+  savingComment,
+  sendComment,
+  userAvatar,
+  ...rest
 }) {
-  const isEnabled = currentComment.length > 0;
+  const isEnabled = currentComment.length > 0 && !savingComment;
 
   return (
     <Container container spacing={8} alignItems="flex-end" {...rest}>
@@ -71,7 +74,7 @@ function CommentInput ({
             value={currentComment}
             variant="outlined"
             placeholder="Añade un comentario"
-            onKeyUp={e => (e.keyCode === 13 ? sendComment(currentComment) : null)}
+            onKeyUp={e => (e.keyCode === 13 && isEnabled ? sendComment(currentComment) : null)}
             InputProps={{
               endAdornment: (
                 <StyledAdornment
@@ -90,7 +93,12 @@ function CommentInput ({
   );
 }
 
+CommentInput.defaultProps = {
+  savingComment: false,
+};
+
 CommentInput.propTypes = {
+  savingComment: propTypes.bool,
   currentComment: propTypes.string.isRequired,
   editComment: propTypes.func.isRequired,
   sendComment: propTypes.func.isRequired,

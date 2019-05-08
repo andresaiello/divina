@@ -5,8 +5,6 @@ const StyledImage = styled(Image)`
   object-fit: cover;
 `;
 
-export default function PostImage () {
-  return (
-    <StyledImage height="375px" />
-  );
+export default function PostImage() {
+  return <StyledImage height="375px" />;
 }

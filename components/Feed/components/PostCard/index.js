@@ -1,1 +1,1 @@
-export { default as PostCard } from './components/PostCard';
+export { default } from './components/PostCard';

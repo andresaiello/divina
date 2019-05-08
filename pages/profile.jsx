@@ -6,7 +6,8 @@ import SecContext from '~/context/secContext';
 import { User } from '~/lib/graphql';
 import { Profile } from '~/components/Profiles';
 import { LoadingScreen } from '~/components/shared';
-import router, { Router } from '~/server/routes';
+import { Router } from '~/server/routes';
+import { isServer, serverRedirect, clientRedirect } from '~/util';
 
 export default class extends React.Component {
   static contextType = SecContext;
@@ -15,10 +16,10 @@ export default class extends React.Component {
     username: propTypes.string.isRequired,
   };
 
-  static async getInitialProps ({ query, req, res }) {
-    if (req && res && req.user && req.user.username === query.username) {
-      res.writeHead(302, { Location: router.findByName('myProfile').toPath() });
-      res.end();
+  static async getInitialProps({ query, req, res }) {
+    if (isServer()) {
+      const isLoggedUserProfile = req.user && req.user.username === query.username;
+      if (isLoggedUserProfile) serverRedirect('myProfile')(res);
     }
 
     return { ...query };
@@ -26,38 +27,37 @@ export default class extends React.Component {
 
   state = {
     loadingProfile: true,
-  }
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     const { user } = this.context || {};
     const { username } = user || {};
-    if (process.browser && username && window.location.pathname.indexOf(username) > -1) {
-      Router.pushRoute('myProfile');
-    } else {
-      this.setState({ loadingProfile: false });
-    }
+
+    const isLoggedUserProfile = username && window.location.pathname.indexOf(username) > -1;
+
+    if (process.browser && isLoggedUserProfile) clientRedirect('myProfile');
+    else this.setState({ loadingProfile: false });
   }
 
-  render () {
+  render() {
     const { username } = this.props;
     const { loadingProfile } = this.state;
 
     if (loadingProfile) return <LoadingScreen withLayout />;
 
     return (
-      <Query
-        query={User.Queries.GET_PROFILE}
-        notifyOnNetworkStatusChange
-        variables={{ username }}
-      >
-        {({ data: profileData, loading, error }) => (loading
-          ? <LoadingScreen withLayout />
-          : error
-            ? <div>Error!</div> // @todo: better error message
-            : !profileData.profile
-              ? <div>El perfil no existe!</div> // @todo: better error message
-              : <Profile {...profileData} />
-        )}
+      <Query query={User.Queries.GET_PROFILE} notifyOnNetworkStatusChange variables={{ username }}>
+        {({ data: profileData, loading, error }) =>
+          loading ? (
+            <LoadingScreen withLayout />
+          ) : error ? (
+            <div>Error!</div> // @todo: better error message
+          ) : !profileData.profile ? (
+            <div>El perfil no existe!</div> // @todo: better error message
+          ) : (
+            <Profile {...profileData} />
+          )
+        }
       </Query>
     );
   }

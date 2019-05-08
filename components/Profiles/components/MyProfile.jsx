@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
 import { Button } from '@material-ui/core';
 
 import withMainLayout from '~/HOCs/withMainLayout';
-import loginRequired from '~/HOCs/loginRequired';
 import { Link } from '~/server/routes';
 
 import ProfileInfo from './ProfileInfo';
@@ -18,7 +17,7 @@ const StyledProfile = styled.article`
   }
 `;
 
-function MyProfile ({ profile, ...rest }) {
+function MyProfile({ profile, ...rest }) {
   const editProfile = (
     <Link route="editProfile" prefetch>
       <Button variant="outlined">editar</Button>
@@ -50,4 +49,4 @@ MyProfile.propTypes = {
   }).isRequired,
 };
 
-export default loginRequired(withMainLayout(MyProfile));
+export default withMainLayout(MyProfile);

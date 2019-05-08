@@ -2,9 +2,7 @@
 import React, { Component, useState } from 'react';
 import propTypes from 'prop-types';
 import styled from 'styled-components';
-import {
-  Avatar, TextField, Button, CircularProgress,
-} from '@material-ui/core';
+import { Avatar, TextField, Button, CircularProgress } from '@material-ui/core';
 import { ChevronRight } from '@material-ui/icons';
 import { Mutation, Query } from 'react-apollo';
 import Dropzone from 'react-dropzone';
@@ -20,7 +18,7 @@ const sidesPadding = '5%';
 const Container = styled.div`
   text-align: center;
   margin: 0 auto;
-  max-width: 400px;
+  max-width: 500px;
 
   a {
     color: rgb(1, 145, 255);
@@ -36,6 +34,10 @@ const Container = styled.div`
       width: 80px;
       height: 80px;
       margin: 10px auto;
+    }
+
+    .profilePicInput {
+      display: inline-block;
     }
   }
 
@@ -73,7 +75,7 @@ const Container = styled.div`
     a {
       display: flex;
       justify-content: space-between;
-      border-bottom: 1px solid rgb(218,218,219);
+      border-bottom: 1px solid rgb(218, 218, 219);
       padding: 5px 0px;
       margin: 5px 0px;
 
@@ -84,37 +86,42 @@ const Container = styled.div`
   }
 `;
 
-function EditProfile (props) {
+function EditProfile(props) {
   return (
-    <Query
-      query={User.Queries.EDIT_PROFILE_GET_USER_PROFILE}
-      notifyOnNetworkStatusChange
-    >
-      {({ data, loading, error }) => (loading
-        ? <Loader />
-        : error
-          ? <div>Error!</div> // @todo better msg
-          : <ProfileDetails {...props} user={data && data.profile.user} />
-      )}
+    <Query query={User.Queries.EDIT_PROFILE_GET_USER_PROFILE} notifyOnNetworkStatusChange>
+      {({ data, loading, error }) =>
+        loading ? (
+          <Loader />
+        ) : error ? (
+          <div>Error!</div> // @todo better msg
+        ) : (
+          <ProfileDetails {...props} user={data && data.profile.user} />
+        )
+      }
     </Query>
   );
 }
 
-function ProfileDetails ({ user, ...rest }) {
+function ProfileDetails({ user, ...rest }) {
   const [state, setState] = useState({
-    description: user.description,
+    name: user.name,
     username: user.username,
+    description: user.description,
+    website: user.website || '',
+    instagram: user.instagram || '',
     saving: false,
   });
 
   const [uploadingProfilePic, setUploadingProfilePic] = useState(false);
 
-  async function onDropImage (acceptedFiles, rejectedFiles, updateDb) {
+  async function onDropImage(acceptedFiles, rejectedFiles, updateDb) {
     setUploadingProfilePic(true);
 
     try {
       let fileToSend = null;
-      acceptedFiles.forEach((file) => { fileToSend = file; });
+      acceptedFiles.forEach(file => {
+        fileToSend = file;
+      });
 
       const { base64Img } = await readImageAsBase64(fileToSend);
       const { secure_url } = await base64ToCloudinary(base64Img);
@@ -127,12 +134,12 @@ function ProfileDetails ({ user, ...rest }) {
     }
   }
 
-  function updateField (e) {
+  function updateField(e) {
     const { name, value } = e.target;
     setState(prevState => ({ ...prevState, [name]: value }));
   }
 
-  const { username, description, saving } = state;
+  const { name, username, description, saving, website, instagram } = state;
 
   if (saving) return <Loader />;
 
@@ -140,55 +147,46 @@ function ProfileDetails ({ user, ...rest }) {
 
   return (
     <Container {...rest}>
-      <Mutation
-        mutation={User.Mutations.UPDATE_PROFILE_PIC}
-      >
+      <Mutation mutation={User.Mutations.UPDATE_PROFILE_PIC}>
         {updateDb => (
           <div className="avatarContainer">
-            {uploadingProfilePic
-              ? <CircularProgress className="avatar" />
-              : <Avatar className="avatar" src={user.profilePic} alt="Foto de perfil" />
-                }
-            <Dropzone
-              onDrop={(accepted, rejected) => { onDropImage(accepted, rejected, updateDb); }}
-              className="dropZone"
-            >
-              {({ getRootProps, getInputProps }) => (
-                <div {...getRootProps()} className="smallButton">
-                  <input {...getInputProps()} />
-                  <a>Cambiar foto de perfil</a>
-                </div>
-              )}
-            </Dropzone>
+            {uploadingProfilePic ? (
+              <CircularProgress className="avatar" />
+            ) : (
+              <Dropzone
+                onDrop={(accepted, rejected) => {
+                  onDropImage(accepted, rejected, updateDb);
+                }}
+                className="dropZone"
+              >
+                {({ getRootProps, getInputProps }) => (
+                  <div {...getRootProps()} className="profilePicInput">
+                    <Avatar className="avatar" src={user.profilePic} alt="Foto de perfil" />
+                    <input {...getInputProps()} />
+                    <a>Cambiar foto de perfil</a>
+                  </div>
+                )}
+              </Dropzone>
+            )}
           </div>
         )}
       </Mutation>
       <div className="dataContainer">
         <div className="field">
           <p>Nombre</p>
-          <TextField className="input" />
+          <TextField className="input" value={name} disabled />
         </div>
         <div className="field">
           <p>Usuario</p>
-          <TextField
-            className="input"
-            name="username"
-            value={username}
-            disabled
-          />
+          <TextField className="input" name="username" value={username} disabled />
         </div>
         <div className="field">
           <p>Web</p>
-          <TextField
-            className="input"
-          />
+          <TextField className="input" name="website" value={website} onChange={updateField} />
         </div>
         <div className="field">
           <p>Instagram</p>
-          <TextField
-            className="input"
-            disabled
-          />
+          <TextField className="input" name="instagram" value={instagram} onChange={updateField} />
         </div>
         <div className="field">
           <p className="centered">Descripción</p>
@@ -197,36 +195,27 @@ function ProfileDetails ({ user, ...rest }) {
             name="description"
             value={description}
             multiline
+            inputProps={{ maxLength: 100 }}
             onChange={updateField}
-            rows={2}
+            rows={3}
           />
         </div>
       </div>
       <div className="actionsContainer">
         <a>
-          Mis recompensas
-          {' '}
-          <ChevronRight />
+          Mis recompensas <ChevronRight />
         </a>
         <a>
-          Mis prendas
-          {' '}
-          <ChevronRight />
+          Mis prendas <ChevronRight />
         </a>
         <a>
-          Notificaciones
-          {' '}
-          <ChevronRight />
+          Notificaciones <ChevronRight />
         </a>
         <a>
-          Términos y condiciones
-          {' '}
-          <ChevronRight />
+          Términos y condiciones <ChevronRight />
         </a>
       </div>
-      <Mutation
-        mutation={User.Mutations.EDIT_DESCRIPTION}
-      >
+      <Mutation mutation={User.Mutations.EDIT_PROFILE}>
         {editUserDescription => (
           <Button
             color="primary"
@@ -235,7 +224,12 @@ function ProfileDetails ({ user, ...rest }) {
               try {
                 // @todo: update cache after this
                 setState(prevState => ({ ...prevState, saving: true }));
-                await editUserDescription({ variables: { description } });
+
+                const { saving: _, ...updatedProfileData } = state;
+
+                console.log(updatedProfileData);
+
+                await editUserDescription({ variables: { ...updatedProfileData } });
                 Router.pushRoute('myProfile');
               } catch (e) {
                 console.log(e);

@@ -65,11 +65,5 @@ module.exports = {
     User.typeDefs,
     rest,
   ],
-  resolvers: merge(
-    resolvers,
-    Chat.resolvers,
-    Post.resolvers,
-    Profile.resolvers,
-    User.resolvers,
-  ),
+  resolvers: merge(resolvers, Chat.resolvers, Post.resolvers, Profile.resolvers, User.resolvers),
 };

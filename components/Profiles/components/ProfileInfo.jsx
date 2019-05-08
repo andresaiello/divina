@@ -35,12 +35,20 @@ const StyledProfileInfo = styled.div`
     }
   }
 
+  .details {
+    grid-column-start: span 2;
+
+    p {
+      word-break: break-all;
+    }
+  }
+
   .icons {
     margin: 0px auto;
     display: grid;
     grid-template-columns: 33% 33% 33%;
     width: 100%;
-    font-size: .8rem;
+    font-size: 0.8rem;
 
     .icon {
       display: inline-block;
@@ -57,10 +65,6 @@ const StyledProfileInfo = styled.div`
       }
     }
   }
-
-  .details {
-    grid-column-start: span 2;
-  }
 `;
 
 class ProfileInfo extends Component {
@@ -76,19 +80,27 @@ class ProfileInfo extends Component {
   state = {
     followersModalOpen: false,
     followingModalOpen: false,
-  }
+  };
 
-  openModal = (key) => {
+  openModal = key => {
     this.setState({ [key]: true });
-  }
+  };
 
-  closeModal = (key) => {
+  closeModal = key => {
     this.setState({ [key]: false });
-  }
+  };
 
-  render () {
+  render() {
     const {
-      action, username, name, description, profilePic, followersCount, followingCount, postsCount, ...rest
+      action,
+      username,
+      name,
+      description,
+      profilePic,
+      followersCount,
+      followingCount,
+      postsCount,
+      ...rest
     } = this.props;
 
     const { followersModalOpen, followingModalOpen } = this.state;
@@ -111,13 +123,9 @@ class ProfileInfo extends Component {
           {action}
         </div>
         <div className="icons">
-          <div
-            className="icon"
-            role="button"
-            tabIndex={0}
-          >
+          <div className="icon" role="button" tabIndex={0}>
             <img width="32" src="/static/pinkBlackLogo.png" alt="Cámara" />
-            <p>{postsCount === 1 ? '1 foto' : `${postsCount} fotos` }</p>
+            <p>{postsCount === 1 ? '1 foto' : `${postsCount} fotos`}</p>
           </div>
           <div
             className="icon action"
@@ -126,7 +134,7 @@ class ProfileInfo extends Component {
             tabIndex={0}
           >
             <People />
-            <p>{followersCount === 1 ? '1 seguidor' : `${followersCount} seguidores` }</p>
+            <p>{followersCount === 1 ? '1 seguidor' : `${followersCount} seguidores`}</p>
           </div>
           <div
             className="icon action"
@@ -135,7 +143,7 @@ class ProfileInfo extends Component {
             tabIndex={0}
           >
             <PeopleOutlined />
-            <p>{followingCount === 1 ? '1 seguido' : `${followingCount} seguidos` }</p>
+            <p>{followingCount === 1 ? '1 seguido' : `${followingCount} seguidos`}</p>
           </div>
           <div
             className="icon action"
@@ -143,8 +151,8 @@ class ProfileInfo extends Component {
             role="button"
             tabIndex={0}
           >
-            <img width="30" src="/static/chat.png" alt="chat" />
-            <p>{followingCount === 1 ? '1 chat' : `${followingCount} chats` }</p>
+            <img width="32" src="/static/ShopBag.svg" alt="ShopBag" />
+            <p>{followingCount === 1 ? '1 prenda' : `${followingCount} prendas`}</p>
           </div>
           <div
             className="icon action"
@@ -152,8 +160,8 @@ class ProfileInfo extends Component {
             role="button"
             tabIndex={0}
           >
-            <img width="32" src="/static/dot.png" alt="Dot" />
-            <p>{followingCount === 1 ? '1 dot' : `${followingCount} dots` }</p>
+            <img width="32" src="/static/closet.png" alt="Closet" />
+            <p>{followingCount === 1 ? '1 estilo' : `${followingCount} estilos`}</p>
           </div>
         </div>
         <div className="details">

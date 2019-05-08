@@ -34,17 +34,21 @@ const StyledAppBar = styled(AppBar)`
   }
 `;
 
-function ChatListHeadAppBar (props) {
+function ChatListHeadAppBar(props) {
   return (
     <StyledAppBar position="static" {...props}>
       <Toolbar className="toolbar">
-        <Link route="/feed" prefetch><KeyboardArrowLeft /></Link>
+        <Link route="/feed" prefetch>
+          <KeyboardArrowLeft />
+        </Link>
 
         <Typography variant="h5" color="inherit" className="disable-select">
           {/* <Link route="/feed" prefetch><a>Divina</a></Link> */}
           Chats
         </Typography>
-        <Link route="/chat/new" prefetch><Add /></Link>
+        <Link route="/chat/new" prefetch>
+          <Add />
+        </Link>
       </Toolbar>
     </StyledAppBar>
   );

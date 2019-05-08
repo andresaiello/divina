@@ -21,7 +21,7 @@ module.exports = {
       console.log('Mongoose default connection is open');
     });
 
-    connection.on('error', (err) => {
+    connection.on('error', err => {
       console.log(`Mongoose default connection has occured ${err} error`);
     });
 

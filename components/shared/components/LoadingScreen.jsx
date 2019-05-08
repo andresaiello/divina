@@ -15,16 +15,14 @@ const FullScreenLoader = styled.div`
   touch-action: none;
 `;
 
-export default function LoadingScreen ({ withLayout }) {
+export default function LoadingScreen({ withLayout }) {
   const EnhancedLoader = props => (
     <FullScreenLoader {...props}>
       <Loader />
     </FullScreenLoader>
   );
 
-  const Loading = withLayout
-    ? withMainLayout(EnhancedLoader)
-    : EnhancedLoader;
+  const Loading = withLayout ? withMainLayout(EnhancedLoader) : EnhancedLoader;
 
   return <Loading />;
 }

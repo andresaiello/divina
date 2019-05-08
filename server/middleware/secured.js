@@ -5,9 +5,12 @@
  * and then redirects to `/login`.
  *
  */
-module.exports = function () {
-  return function secured (req, res, next) {
-    if (req.user) { next(); return; }
+module.exports = function() {
+  return function secured(req, res, next) {
+    if (req.user) {
+      next();
+      return;
+    }
     req.session.returnTo = req.originalUrl;
     res.redirect('/login');
   };
